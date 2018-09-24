@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\CommunityBundle\Composer;
+namespace Webkul\UVDesk\CoreBundle\Composer;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Console\Output\ConsoleOutput;
