@@ -2,6 +2,7 @@
 
 namespace Webkul\UVDesk\CoreBundle\Composer;
 
+use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Webkul\UVDesk\PackageManager\Composer\ComposerPackageListener;
