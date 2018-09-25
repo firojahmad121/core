@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\TicketBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * Mailbox
@@ -226,3 +226,4 @@ class Mailbox
         return $this->password;
     }
 }
+

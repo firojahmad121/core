@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\TicketBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * TicketRating
@@ -28,12 +28,12 @@ class TicketRating
     private $createdAt;
 
     /**
-     * @var \Webkul\UVDesk\TicketBundle\Entity\Ticket
+     * @var \Webkul\UVDesk\CoreBundle\Entity\Ticket
      */
     private $ticket;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\User
+     * @var \Webkul\UVDesk\CoreBundle\Entity\User
      */
     private $customer;
 
@@ -123,11 +123,11 @@ class TicketRating
     /**
      * Set ticket
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\Ticket $ticket
+     * @param \Webkul\UVDesk\CoreBundle\Entity\Ticket $ticket
      *
      * @return TicketRating
      */
-    public function setTicket(\Webkul\UVDesk\TicketBundle\Entity\Ticket $ticket = null)
+    public function setTicket(\Webkul\UVDesk\CoreBundle\Entity\Ticket $ticket = null)
     {
         $this->ticket = $ticket;
 
@@ -137,7 +137,7 @@ class TicketRating
     /**
      * Get ticket
      *
-     * @return \Webkul\UVDesk\TicketBundle\Entity\Ticket
+     * @return \Webkul\UVDesk\CoreBundle\Entity\Ticket
      */
     public function getTicket()
     {
@@ -147,11 +147,11 @@ class TicketRating
     /**
      * Set customer
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\User $customer
+     * @param \Webkul\UVDesk\CoreBundle\Entity\User $customer
      *
      * @return TicketRating
      */
-    public function setCustomer(\Webkul\UVDesk\SupportBundle\Entity\User $customer = null)
+    public function setCustomer(\Webkul\UVDesk\CoreBundle\Entity\User $customer = null)
     {
         $this->customer = $customer;
 
@@ -161,7 +161,7 @@ class TicketRating
     /**
      * Get customer
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\User
+     * @return \Webkul\UVDesk\CoreBundle\Entity\User
      */
     public function getCustomer()
     {

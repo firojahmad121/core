@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\SupportBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * SupportTeam
@@ -166,11 +166,11 @@ class SupportTeam
     /**
      * Add user
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $user
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $user
      *
      * @return SupportTeam
      */
-    public function addUser(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $user)
+    public function addUser(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $user)
     {
         $this->users[] = $user;
 
@@ -180,9 +180,9 @@ class SupportTeam
     /**
      * Remove user
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $user
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $user
      */
-    public function removeUser(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $user)
+    public function removeUser(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $user)
     {
         $this->users->removeElement($user);
     }
@@ -200,11 +200,11 @@ class SupportTeam
     /**
      * Add lead
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $lead
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $lead
      *
      * @return SupportTeam
      */
-    public function addLead(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $lead)
+    public function addLead(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $lead)
     {
         $this->leads[] = $lead;
 
@@ -214,9 +214,9 @@ class SupportTeam
     /**
      * Remove lead
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $lead
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $lead
      */
-    public function removeLead(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $lead)
+    public function removeLead(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $lead)
     {
         $this->leads->removeElement($lead);
     }
@@ -234,11 +234,11 @@ class SupportTeam
     /**
      * Add supportGroup
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup
      *
      * @return SupportTeam
      */
-    public function addSupportGroup(\Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup)
+    public function addSupportGroup(\Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup)
     {
         $this->supportGroups[] = $supportGroup;
 
@@ -248,9 +248,9 @@ class SupportTeam
     /**
      * Remove supportGroup
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup
      */
-    public function removeSupportGroup(\Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup)
+    public function removeSupportGroup(\Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup)
     {
         $this->supportGroups->removeElement($supportGroup);
     }
@@ -264,7 +264,6 @@ class SupportTeam
     {
         return $this->supportGroups;
     }
-    
     /**
      * @ORM\PrePersist
      */

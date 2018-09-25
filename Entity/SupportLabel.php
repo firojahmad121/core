@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\SupportBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * SupportLabel
@@ -23,7 +23,7 @@ class SupportLabel
     private $colorCode;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\User
+     * @var \Webkul\UVDesk\CoreBundle\Entity\User
      */
     private $user;
 
@@ -89,11 +89,11 @@ class SupportLabel
     /**
      * Set user
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\User $user
+     * @param \Webkul\UVDesk\CoreBundle\Entity\User $user
      *
      * @return SupportLabel
      */
-    public function setUser(\Webkul\UVDesk\SupportBundle\Entity\User $user = null)
+    public function setUser(\Webkul\UVDesk\CoreBundle\Entity\User $user = null)
     {
         $this->user = $user;
 
@@ -103,7 +103,7 @@ class SupportLabel
     /**
      * Get user
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\User
+     * @return \Webkul\UVDesk\CoreBundle\Entity\User
      */
     public function getUser()
     {

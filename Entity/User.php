@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\SupportBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
@@ -329,11 +329,11 @@ class User implements AdvancedUserInterface
     /**
      * Add userInstance
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $userInstance
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $userInstance
      *
      * @return User
      */
-    public function addUserInstance(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $userInstance)
+    public function addUserInstance(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $userInstance)
     {
         $this->userInstance[] = $userInstance;
 
@@ -343,9 +343,9 @@ class User implements AdvancedUserInterface
     /**
      * Remove userInstance
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $userInstance
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $userInstance
      */
-    public function removeUserInstance(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $userInstance)
+    public function removeUserInstance(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $userInstance)
     {
         $this->userInstance->removeElement($userInstance);
     }
@@ -385,11 +385,11 @@ class User implements AdvancedUserInterface
     /**
      * Set currently active user instance
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $userInstance
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $userInstance
      *
      * @return User
      */
-    public function setCurrentInstance(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $userInstance = null)
+    public function setCurrentInstance(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $userInstance = null)
     {
         $this->activeInstance = $userInstance;
 
@@ -399,7 +399,7 @@ class User implements AdvancedUserInterface
     /**
      * Get currently active user instance
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\UserInstance
+     * @return \Webkul\UVDesk\CoreBundle\Entity\UserInstance
      */
     public function getCurrentInstance()
     {

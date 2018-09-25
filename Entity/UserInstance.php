@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\SupportBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * UserInstance
@@ -83,12 +83,12 @@ class UserInstance
     private $userSavedFilters;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\User
+     * @var \Webkul\UVDesk\CoreBundle\Entity\User
      */
     private $user;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\SupportRole
+     * @var \Webkul\UVDesk\CoreBundle\Entity\SupportRole
      */
     private $supportRole;
 
@@ -432,11 +432,11 @@ class UserInstance
     /**
      * Add userSavedReply
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\EmailTemplates $userSavedReply
+     * @param \Webkul\UVDesk\CoreBundle\Entity\EmailTemplates $userSavedReply
      *
      * @return UserInstance
      */
-    public function addUserSavedReply(\Webkul\UVDesk\TicketBundle\Entity\EmailTemplates $userSavedReply)
+    public function addUserSavedReply(\Webkul\UVDesk\CoreBundle\Entity\EmailTemplates $userSavedReply)
     {
         $this->userSavedReplies[] = $userSavedReply;
 
@@ -446,9 +446,9 @@ class UserInstance
     /**
      * Remove userSavedReply
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\EmailTemplates $userSavedReply
+     * @param \Webkul\UVDesk\CoreBundle\Entity\EmailTemplates $userSavedReply
      */
-    public function removeUserSavedReply(\Webkul\UVDesk\TicketBundle\Entity\EmailTemplates $userSavedReply)
+    public function removeUserSavedReply(\Webkul\UVDesk\CoreBundle\Entity\EmailTemplates $userSavedReply)
     {
         $this->userSavedReplies->removeElement($userSavedReply);
     }
@@ -466,11 +466,11 @@ class UserInstance
     /**
      * Add userSavedFilter
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\SavedFilters $userSavedFilter
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SavedFilters $userSavedFilter
      *
      * @return UserInstance
      */
-    public function addUserSavedFilter(\Webkul\UVDesk\TicketBundle\Entity\SavedFilters $userSavedFilter)
+    public function addUserSavedFilter(\Webkul\UVDesk\CoreBundle\Entity\SavedFilters $userSavedFilter)
     {
         $this->userSavedFilters[] = $userSavedFilter;
 
@@ -480,9 +480,9 @@ class UserInstance
     /**
      * Remove userSavedFilter
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\SavedFilters $userSavedFilter
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SavedFilters $userSavedFilter
      */
-    public function removeUserSavedFilter(\Webkul\UVDesk\TicketBundle\Entity\SavedFilters $userSavedFilter)
+    public function removeUserSavedFilter(\Webkul\UVDesk\CoreBundle\Entity\SavedFilters $userSavedFilter)
     {
         $this->userSavedFilters->removeElement($userSavedFilter);
     }
@@ -500,11 +500,11 @@ class UserInstance
     /**
      * Set user
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\User $user
+     * @param \Webkul\UVDesk\CoreBundle\Entity\User $user
      *
      * @return UserInstance
      */
-    public function setUser(\Webkul\UVDesk\SupportBundle\Entity\User $user = null)
+    public function setUser(\Webkul\UVDesk\CoreBundle\Entity\User $user = null)
     {
         $this->user = $user;
 
@@ -514,7 +514,7 @@ class UserInstance
     /**
      * Get user
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\User
+     * @return \Webkul\UVDesk\CoreBundle\Entity\User
      */
     public function getUser()
     {
@@ -524,11 +524,11 @@ class UserInstance
     /**
      * Set supportRole
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportRole $supportRole
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportRole $supportRole
      *
      * @return UserInstance
      */
-    public function setSupportRole(\Webkul\UVDesk\SupportBundle\Entity\SupportRole $supportRole = null)
+    public function setSupportRole(\Webkul\UVDesk\CoreBundle\Entity\SupportRole $supportRole = null)
     {
         $this->supportRole = $supportRole;
 
@@ -538,7 +538,7 @@ class UserInstance
     /**
      * Get supportRole
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\SupportRole
+     * @return \Webkul\UVDesk\CoreBundle\Entity\SupportRole
      */
     public function getSupportRole()
     {
@@ -548,11 +548,11 @@ class UserInstance
     /**
      * Add supportPrivilege
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportPrivilege $supportPrivilege
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportPrivilege $supportPrivilege
      *
      * @return UserInstance
      */
-    public function addSupportPrivilege(\Webkul\UVDesk\SupportBundle\Entity\SupportPrivilege $supportPrivilege)
+    public function addSupportPrivilege(\Webkul\UVDesk\CoreBundle\Entity\SupportPrivilege $supportPrivilege)
     {
         $this->supportPrivileges[] = $supportPrivilege;
 
@@ -562,9 +562,9 @@ class UserInstance
     /**
      * Remove supportPrivilege
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportPrivilege $supportPrivilege
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportPrivilege $supportPrivilege
      */
-    public function removeSupportPrivilege(\Webkul\UVDesk\SupportBundle\Entity\SupportPrivilege $supportPrivilege)
+    public function removeSupportPrivilege(\Webkul\UVDesk\CoreBundle\Entity\SupportPrivilege $supportPrivilege)
     {
         $this->supportPrivileges->removeElement($supportPrivilege);
     }
@@ -582,11 +582,11 @@ class UserInstance
     /**
      * Add supportTeam
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportTeam $supportTeam
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportTeam $supportTeam
      *
      * @return UserInstance
      */
-    public function addSupportTeam(\Webkul\UVDesk\SupportBundle\Entity\SupportTeam $supportTeam)
+    public function addSupportTeam(\Webkul\UVDesk\CoreBundle\Entity\SupportTeam $supportTeam)
     {
         $this->supportTeams[] = $supportTeam;
 
@@ -596,9 +596,9 @@ class UserInstance
     /**
      * Remove supportTeam
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportTeam $supportTeam
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportTeam $supportTeam
      */
-    public function removeSupportTeam(\Webkul\UVDesk\SupportBundle\Entity\SupportTeam $supportTeam)
+    public function removeSupportTeam(\Webkul\UVDesk\CoreBundle\Entity\SupportTeam $supportTeam)
     {
         $this->supportTeams->removeElement($supportTeam);
     }
@@ -616,11 +616,11 @@ class UserInstance
     /**
      * Add supportGroup
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup
      *
      * @return UserInstance
      */
-    public function addSupportGroup(\Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup)
+    public function addSupportGroup(\Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup)
     {
         $this->supportGroups[] = $supportGroup;
 
@@ -630,9 +630,9 @@ class UserInstance
     /**
      * Remove supportGroup
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup
      */
-    public function removeSupportGroup(\Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup)
+    public function removeSupportGroup(\Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup)
     {
         $this->supportGroups->removeElement($supportGroup);
     }
@@ -650,11 +650,11 @@ class UserInstance
     /**
      * Add leadSupportTeam
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportTeam $leadSupportTeam
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportTeam $leadSupportTeam
      *
      * @return UserInstance
      */
-    public function addLeadSupportTeam(\Webkul\UVDesk\SupportBundle\Entity\SupportTeam $leadSupportTeam)
+    public function addLeadSupportTeam(\Webkul\UVDesk\CoreBundle\Entity\SupportTeam $leadSupportTeam)
     {
         $this->leadSupportTeams[] = $leadSupportTeam;
 
@@ -664,9 +664,9 @@ class UserInstance
     /**
      * Remove leadSupportTeam
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportTeam $leadSupportTeam
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportTeam $leadSupportTeam
      */
-    public function removeLeadSupportTeam(\Webkul\UVDesk\SupportBundle\Entity\SupportTeam $leadSupportTeam)
+    public function removeLeadSupportTeam(\Webkul\UVDesk\CoreBundle\Entity\SupportTeam $leadSupportTeam)
     {
         $this->leadSupportTeams->removeElement($leadSupportTeam);
     }
@@ -684,11 +684,11 @@ class UserInstance
     /**
      * Add adminSupportGroup
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportGroup $adminSupportGroup
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportGroup $adminSupportGroup
      *
      * @return UserInstance
      */
-    public function addAdminSupportGroup(\Webkul\UVDesk\SupportBundle\Entity\SupportGroup $adminSupportGroup)
+    public function addAdminSupportGroup(\Webkul\UVDesk\CoreBundle\Entity\SupportGroup $adminSupportGroup)
     {
         $this->adminSupportGroups[] = $adminSupportGroup;
 
@@ -698,9 +698,9 @@ class UserInstance
     /**
      * Remove adminSupportGroup
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportGroup $adminSupportGroup
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportGroup $adminSupportGroup
      */
-    public function removeAdminSupportGroup(\Webkul\UVDesk\SupportBundle\Entity\SupportGroup $adminSupportGroup)
+    public function removeAdminSupportGroup(\Webkul\UVDesk\CoreBundle\Entity\SupportGroup $adminSupportGroup)
     {
         $this->adminSupportGroups->removeElement($adminSupportGroup);
     }
@@ -714,7 +714,6 @@ class UserInstance
     {
         return $this->adminSupportGroups;
     }
-    
     /**
      * @ORM\PrePersist
      *
@@ -743,7 +742,8 @@ class UserInstance
 
         return $this;
     }
-     /**
+
+    /**
      * Get user partial data
      *
      * @return array

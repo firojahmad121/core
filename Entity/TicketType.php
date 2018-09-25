@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\TicketBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * TicketType

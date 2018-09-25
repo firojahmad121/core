@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\SupportBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * SupportRole

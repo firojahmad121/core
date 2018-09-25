@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\TicketBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * EmailTemplates
@@ -43,7 +43,7 @@ class EmailTemplates
     private $isPredefined = true;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\UserInstance
+     * @var \Webkul\UVDesk\CoreBundle\Entity\UserInstance
      */
     private $user;
 
@@ -205,11 +205,11 @@ class EmailTemplates
     /**
      * Set user
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $user
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $user
      *
      * @return EmailTemplates
      */
-    public function setUser(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $user = null)
+    public function setUser(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $user = null)
     {
         $this->user = $user;
 
@@ -219,10 +219,11 @@ class EmailTemplates
     /**
      * Get user
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\UserInstance
+     * @return \Webkul\UVDesk\CoreBundle\Entity\UserInstance
      */
     public function getUser()
     {
         return $this->user;
     }
 }
+

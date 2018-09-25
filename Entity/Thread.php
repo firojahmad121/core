@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\TicketBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * Thread
@@ -88,12 +88,12 @@ class Thread
     private $customerViewedAt;
 
     /**
-     * @var \Webkul\UVDesk\TicketBundle\Entity\Ticket
+     * @var \Webkul\UVDesk\CoreBundle\Entity\Ticket
      */
     private $ticket;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\User
+     * @var \Webkul\UVDesk\CoreBundle\Entity\User
      */
     private $user;
 
@@ -471,11 +471,11 @@ class Thread
     /**
      * Set ticket
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\Ticket $ticket
+     * @param \Webkul\UVDesk\CoreBundle\Entity\Ticket $ticket
      *
      * @return Thread
      */
-    public function setTicket(\Webkul\UVDesk\TicketBundle\Entity\Ticket $ticket = null)
+    public function setTicket(\Webkul\UVDesk\CoreBundle\Entity\Ticket $ticket = null)
     {
         $this->ticket = $ticket;
 
@@ -485,7 +485,7 @@ class Thread
     /**
      * Get ticket
      *
-     * @return \Webkul\UVDesk\TicketBundle\Entity\Ticket
+     * @return \Webkul\UVDesk\CoreBundle\Entity\Ticket
      */
     public function getTicket()
     {
@@ -495,11 +495,11 @@ class Thread
     /**
      * Set user
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\User $user
+     * @param \Webkul\UVDesk\CoreBundle\Entity\User $user
      *
      * @return Thread
      */
-    public function setUser(\Webkul\UVDesk\SupportBundle\Entity\User $user = null)
+    public function setUser(\Webkul\UVDesk\CoreBundle\Entity\User $user = null)
     {
         $this->user = $user;
 
@@ -509,7 +509,7 @@ class Thread
     /**
      * Get user
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\User
+     * @return \Webkul\UVDesk\CoreBundle\Entity\User
      */
     public function getUser()
     {

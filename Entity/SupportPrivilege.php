@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\SupportBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * SupportPrivilege
@@ -154,11 +154,11 @@ class SupportPrivilege
     /**
      * Add user
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $user
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $user
      *
      * @return SupportPrivilege
      */
-    public function addUser(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $user)
+    public function addUser(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $user)
     {
         $this->users[] = $user;
 
@@ -168,9 +168,9 @@ class SupportPrivilege
     /**
      * Remove user
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\UserInstance $user
+     * @param \Webkul\UVDesk\CoreBundle\Entity\UserInstance $user
      */
-    public function removeUser(\Webkul\UVDesk\SupportBundle\Entity\UserInstance $user)
+    public function removeUser(\Webkul\UVDesk\CoreBundle\Entity\UserInstance $user)
     {
         $this->users->removeElement($user);
     }

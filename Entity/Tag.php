@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\TicketBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,11 +19,23 @@ class Tag
      */
     private $name;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tickets;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->tickets = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -34,6 +46,7 @@ class Tag
      * Set name
      *
      * @param string $name
+     *
      * @return Tag
      */
     public function setName($name)
@@ -46,53 +59,45 @@ class Tag
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
         return $this->name;
     }
-    
-    private $tickets;
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->tickets = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add tickets
+     * Add ticket
      *
-     * @param \Webkul\TicketBundle\Entity\Ticket $tickets
+     * @param \Webkul\UVDesk\CoreBundle\Entity\Ticket $ticket
+     *
      * @return Tag
      */
-    public function addTicket(\Webkul\TicketBundle\Entity\Ticket $tickets)
+    public function addTicket(\Webkul\UVDesk\CoreBundle\Entity\Ticket $ticket)
     {
-        $this->tickets[] = $tickets;
+        $this->tickets[] = $ticket;
 
         return $this;
     }
 
     /**
-     * Remove tickets
+     * Remove ticket
      *
-     * @param \Webkul\TicketBundle\Entity\Ticket $tickets
+     * @param \Webkul\UVDesk\CoreBundle\Entity\Ticket $ticket
      */
-    public function removeTicket(\Webkul\TicketBundle\Entity\Ticket $tickets)
+    public function removeTicket(\Webkul\UVDesk\CoreBundle\Entity\Ticket $ticket)
     {
-        $this->tickets->removeElement($tickets);
+        $this->tickets->removeElement($ticket);
     }
 
     /**
      * Get tickets
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTickets()
     {
         return $this->tickets;
     }
 }
+

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\TicketBundle\Entity;
+namespace Webkul\UVDesk\CoreBundle\Entity;
 
 /**
  * Ticket
@@ -11,7 +11,7 @@ class Ticket
     const AGENT_GROUP_ACCESS = 'TICKET_GROUP';
     const AGENT_TEAM_ACCESS = 'TICKET_TEAM';
     const AGENT_INDIVIDUAL_ACCESS = 'TICKET_INDIVIDUAL';
-
+    
     /**
      * @var integer
      */
@@ -93,42 +93,42 @@ class Ticket
     private $ratings;
 
     /**
-     * @var \Webkul\UVDesk\TicketBundle\Entity\TicketStatus
+     * @var \Webkul\UVDesk\CoreBundle\Entity\TicketStatus
      */
     private $status;
 
     /**
-     * @var \Webkul\UVDesk\TicketBundle\Entity\TicketPriority
+     * @var \Webkul\UVDesk\CoreBundle\Entity\TicketPriority
      */
     private $priority;
 
     /**
-     * @var \Webkul\UVDesk\TicketBundle\Entity\TicketType
+     * @var \Webkul\UVDesk\CoreBundle\Entity\TicketType
      */
     private $type;
 
     /**
-     * @var \Webkul\UVDesk\TicketBundle\Entity\Mailbox
+     * @var \Webkul\UVDesk\CoreBundle\Entity\Mailbox
      */
     private $mailbox;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\User
+     * @var \Webkul\UVDesk\CoreBundle\Entity\User
      */
     private $customer;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\User
+     * @var \Webkul\UVDesk\CoreBundle\Entity\User
      */
     private $agent;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\SupportGroup
+     * @var \Webkul\UVDesk\CoreBundle\Entity\SupportGroup
      */
     private $supportGroup;
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\SupportTeam
+     * @var \Webkul\UVDesk\CoreBundle\Entity\SupportTeam
      */
     private $supportTeam;
 
@@ -149,6 +149,8 @@ class Ticket
     {
         $this->threads = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->supportTags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->supportLabels = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -183,18 +185,6 @@ class Ticket
     public function getSource()
     {
         return $this->source;
-    }
-
-    public $formatedCreatedAt;
-
-    /**
-     * Get formatedCreatedAt
-     *
-     * @return \DateTime 
-     */
-    public function getFormatedCreatedAt()
-    {
-        return $this->formatedCreatedAt;
     }
 
     /**
@@ -488,11 +478,11 @@ class Ticket
     /**
      * Add thread
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\Thread $thread
+     * @param \Webkul\UVDesk\CoreBundle\Entity\Thread $thread
      *
      * @return Ticket
      */
-    public function addThread(\Webkul\UVDesk\TicketBundle\Entity\Thread $thread)
+    public function addThread(\Webkul\UVDesk\CoreBundle\Entity\Thread $thread)
     {
         $this->threads[] = $thread;
 
@@ -502,9 +492,9 @@ class Ticket
     /**
      * Remove thread
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\Thread $thread
+     * @param \Webkul\UVDesk\CoreBundle\Entity\Thread $thread
      */
-    public function removeThread(\Webkul\UVDesk\TicketBundle\Entity\Thread $thread)
+    public function removeThread(\Webkul\UVDesk\CoreBundle\Entity\Thread $thread)
     {
         $this->threads->removeElement($thread);
     }
@@ -522,11 +512,11 @@ class Ticket
     /**
      * Add rating
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\TicketRating $rating
+     * @param \Webkul\UVDesk\CoreBundle\Entity\TicketRating $rating
      *
      * @return Ticket
      */
-    public function addRating(\Webkul\UVDesk\TicketBundle\Entity\TicketRating $rating)
+    public function addRating(\Webkul\UVDesk\CoreBundle\Entity\TicketRating $rating)
     {
         $this->ratings[] = $rating;
 
@@ -536,9 +526,9 @@ class Ticket
     /**
      * Remove rating
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\TicketRating $rating
+     * @param \Webkul\UVDesk\CoreBundle\Entity\TicketRating $rating
      */
-    public function removeRating(\Webkul\UVDesk\TicketBundle\Entity\TicketRating $rating)
+    public function removeRating(\Webkul\UVDesk\CoreBundle\Entity\TicketRating $rating)
     {
         $this->ratings->removeElement($rating);
     }
@@ -556,11 +546,11 @@ class Ticket
     /**
      * Set status
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\TicketStatus $status
+     * @param \Webkul\UVDesk\CoreBundle\Entity\TicketStatus $status
      *
      * @return Ticket
      */
-    public function setStatus(\Webkul\UVDesk\TicketBundle\Entity\TicketStatus $status = null)
+    public function setStatus(\Webkul\UVDesk\CoreBundle\Entity\TicketStatus $status = null)
     {
         $this->status = $status;
 
@@ -570,7 +560,7 @@ class Ticket
     /**
      * Get status
      *
-     * @return \Webkul\UVDesk\TicketBundle\Entity\TicketStatus
+     * @return \Webkul\UVDesk\CoreBundle\Entity\TicketStatus
      */
     public function getStatus()
     {
@@ -580,11 +570,11 @@ class Ticket
     /**
      * Set priority
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\TicketPriority $priority
+     * @param \Webkul\UVDesk\CoreBundle\Entity\TicketPriority $priority
      *
      * @return Ticket
      */
-    public function setPriority(\Webkul\UVDesk\TicketBundle\Entity\TicketPriority $priority = null)
+    public function setPriority(\Webkul\UVDesk\CoreBundle\Entity\TicketPriority $priority = null)
     {
         $this->priority = $priority;
 
@@ -594,7 +584,7 @@ class Ticket
     /**
      * Get priority
      *
-     * @return \Webkul\UVDesk\TicketBundle\Entity\TicketPriority
+     * @return \Webkul\UVDesk\CoreBundle\Entity\TicketPriority
      */
     public function getPriority()
     {
@@ -604,11 +594,11 @@ class Ticket
     /**
      * Set type
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\TicketType $type
+     * @param \Webkul\UVDesk\CoreBundle\Entity\TicketType $type
      *
      * @return Ticket
      */
-    public function setType(\Webkul\UVDesk\TicketBundle\Entity\TicketType $type = null)
+    public function setType(\Webkul\UVDesk\CoreBundle\Entity\TicketType $type = null)
     {
         $this->type = $type;
 
@@ -618,7 +608,7 @@ class Ticket
     /**
      * Get type
      *
-     * @return \Webkul\UVDesk\TicketBundle\Entity\TicketType
+     * @return \Webkul\UVDesk\CoreBundle\Entity\TicketType
      */
     public function getType()
     {
@@ -628,11 +618,11 @@ class Ticket
     /**
      * Set mailbox
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\Mailbox $mailbox
+     * @param \Webkul\UVDesk\CoreBundle\Entity\Mailbox $mailbox
      *
      * @return Ticket
      */
-    public function setMailbox(\Webkul\UVDesk\TicketBundle\Entity\Mailbox $mailbox = null)
+    public function setMailbox(\Webkul\UVDesk\CoreBundle\Entity\Mailbox $mailbox = null)
     {
         $this->mailbox = $mailbox;
 
@@ -642,7 +632,7 @@ class Ticket
     /**
      * Get mailbox
      *
-     * @return \Webkul\UVDesk\TicketBundle\Entity\Mailbox
+     * @return \Webkul\UVDesk\CoreBundle\Entity\Mailbox
      */
     public function getMailbox()
     {
@@ -652,11 +642,11 @@ class Ticket
     /**
      * Set customer
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\User $customer
+     * @param \Webkul\UVDesk\CoreBundle\Entity\User $customer
      *
      * @return Ticket
      */
-    public function setCustomer(\Webkul\UVDesk\SupportBundle\Entity\User $customer = null)
+    public function setCustomer(\Webkul\UVDesk\CoreBundle\Entity\User $customer = null)
     {
         $this->customer = $customer;
 
@@ -666,7 +656,7 @@ class Ticket
     /**
      * Get customer
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\User
+     * @return \Webkul\UVDesk\CoreBundle\Entity\User
      */
     public function getCustomer()
     {
@@ -676,11 +666,11 @@ class Ticket
     /**
      * Set agent
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\User $agent
+     * @param \Webkul\UVDesk\CoreBundle\Entity\User $agent
      *
      * @return Ticket
      */
-    public function setAgent(\Webkul\UVDesk\SupportBundle\Entity\User $agent = null)
+    public function setAgent(\Webkul\UVDesk\CoreBundle\Entity\User $agent = null)
     {
         $this->agent = $agent;
 
@@ -690,7 +680,7 @@ class Ticket
     /**
      * Get agent
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\User
+     * @return \Webkul\UVDesk\CoreBundle\Entity\User
      */
     public function getAgent()
     {
@@ -700,11 +690,11 @@ class Ticket
     /**
      * Set supportGroup
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup
      *
      * @return Ticket
      */
-    public function setSupportGroup(\Webkul\UVDesk\SupportBundle\Entity\SupportGroup $supportGroup = null)
+    public function setSupportGroup(\Webkul\UVDesk\CoreBundle\Entity\SupportGroup $supportGroup = null)
     {
         $this->supportGroup = $supportGroup;
 
@@ -714,7 +704,7 @@ class Ticket
     /**
      * Get supportGroup
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\SupportGroup
+     * @return \Webkul\UVDesk\CoreBundle\Entity\SupportGroup
      */
     public function getSupportGroup()
     {
@@ -724,11 +714,11 @@ class Ticket
     /**
      * Set supportTeam
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportTeam $supportTeam
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportTeam $supportTeam
      *
      * @return Ticket
      */
-    public function setSupportTeam(\Webkul\UVDesk\SupportBundle\Entity\SupportTeam $supportTeam = null)
+    public function setSupportTeam(\Webkul\UVDesk\CoreBundle\Entity\SupportTeam $supportTeam = null)
     {
         $this->supportTeam = $supportTeam;
 
@@ -738,7 +728,7 @@ class Ticket
     /**
      * Get supportTeam
      *
-     * @return \Webkul\UVDesk\SupportBundle\Entity\SupportTeam
+     * @return \Webkul\UVDesk\CoreBundle\Entity\SupportTeam
      */
     public function getSupportTeam()
     {
@@ -746,32 +736,33 @@ class Ticket
     }
 
     /**
-     * Add supportTags
+     * Add supportTag
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\Tag $supportTags
+     * @param \Webkul\UVDesk\CoreBundle\Entity\Tag $supportTag
+     *
      * @return Ticket
      */
-    public function addSupportTag(\Webkul\UVDesk\TicketBundle\Entity\Tag $supportTags)
+    public function addSupportTag(\Webkul\UVDesk\CoreBundle\Entity\Tag $supportTag)
     {
-        $this->supportTags[] = $supportTags;
+        $this->supportTags[] = $supportTag;
 
         return $this;
     }
 
     /**
-     * Remove supportTags
+     * Remove supportTag
      *
-     * @param \Webkul\UVDesk\TicketBundle\Entity\Tag $supportTags
+     * @param \Webkul\UVDesk\CoreBundle\Entity\Tag $supportTag
      */
-    public function removeSupportTag(\Webkul\UVDesk\TicketBundle\Entity\Tag $supportTags)
+    public function removeSupportTag(\Webkul\UVDesk\CoreBundle\Entity\Tag $supportTag)
     {
-        $this->supportTags->removeElement($supportTags);
+        $this->supportTags->removeElement($supportTag);
     }
 
     /**
      * Get supportTags
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getSupportTags()
     {
@@ -779,33 +770,47 @@ class Ticket
     }
 
     /**
-     * Add supportLabels
+     * Add supportLabel
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportLabel $supportLabels
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportLabel $supportLabel
+     *
      * @return Ticket
      */
-    public function addSupportLabel(\Webkul\UVDesk\SupportBundle\Entity\SupportLabel $supportLabels)
+    public function addSupportLabel(\Webkul\UVDesk\CoreBundle\Entity\SupportLabel $supportLabel)
     {
-        $this->supportLabels[] = $supportLabels;
+        $this->supportLabels[] = $supportLabel;
+
         return $this;
     }
+
     /**
-     * Remove supportLabels
+     * Remove supportLabel
      *
-     * @param \Webkul\UVDesk\SupportBundle\Entity\SupportLabel $supportLabels
+     * @param \Webkul\UVDesk\CoreBundle\Entity\SupportLabel $supportLabel
      */
-    public function removeSupportLabel(\Webkul\UVDesk\SupportBundle\Entity\SupportLabel $supportLabels)
+    public function removeSupportLabel(\Webkul\UVDesk\CoreBundle\Entity\SupportLabel $supportLabel)
     {
-        $this->supportLabels->removeElement($supportLabels);
+        $this->supportLabels->removeElement($supportLabel);
     }
+
     /**
      * Get supportLabels
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getSupportLabels()
     {
         return $this->supportLabels;
     }
 
+    /**
+     * Get formatted $createdAt
+     *
+     * @return \DateTime 
+     */
+    public function getFormatedCreatedAt()
+    {
+        return $this->formatedCreatedAt;
+    }
 }
+
