@@ -15,6 +15,11 @@ class Configuration implements ConfigurationInterface
                 ->node('site_url', 'scalar')->cannotBeEmpty()->end()
                 ->node('email_domain', 'scalar')->cannotBeEmpty()->end()
                 ->node('welcome_community', 'scalar')->defaultValue('disabled')->end()
+                ->node('default_templates', 'array')
+                    ->children()
+                        ->node('email', 'scalar')->defaultValue('mail.html.twig')->end()
+                    ->end()
+                ->end()
             ->end();
 
             // ->children()
