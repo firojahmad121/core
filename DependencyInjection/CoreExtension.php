@@ -14,17 +14,19 @@ class CoreExtension extends Extension
         return 'uvdesk';
     }
 
-    // public function getConfiguration(array $configs, ContainerBuilder $container)
-    // {
-    //     return new Configuration();
-    // }
+    public function getConfiguration(array $configs, ContainerBuilder $container)
+    {
+        return new Configuration();
+    }
 
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
 
-        // $configuration = $this->getConfiguration($configs, $container);
-        // $container->setParameter('uvdesk', $this->processConfiguration($configuration, $configs));
+        $configuration = $this->getConfiguration($configs, $container);
+        foreach ($this->processConfiguration($configuration, $configs) as $param => $value) {
+            $container->setParameter("uvdesk.$param", $value);
+        }
     }
 }

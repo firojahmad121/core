@@ -25,7 +25,7 @@ class PackageListener extends ComposerPackageListener
             $yaml = Yaml::dump([
                 'uvdesk' => [
                     'site.url' => '127.0.0.1',
-                    'email.domain' => "'@@localhost'",
+                    'email.domain' => '@@localhost',
                     'welcome_community' => 'enabled'
                 ]
             ]);

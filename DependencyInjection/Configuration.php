@@ -12,8 +12,8 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $treeBuilder->root('uvdesk')
             ->children()
-                ->node('site.url', 'scalar')->cannotBeEmpty()->end()
-                ->node('email.domain', 'scalar')->cannotBeEmpty()->end()
+                ->node('site_url', 'scalar')->cannotBeEmpty()->end()
+                ->node('email_domain', 'scalar')->cannotBeEmpty()->end()
                 ->node('welcome_community', 'scalar')->defaultValue('disabled')->end()
             ->end();
 
