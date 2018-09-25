@@ -26,7 +26,11 @@ class PackageListener extends ComposerPackageListener
                 'uvdesk' => [
                     'site_url' => '127.0.0.1',
                     'email_domain' => '@@localhost',
-                    'welcome_community' => 'enabled'
+                    'welcome_community' => 'enabled',
+                    null,
+                    'default_templates' => [
+                        'email' => 'mail.html.twig'
+                    ],
                 ]
             ]);
 
