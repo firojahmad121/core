@@ -3,6 +3,11 @@ services:
         resource: '../../Command/*'
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
         tags: ['console.command']
+    
+    Webkul\UVDesk\CoreBundle\Fixture\:
+        resource: '../../Fixture/*'
+        arguments: ['@service_container', '@doctrine.orm.entity_manager']
+        tags: ['doctrine.fixture.orm']
 
     # support.service:
     #     public: true

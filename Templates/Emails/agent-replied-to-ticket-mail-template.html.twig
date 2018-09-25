@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
+<html style="font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body style="font-family: Helvetica;padding: 10px;border: 1px solid #D2D2D2;font-size: 15px;color: #343b41;margin:0" class="fullbodymsg">
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p style="text-align: center">{%global.companyLogo%}</p>
+    <p style="text-align: center">
+        <br>
+    </p>
+    <p style="text-align: center">
+        <span style="font-size: 18px">
+            <b style="font-weight:bold">New Response!!</b>
+        </span>
+    </p>
+    <span style="font-size: 18px">
+        <b style="font-weight:bold"> </b>
+    </span>
+    <p>
+        <br>
+    </p>
+    <p></p>
+    <p></p> Hello {%ticket.customerName%},
+    <p></p>
+    <p></p>
+    <p>
+        <span style="line-height: 1.42857">
+            <br>
+        </span>
+    </p>
+    <p>
+        <span style="line-height: 1.42857">A reply has been added by the </span>{%ticket.agentName%} on your ticket {%ticket.id%}. Kindly follow this link {%ticket.link%}
+        to get the insight of the message.
+        <span style="line-height: 1.42857"> </span>
+    </p>
+    <p>
+        <span style="line-height: 1.42857">
+            <br>
+        </span>
+    </p>
+    <p>
+        <span style="line-height: 1.42857">Here go the ticket message:</span>
+    </p>
+    <p>{%ticket.threadMessage%}{%ticket.attachments%}
+        <br>
+    </p>
+    <p></p>
+    <p></p>
+    <p>
+        <br>
+    </p>
+    <p></p>
+    <p>Thanks and Regards</p>
+    <p>{%global.companyName%}
+        <br>
+    </p>
+    <br>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p style="border-top: 1px solid #ddd;text-align: center;margin-top: 15px;font-size: 12px;padding-top: 5px;color: #aaa">This email is a service from %companyNamePlaceholder%. Delivered by
+        <a href="https://uvdesk.com" style="background-color:transparent">UVdesk</a>.</p>
+</body>
+
+</html>
