@@ -1,0 +1,38 @@
+Webkul\UVDesk\CoreBundle\Entity\EmailTemplates:
+    type: entity
+    repositoryClass: Webkul\UVDesk\CoreBundle\Repository\EmailTemplatesRepository
+    manyToOne:
+        user:
+            targetEntity: UserInstance
+            inversedBy: userSavedReplies
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
+                nullable: true
+                onDelete: CASCADE
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 191
+        subject:
+            type: string
+            length: 191
+            nullable: true
+        message:
+            type: text
+        messageInline:
+            type: text
+            nullable: true
+        templateType:
+            type: string
+            nullable: true
+        isPredefined:
+            type: boolean
+            options:
+                default: true

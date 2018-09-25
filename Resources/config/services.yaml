@@ -1,12 +1,8 @@
 services:
-    # Webkul\UVDesk\CommunityBundle\Help\:
-    #     resource: '../../Help/*'
-    #     tags: ['console.command']
-    
-    # Webkul\UVDesk\CommunityBundle\Command\:
-    #     resource: '../../Command/*'
-    #     arguments: ['@service_container', '@doctrine.orm.entity_manager']
-    #     tags: ['console.command']
+    Webkul\UVDesk\CoreBundle\Command\:
+        resource: '../../Command/*'
+        arguments: ['@service_container', '@doctrine.orm.entity_manager']
+        tags: ['console.command']
 
     # support.service:
     #     public: true
