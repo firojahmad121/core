@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-class SchemaUpdateCommand extends Command
+class UpdateDatabaseSchema extends Command
 {
     private $container;
     private $entityManager;
@@ -28,13 +28,12 @@ class SchemaUpdateCommand extends Command
 
     protected function configure()
     {
-        $this->setName('uvdesk:syncronize-schema');
-        $this->setDescription('Syncronizes your database with latest schema definitions and default datasets');
+        $this->setName('uvdesk:revise-schema');
+        $this->setDescription('Syncronizes your database with latest schema definitions and loads default datasets.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Verify connection with the database
         $output->writeln("\n<comment># Verifying database credentials</comment>\n");
 
         try {
@@ -66,34 +65,16 @@ class SchemaUpdateCommand extends Command
         
         if ('0' != $this->getLatestMigrationVersion(new BufferedOutput())) {
             $output->writeln("\n-> Migrating database to the latest schema version.");
-            $this->migrateDatabaseToLatestVersion();
+            $this->migrateDatabaseToLatestVersion($output);
         } else {
             $output->writeln("\n-> Database is already syncronized with the latest schema version.");
         }
 
         // Initialize entities with initial dataset
         $output->writeln("-> Seeding core entities with initial dataset.");
-        $this->populateEntities();
+        $this->runDataFixtures($output);
 
         $output->writeln("\n");
-    }
-
-    /**
-     * Retrieve the latest migration version.
-     * 
-     * @param OutputInterface   $bufferedOutput
-     * 
-     * @return string
-    */
-    private function getLatestMigrationVersion(OutputInterface $bufferedOutput)
-    {
-        $command = $this->getApplication()->find('doctrine:migrations:latest');
-        $commandOptions = new ConsoleOptions(['command' => 'migrations:latest']);
-
-        // Execute command
-        $command->run($commandOptions, $bufferedOutput);
-
-        return trim($bufferedOutput->fetch());
     }
 
     /**
@@ -101,7 +82,7 @@ class SchemaUpdateCommand extends Command
      * 
      * @param OutputInterface   $consoleOutput
      * 
-     * @return SchemaUpdateCommand
+     * @return UpdateDatabaseSchema
     */
     private function versionMigrations(OutputInterface $consoleOutput)
     {
@@ -126,15 +107,20 @@ class SchemaUpdateCommand extends Command
      * 
      * @param OutputInterface   $consoleOutput
      * 
-     * @return SchemaUpdateCommand
+     * @return UpdateDatabaseSchema
     */
     private function compareMigrations(OutputInterface $consoleOutput)
     {
         $compareMigrationsCommand = $this->getApplication()->find('doctrine:migrations:diff');
-        $compareMigrationsCommandOptions = new ConsoleOptions(['command' => 'migrations:diff', '--quiet' => true]);
+        $compareMigrationsCommandOptions = new ConsoleOptions([
+            'command' => 'migrations:diff',
+            '--quiet' => true
+        ]);
         
         $viewMigrationStatusCommand = $this->getApplication()->find('doctrine:migrations:status');
-        $viewMigrationStatusCommandOptions = new ConsoleOptions(['command' => 'migrations:status']);
+        $viewMigrationStatusCommandOptions = new ConsoleOptions([
+            'command' => 'migrations:status'
+        ]);
             
         // Execute command
         $consoleOutput->writeln("-> Generating migrations by comparing your current database with available entity mapping information.");
@@ -144,16 +130,41 @@ class SchemaUpdateCommand extends Command
         return $this;
     }
 
-    private function migrateDatabaseToLatestVersion()
+    /**
+     * Retrieve the latest migration version.
+     * 
+     * @param OutputInterface   $bufferedOutput
+     * 
+     * @return string
+    */
+    private function getLatestMigrationVersion(OutputInterface $bufferedOutput)
     {
-        $consoleOutput = new ConsoleOutput();
+        $command = $this->getApplication()->find('doctrine:migrations:latest');
+        $commandOptions = new ConsoleOptions([
+            'command' => 'migrations:latest'
+        ]);
 
-        $consoleOutput->writeln("");
-        
+        // Execute command
+        $command->run($commandOptions, $bufferedOutput);
+
+        return trim($bufferedOutput->fetch());
+    }
+
+    /**
+     * Migrate database to the latest migration version.
+     * 
+     * @param OutputInterface   $consoleOutput
+     * 
+     * @return UpdateDatabaseSchema
+    */
+    private function migrateDatabaseToLatestVersion(OutputInterface $consoleOutput)
+    {
         $command = $this->getApplication()->find('doctrine:migrations:migrate');
-        $commandOptions = new ConsoleOptions(['command' => 'migrations:migrate']);
-
-        $commandOptions->setInteractive(false);
+        ($commandOptions = new ConsoleOptions([
+            'command' => 'migrations:migrate'
+        ]))->setInteractive(false);
+            
+        $consoleOutput->writeln("");
         $command->run($commandOptions, $consoleOutput);
 
         $consoleOutput->writeln("");
@@ -161,12 +172,21 @@ class SchemaUpdateCommand extends Command
         return $this;
     }
 
-    private function populateEntities()
+    /**
+     * Seed core entities with default datasets.
+     * 
+     * @param OutputInterface   $consoleOutput
+     * 
+     * @return UpdateDatabaseSchema
+    */
+    private function runDataFixtures(OutputInterface $consoleOutput)
     {
-        $consoleOutput = new ConsoleOutput();
-
         $command = $this->getApplication()->find('doctrine:fixtures:load');
-        $commandOptions = new ConsoleOptions(['command' => 'fixtures:load', '--append' => true]);
+        $commandOptions = new ConsoleOptions([
+            'command' => 'fixtures:load',
+            '--append' => true,
+            '--quiet' => true
+        ]);
 
         $command->run($commandOptions, $consoleOutput);
 
