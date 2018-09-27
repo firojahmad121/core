@@ -1,13 +1,13 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Composer;
+namespace Webkul\UVDesk\CoreBundle\Package;
 
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Webkul\UVDesk\PackageManager\Composer\ComposerPackageListener;
 
-class PackageListener extends ComposerPackageListener
+class Composer extends ComposerPackageListener
 {
     public function onProjectCreated(Event $event)
     {

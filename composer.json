@@ -46,7 +46,7 @@
         "psr-4": { "Webkul\\UVDesk\\CoreBundle\\": "" }
     },
     "extra": {
-        "uvdesk-handler": "Webkul\\UVDesk\\CoreBundle\\Composer\\PackageListener"
+        "uvdesk-handler": "Webkul\\UVDesk\\CoreBundle\\Package\\Composer"
     },
     "minimum-stability": "dev"
 }
