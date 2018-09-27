@@ -9,6 +9,7 @@ namespace Webkul\UVDesk\CoreBundle\CLI;
  * - https://en.wikipedia.org/wiki/ANSI_escape_code
  * - http://tldp.org/HOWTO/Bash-Prompt-HOWTO/x361.html
  * - https://stackoverflow.com/questions/37774983/clearing-the-screen-by-printing-a-character
+ * - http://www.isthe.com/chongo/tech/comp/ansi_escapes.html
 */
 final class ANSIEscapeSequence
 {
