@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Command;
+namespace Webkul\UVDesk\CoreBundle\CLI;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\DBALException;
@@ -11,6 +11,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\ArrayInput as ConsoleOptions;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\NullOutput;
+use Webkul\UVDesk\CoreBundle\CLI\UTF8Symbol;
+use Webkul\UVDesk\CoreBundle\CLI\ANSIEscapeSequence;
 
 class CheckConfiguration extends Command
 {
@@ -41,7 +43,11 @@ class CheckConfiguration extends Command
             5. Check default templates
         */
 
-        $output->writeln("\n Verifying configuration details...\n");
+        $output->write(ANSIEscapeSequence::CLEAR_SCREEN);
+        $output->write(ANSIEscapeSequence::MOVE_CURSOR_HOME);
+
+        // Clearing the cache for the dev environment with debug true
+        $output->writeln("\n\n    Examining the application setup for any mis-configuration issues...\n");
 
         // Check 1: Verify database connection
         $database = $this->entityManager->getConnection()->getDatabase();
@@ -53,7 +59,11 @@ class CheckConfiguration extends Command
             ]);
 
             return;
+        } else {
+            $output->writeln("<info> [" . UTF8Symbol::CHECK . " ]  Successfully established connection with database</info>");
         }
+
+        die;
 
         // Check 2: Ensure entities have been loaded
         $latestSchemaVersion = $this->compareMigrations($output)->getLatestMigrationVersion(new BufferedOutput());

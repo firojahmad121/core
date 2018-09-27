@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Command;
+namespace Webkul\UVDesk\CoreBundle\CLI;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\DBALException;
@@ -34,6 +34,7 @@ class UpdateDatabaseSchema extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln("\u2714\u274c\n");
         $output->writeln("\n<comment># Verifying database credentials</comment>\n");
 
         try {

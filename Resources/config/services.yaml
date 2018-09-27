@@ -1,11 +1,12 @@
 services:
-    Webkul\UVDesk\CoreBundle\Command\:
-        resource: '../../Command/*'
+    Webkul\UVDesk\CoreBundle\CLI\:
+        resource: '../../CLI/*'
+        exclude: '../../CLI/{UTF8Symbol.php,ANSIEscapeSequence.php}'
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
         tags: ['console.command']
     
-    Webkul\UVDesk\CoreBundle\Fixture\:
-        resource: '../../Fixture/*'
+    Webkul\UVDesk\CoreBundle\Fixtures\:
+        resource: '../../Fixtures/*'
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
         tags: ['doctrine.fixture.orm']
 

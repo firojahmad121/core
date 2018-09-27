@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Fixture;
+namespace Webkul\UVDesk\CoreBundle\Fixtures;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Webkul\UVDesk\CoreBundle\Entity as CoreEntities;
