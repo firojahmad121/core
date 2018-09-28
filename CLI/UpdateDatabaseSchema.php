@@ -7,11 +7,9 @@ use Doctrine\DBAL\DBALException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output as ConsoleOutput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\ArrayInput as ConsoleOptions;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\BufferedOutput;
 
 class UpdateDatabaseSchema extends Command
 {
@@ -34,7 +32,6 @@ class UpdateDatabaseSchema extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("\u2714\u274c\n");
         $output->writeln("\n<comment># Verifying database credentials</comment>\n");
 
         try {
@@ -45,16 +42,14 @@ class UpdateDatabaseSchema extends Command
             }
 
             $output->writeln("-> Successfully established a connection with the <info>" . $databaseConnection->getDatabase() . "</info> database.\n");
-        } catch (DBALException $e) {
-            $exceptionMessage = $e->getMessage();
+        } catch (DBALException $exception) {
+            $exceptionMessage = $exception->getMessage();
             $whitespaceRepeater = strlen($exceptionMessage) + 8;
 
             $output->writeln("  <bg=red>" . str_repeat(" ",  $whitespaceRepeater) . "</>");
             $output->writeln("  <bg=red;fg=white>    " . $exceptionMessage . "    </>");
-            $output->writeln("  <bg=red>" . str_repeat(" ",  $whitespaceRepeater) . "</>");
-
-            $output->writeln("\n  Please ensure that you have correctly configured the <comment>DATABASE_URL</comment> variable defined inside your <fg=blue;options=bold>.env</> environment file.");
-            $output->writeln("");
+            $output->writeln("  <bg=red>" . str_repeat(" ",  $whitespaceRepeater) . "</>\n");
+            $output->writeln("  Please ensure that you have correctly configured the <comment>DATABASE_URL</comment> variable defined inside your <fg=blue;options=bold>.env</> environment file.\n");
 
             return;
         }
@@ -64,7 +59,7 @@ class UpdateDatabaseSchema extends Command
         $this->versionMigrations($output);
         $this->compareMigrations($output);
         
-        if ('0' != $this->getLatestMigrationVersion(new BufferedOutput())) {
+        if ('0' != $this->getLatestMigrationVersion(new ConsoleOutput\BufferedOutput())) {
             $output->writeln("\n-> Migrating database to the latest schema version.");
             $this->migrateDatabaseToLatestVersion($output);
         } else {
@@ -73,9 +68,9 @@ class UpdateDatabaseSchema extends Command
 
         // Initialize entities with initial dataset
         $output->writeln("-> Seeding core entities with initial dataset.");
-        $this->runDataFixtures($output);
+        $this->runDataFixtures(new ConsoleOutput\NullOutput());
 
-        $output->writeln("\n");
+        $output->write("\n");
     }
 
     /**
@@ -125,7 +120,7 @@ class UpdateDatabaseSchema extends Command
             
         // Execute command
         $consoleOutput->writeln("-> Generating migrations by comparing your current database with available entity mapping information.");
-        $compareMigrationsCommand->run($compareMigrationsCommandOptions, new NullOutput());
+        $compareMigrationsCommand->run($compareMigrationsCommandOptions, new ConsoleOutput\NullOutput());
         $viewMigrationStatusCommand->run($viewMigrationStatusCommandOptions, $consoleOutput);
 
         return $this;
@@ -186,7 +181,6 @@ class UpdateDatabaseSchema extends Command
         $commandOptions = new ConsoleOptions([
             'command' => 'fixtures:load',
             '--append' => true,
-            '--quiet' => true
         ]);
 
         $command->run($commandOptions, $consoleOutput);
