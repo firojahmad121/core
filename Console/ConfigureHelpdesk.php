@@ -1,22 +1,20 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\CLI;
+namespace Webkul\UVDesk\CoreBundle\Console;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\DBALException;
-use Webkul\UVDesk\CoreBundle\CLI\UTF8Symbol;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Question\Question;
 use Doctrine\DBAL\Migrations\MigrationException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Webkul\UVDesk\CoreBundle\CLI\ANSIEscapeSequence;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\ArrayInput as ConsoleOptions;
 
-class CheckConfiguration extends Command
+class ConfigureHelpdesk extends Command
 {
     private $container;
     private $entityManager;
@@ -32,7 +30,7 @@ class CheckConfiguration extends Command
 
     protected function configure()
     {
-        $this->setName('uvdesk:check-configs');
+        $this->setName('uvdesk:configure-helpdesk');
         $this->setDescription('Scans through your helpdesk setup to check for any mis-configurations.');
     }
 
@@ -47,16 +45,8 @@ class CheckConfiguration extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /*
-            1. Validate database configuration
-            2. Check if fixtures have been loaded
-            3. Check if super admin account has been created
-            4. Check mail configuration
-            5. Check default templates
-        */
-
-        $output->write(ANSIEscapeSequence::CLEAR_SCREEN);
-        $output->write(ANSIEscapeSequence::MOVE_CURSOR_HOME);
+        $output->write("\033[2J"); // MOVE_CURSOR_HOME
+        $output->write("\033[H"); // CLEAR_SCREEN
 
         // Clearing the cache for the dev environment with debug true
         $output->writeln("\n<comment>  Examining helpdesk setup for any configuration issues:</comment>\n");
@@ -88,11 +78,9 @@ class CheckConfiguration extends Command
         
         if ('0' != $currentMigrationVersion && $currentMigrationVersion != $latestMigrationVersion) {
             $output->writeln("  <comment>[!]</comment> The current database schema is not up-to-date with the current mapping metadata.");
+            $interactiveQuestion = new Question("\n      <comment>Update your database schema to the current mapping metadata? [Y/N]</comment> ", 'Y');
 
-            $interactiveQuestion = new Question("\n      <comment>Update your database schema to the current mapping metadata? (yes|no):</comment> ", 'No');
-            $interactiveQuestion->setAutocompleterValues(['yes', 'Yes', 'no', 'No']);
-
-            if ('YES' === strtoupper($this->questionHelper->ask($input, $output, $interactiveQuestion))) {
+            if ('Y' === strtoupper($this->questionHelper->ask($input, $output, $interactiveQuestion))) {
                 $output->writeln([
                     "",
                     "      Please wait while your database is being migrated from version <comment>$currentMigrationVersion</comment> to <info>$latestMigrationVersion</info>.",
@@ -100,7 +88,7 @@ class CheckConfiguration extends Command
                 ]);
 
                 $this->migrateDatabaseToLatestVersion(new NullOutput())->runDataFixtures(new NullOutput());
-                $output->writeln("  <info>[v]</info> Database successfully migrated to the latest migration version [<comment>$latestMigrationVersion</comment> => <info>$latestMigrationVersion</info>].");
+                $output->writeln("  <info>[v]</info> Database successfully migrated to the latest migration version <comment>$latestMigrationVersion</comment> to <info>$latestMigrationVersion</info>.\n");
             } else {
                 $output->writeln([
                     "\n  <fg=red;>[x]</> There are entities that have not been updated to the <info>$database</info> database yet.",
@@ -112,6 +100,46 @@ class CheckConfiguration extends Command
         } else {
             $output->writeln("  <info>[v]</info> The current database schema is up-to-date with the current mapping metdata.\n");
         }
+
+        // Check 3: Check if super admin account exists
+        $output->writeln("  [-] Checking if an active super admin account exists");
+        $supperAdminUserInstance = $this->entityManager->getRepository('UVDeskCoreBundle:UserInstance')->findOneBy([
+            'isActive' => true,
+            'supportRole' => $this->entityManager->getRepository('UVDeskCoreBundle:SupportRole')->findOneByCode('ROLE_SUPER_ADMIN'),
+        ]);
+        
+        if (empty($supperAdminUserInstance)) {
+            $output->writeln("  <comment>[!]</comment> No active account with support role <comment>SUPER_ADMIN</comment> found.");
+            $interactiveQuestion = new Question("\n      <comment>Do you wish you create a <comment>SUPER_ADMIN</comment> account? [Y/N]</comment> ", 'Y');
+
+            if ('Y' === strtoupper($this->questionHelper->ask($input, $output, $interactiveQuestion))) {
+                $generateUserInstanceCommand = $this->getApplication()->find('uvdesk:create:user-instance');
+                $generateUserInstanceCommandOptions = new ConsoleOptions([
+                    'command' => 'create:user-instance',
+                    'role' => 'ROLE_SUPER_ADMIN',
+                ]);
+
+                $returnCode = $generateUserInstanceCommand->run($generateUserInstanceCommandOptions, $output);
+
+                switch ($returnCode) {
+                    case 2:
+                        $output->writeln([
+                            "  <fg=red;>[x]</> An unexpected error occurred while creating a super admin account.\n",
+                            "\n  Exiting evaluation process.\n"
+                        ]);
+                        break;
+                    default:
+                        $output->writeln("  <info>[v]</info> <comment>SUPER_ADMIN</comment> account created successfully.\n");
+                        break;
+                }
+            } else {
+                $output->writeln("\n  <comment>[!]</comment> Skipping creation of a <comment>SUPER_ADMIN</comment> account.");
+            }
+        } else {
+            $output->writeln("  <info>[v]</info> An account with support role <comment>SUPER_ADMIN</comment> exists.\n");
+        }
+
+        $output->writeln("\n  Exiting evaluation process.\n");
     }
 
     /**

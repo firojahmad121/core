@@ -10,6 +10,11 @@ services:
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
         tags: ['doctrine.fixture.orm']
 
+    user.provider:
+        public: true
+        class: Webkul\UVDesk\CoreBundle\Providers\UserProvider
+        arguments: ['@security.firewall.map', '@service_container', '@request_stack', '@doctrine.orm.entity_manager']
+    
     # support.service:
     #     public: true
     #     class: Webkul\UVDesk\CommunityBundle\Services\SupportService
