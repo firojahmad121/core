@@ -22,12 +22,12 @@ class Composer extends ComposerPackageListener
         $path_config = getcwd() . "/config/packages/uvdesk.yaml";
         $path_route = getcwd() . "/config/routes/uvdesk.yaml";
         
-        if (!file_exists($path)) {
-            file_put_contents($path, file_get_contents(__DIR__ . "/../Templates/config.yaml"));
+        if (!file_exists($path_config)) {
+            file_put_contents($path_config, file_get_contents(__DIR__ . "/../Templates/config.yaml"));
         }
 
-        if (!file_exists($path)) {
-            file_put_contents($path, file_get_contents(__DIR__ . "/../Templates/routes.yaml"));
+        if (!file_exists($path_routepath)) {
+            file_put_contents($path_route, file_get_contents(__DIR__ . "/../Templates/routes.yaml"));
         }
 
         return;
