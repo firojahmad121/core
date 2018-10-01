@@ -36,8 +36,8 @@ class Composer extends ComposerPackageListener
             mkdir($path_routes);
         }
 
-        if (!file_exists($path_route . "uvdesk.yaml")) {
-            file_put_contents($path_route . "uvdesk.yaml", file_get_contents(__DIR__ . "/../Templates/routes.yaml"));
+        if (!file_exists($path_routes . "uvdesk.yaml")) {
+            file_put_contents($path_routes . "uvdesk.yaml", file_get_contents(__DIR__ . "/../Templates/routes.yaml"));
         }
 
         return;
