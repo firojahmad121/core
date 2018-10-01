@@ -19,15 +19,25 @@ class Composer extends ComposerPackageListener
 
     public function onPackageUpdated(Event $event)
     {
-        $path_config = getcwd() . "/config/packages/uvdesk.yaml";
-        $path_route = getcwd() . "/config/routes/uvdesk.yaml";
+        $path_config = getcwd() . "/config/packages/";
+        $path_routes = getcwd() . "/config/routes/";
         
-        if (!file_exists($path_config)) {
-            file_put_contents($path_config, file_get_contents(__DIR__ . "/../Templates/config.yaml"));
+        // Move bundle configs to app packages configs
+        if (!is_dir($path_config)) {
+            mkdir($path_config);
         }
 
-        if (!file_exists($path_route)) {
-            file_put_contents($path_route, file_get_contents(__DIR__ . "/../Templates/routes.yaml"));
+        if (!file_exists($path_config . "uvdesk.yaml")) {
+            file_put_contents($path_config . "uvdesk.yaml", file_get_contents(__DIR__ . "/../Templates/config.yaml"));
+        }
+
+        // Move bundle routes to app routes
+        if (!is_dir($path_routes)) {
+            mkdir($path_routes);
+        }
+
+        if (!file_exists($path_route . "uvdesk.yaml")) {
+            file_put_contents($path_route . "uvdesk.yaml", file_get_contents(__DIR__ . "/../Templates/routes.yaml"));
         }
 
         return;
