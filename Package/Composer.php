@@ -26,7 +26,7 @@ class Composer extends ComposerPackageListener
             file_put_contents($path_config, file_get_contents(__DIR__ . "/../Templates/config.yaml"));
         }
 
-        if (!file_exists($path_routepath)) {
+        if (!file_exists($path_route)) {
             file_put_contents($path_route, file_get_contents(__DIR__ . "/../Templates/routes.yaml"));
         }
 
