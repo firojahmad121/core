@@ -1,7 +1,7 @@
 services:
-    Webkul\UVDesk\CoreBundle\CLI\:
-        resource: '../../CLI/*'
-        exclude: '../../CLI/{UTF8Symbol.php,ANSIEscapeSequence.php}'
+    Webkul\UVDesk\CoreBundle\Console\:
+        resource: '../../Console/*'
+        exclude: '../../Console/{UTF8Symbol.php,ANSIEscapeSequence.php}'
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
         tags: ['console.command']
     

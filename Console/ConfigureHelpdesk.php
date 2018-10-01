@@ -109,8 +109,8 @@ class ConfigureHelpdesk extends Command
         ]);
         
         if (empty($supperAdminUserInstance)) {
-            $output->writeln("  <comment>[!]</comment> No active account with support role <comment>SUPER_ADMIN</comment> found.");
-            $interactiveQuestion = new Question("\n      <comment>Do you wish you create a <comment>SUPER_ADMIN</comment> account? [Y/N]</comment> ", 'Y');
+            $output->writeln("  <comment>[!]</comment> No active user account found with super admin privileges.");
+            $interactiveQuestion = new Question("\n      <comment>Create a new user account with super admin privileges? [Y/N]</comment> ", 'Y');
 
             if ('Y' === strtoupper($this->questionHelper->ask($input, $output, $interactiveQuestion))) {
                 $generateUserInstanceCommand = $this->getApplication()->find('uvdesk:create:user-instance');
@@ -124,16 +124,16 @@ class ConfigureHelpdesk extends Command
                 switch ($returnCode) {
                     case 2:
                         $output->writeln([
-                            "  <fg=red;>[x]</> An unexpected error occurred while creating a super admin account.\n",
+                            "  <fg=red;>[x]</> An unexpected error occurred while creating the user account.\n",
                             "\n  Exiting evaluation process.\n"
                         ]);
                         break;
                     default:
-                        $output->writeln("  <info>[v]</info> <comment>SUPER_ADMIN</comment> account created successfully.\n");
+                        $output->writeln("\n  <info>[v]</info> User account created successfully.\n");
                         break;
                 }
             } else {
-                $output->writeln("\n  <comment>[!]</comment> Skipping creation of a <comment>SUPER_ADMIN</comment> account.");
+                $output->writeln("\n  <comment>[!]</comment> Skipping creation of a super admin account.");
             }
         } else {
             $output->writeln("  <info>[v]</info> An account with support role <comment>SUPER_ADMIN</comment> exists.\n");

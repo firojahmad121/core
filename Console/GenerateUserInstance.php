@@ -58,10 +58,7 @@ class GenerateUserInstance extends Command
             return;
         }
 
-        $output->writeln([
-            "\n      Creating a new user instance.",
-            "      Please enter the following user details:"
-        ]);
+        $output->writeln("\n      Please enter the following user details:\n");
 
         // Prompt Email
         $email = $this->promptUserEmailInteractively($input, $output);
@@ -173,7 +170,7 @@ class GenerateUserInstance extends Command
         $email = null;
 
         do {
-            $email = $this->questionHelper->ask($input, $output, new Question("\n      <info>Email</info>: ", $email));
+            $email = $this->questionHelper->ask($input, $output, new Question("      <info>Email</info>: ", $email));
 
             if (empty($email)) {
                 $output->writeln("      <comment>Warning</comment>: Email address cannot be left blank");
@@ -194,9 +191,9 @@ class GenerateUserInstance extends Command
     {
         do {
             if (empty($username)) {
-                $question = new Question("\n      <info>Name</info>: ", $username);
+                $question = new Question("      <info>Name</info>: ", $username);
             } else {
-                $question = new Question("\n      <info>Name</info> <comment>[$username]</comment>: ", $username);
+                $question = new Question("      <info>Name</info> <comment>[$username]</comment>: ", $username);
                 $question->setAutocompleterValues((array) $username);
             }
 
@@ -215,7 +212,7 @@ class GenerateUserInstance extends Command
         $password = null;
 
         do {
-            $prompt = new Question(sprintf("%s      <info>%sPassword</info>: ", $confirmDialog ? '' : "\n", $confirmDialog ? 'Confirm ' : ''));
+            $prompt = new Question(sprintf("      <info>%sPassword</info>: ", $confirmDialog ? 'Confirm ' : ''));
             $prompt->setHidden(true);
             $prompt->setHiddenFallback(false);
 

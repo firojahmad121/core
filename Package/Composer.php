@@ -19,21 +19,15 @@ class Composer extends ComposerPackageListener
 
     public function onPackageUpdated(Event $event)
     {
-        $path = getcwd() . "/config/packages/uvdesk.yaml";
+        $path_config = getcwd() . "/config/packages/uvdesk.yaml";
+        $path_route = getcwd() . "/config/routes/uvdesk.yaml";
         
         if (!file_exists($path)) {
-            $yaml = Yaml::dump([
-                'uvdesk' => [
-                    'site_url' => '127.0.0.1',
-                    'email_domain' => '@@localhost',
-                    'welcome_community' => 'enabled',
-                    'default_templates' => [
-                        'email' => 'mail.html.twig'
-                    ],
-                ]
-            ]);
+            file_put_contents($path, file_get_contents(__DIR__ . "/../Templates/config.yaml"));
+        }
 
-            file_put_contents($path, $yaml);
+        if (!file_exists($path)) {
+            file_put_contents($path, file_get_contents(__DIR__ . "/../Templates/routes.yaml"));
         }
 
         return;

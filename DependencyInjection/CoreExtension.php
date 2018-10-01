@@ -25,8 +25,28 @@ class CoreExtension extends Extension
         $loader->load('services.yaml');
 
         $configuration = $this->getConfiguration($configs, $container);
+        
         foreach ($this->processConfiguration($configuration, $configs) as $param => $value) {
-            $container->setParameter("uvdesk.$param", $value);
+            switch ($param) {
+                case 'default':
+                    foreach ($value as $defaultItem => $defaultItemValue) {
+                        switch ($defaultItem) {
+                            case 'templates':
+                                foreach ($defaultItemValue as $template => $templateValue) {
+                                    $container->setParameter("uvdesk.default.templates.$template", $templateValue);
+                                }
+                                break;
+                            default:
+                                $container->setParameter("uvdesk.default.$defaultItem", $defaultItemValue);
+                                break;
+                        }
+                    }
+
+                    break;
+                default:
+                    $container->setParameter("uvdesk.$param", $value);
+                    break;
+            }
         }
     }
 }
