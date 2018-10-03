@@ -1,11 +1,11 @@
 # Authentication Resources
 helpdesk_member_handle_login:
     path:     /login
-    controller: Webkul\UVDesk\CoreBundle\Controller\Authentication::login
+    controller: Webkul\UVDesk\CoreBundle\Controller\User\Authentication::login
 
 helpdesk_member_handle_logout:
     path:     /logout
-    controller: Webkul\UVDesk\CoreBundle\Controller\Authentication::logout
+    controller: Webkul\UVDesk\CoreBundle\Controller\User\Authentication::logout
 
 # Agent Panel Resources
 helpdesk_member_dashboard:
