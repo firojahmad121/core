@@ -112,7 +112,7 @@ class TicketXHR extends Controller
 
         $ticketId = $request->attributes->get('id');
         $em = $this->getDoctrine()->getManager();
-        $ticket = $em->getRepository('WebkulTicketBundle:Ticket')->find($ticketId);
+        $ticket = $em->getRepository('UVDeskCoreBundle:Ticket')->find($ticketId);
         if(!$ticket)
             $this->noResultFound();
         $this->denyAccessUnlessGranted('VIEW', $ticket);
@@ -130,7 +130,7 @@ class TicketXHR extends Controller
         if(!$error) {
             $ticket->setSubject($request->request->get('subject'));
             $createThread = $this->get('ticket.service')->getCreateReply($ticket->getId(), false);
-            $createThread = $em->getRepository('WebkulTicketBundle:Thread')->find($createThread['id']);
+            $createThread = $em->getRepository('UVDeskCoreBundle:Thread')->find($createThread['id']);
             $createThread->setReply($request->request->get('reply'));
 
             $em->persist($createThread);
@@ -425,7 +425,7 @@ class TicketXHR extends Controller
                 }
                 break;
             case 'label':
-                // $label = $em->getRepository('WebkulTicketBundle:TicketLabel')->find($data['labelId']);
+                // $label = $em->getRepository('UVDeskCoreBundle:TicketLabel')->find($data['labelId']);
                 // if($label) {
                 //     $ticket->removeTicketLabel($label);
                 //     $em->persist($ticket);
@@ -544,7 +544,7 @@ class TicketXHR extends Controller
             return $labels;
 
         $qb = $this->em->createQueryBuilder();
-        $qb->select('tl')->from('WebkulTicketBundle:TicketLabel', 'tl')
+        $qb->select('tl')->from('UVDeskCoreBundle:TicketLabel', 'tl')
                 ->andwhere('tl.labelUser = :labelUserId')
                 ->andwhere('tl.company = :companyId')
                 ->setParameter('labelUserId', $this->getUser()->getId())

@@ -90,10 +90,10 @@ class TicketService
         $thread = $this->entityManager->getRepository('UVDeskCoreBundle:Thread')->findOneByMessageId($params['messageId']);
 
         if (empty($thread)) {
-            $user = $this->entityManager->getRepository('UVDeskSupportBundle:User')->findOneByEmail($params['from']);
+            $user = $this->entityManager->getRepository('UVDeskCoreBundle:User')->findOneByEmail($params['from']);
 
             if (empty($user) || null == $user->getCustomerInstance()) {
-                $role = $this->entityManager->getRepository('UVDeskSupportBundle:SupportRole')->findOneByCode($params['role']);
+                $role = $this->entityManager->getRepository('UVDeskCoreBundle:SupportRole')->findOneByCode($params['role']);
                 if (empty($role)) {
                     throw new \Exception("The requested role '" . $params['role'] . "' does not exist.");
                 }
@@ -558,7 +558,7 @@ class TicketService
                     break;
                 case 'agent':
                     $flag = 0;
-                    $agent = $this->entityManager->getRepository('UVDeskSupportBundle:User')->find($data['targetId']);
+                    $agent = $this->entityManager->getRepository('UVDeskCoreBundle:User')->find($data['targetId']);
                     $targetAgent = $agent->getUserInstance()['agent'] ? $agent->getUserInstance()['agent']->getName() : 'UnAssigned';
                     if($ticket->getAgent() != $agent) {
                         $ticketAgent = $ticket->getAgent();
@@ -620,7 +620,7 @@ class TicketService
 
                     break;
                 case 'group':
-                    $group = $this->entityManager->getRepository('UVDeskSupportBundle:SupportGroup')->find($data['targetId']);
+                    $group = $this->entityManager->getRepository('UVDeskCoreBundle:SupportGroup')->find($data['targetId']);
                     $flag = 0;
                     if($ticket->getSupportGroup() != $group) {
                         $notePlaceholders = $this->getNotePlaceholderValues(
@@ -636,7 +636,7 @@ class TicketService
 
                     break;
                 case 'team':
-                    $team = $this->entityManager->getRepository('UVDeskSupportBundle:SupportTeam')->find($data['targetId']);
+                    $team = $this->entityManager->getRepository('UVDeskCoreBundle:SupportTeam')->find($data['targetId']);
                     $flag = 0;
                     if($ticket->getSupportTeam() != $team){
                         $notePlaceholders = $this->getNotePlaceholderValues(
@@ -669,7 +669,7 @@ class TicketService
                     
                     break;
                 case 'label':
-                    $label = $this->entityManager->getRepository('UVDeskSupportBundle:SupportLabel')->find($data['targetId']);
+                    $label = $this->entityManager->getRepository('UVDeskCoreBundle:SupportLabel')->find($data['targetId']);
                     if($label && !$this->entityManager->getRepository('UVDeskCoreBundle:Ticket')->isLabelAlreadyAdded($ticket, $label))
                         $ticket->addSupportLabel($label);
                     $this->entityManager->persist($ticket);
@@ -858,7 +858,7 @@ class TicketService
         // $userId = $this->getUser()->getId();
         // $companyId = $this->getCompany()->getId();
         // $qb = $this->em->createQueryBuilder();
-        // $qb->select('d')->from("WebkulTicketBundle:Draft", 'd')
+        // $qb->select('d')->from("UVDeskCoreBundle:Draft", 'd')
         //         ->andwhere('d.ticket = :ticketId')
         //         ->andwhere("d.field = '".$draftType."'")
         //         ->andwhere('d.user = :userId')
@@ -879,7 +879,7 @@ class TicketService
 
     // public function getTicketTasks($ticketId) {
     //     $qb = $this->em->createQueryBuilder();
-    //     $qb->select('DISTINCT tsk')->from('WebkulTicketBundle:Task', 'tsk')
+    //     $qb->select('DISTINCT tsk')->from('UVDeskCoreBundle:Task', 'tsk')
     //             ->leftJoin('tsk.followers', 'fl')
     //             ->andwhere('tsk.ticket = :ticketId')
     //             ->andwhere('tsk.company = :companyId')
@@ -1358,7 +1358,7 @@ class TicketService
 
         $data = array();
         $qb = $this->entityManager->createQueryBuilder();
-        $qb->select('sl.id,sl.name,sl.colorCode')->from("UVDeskSupportBundle:SupportLabel", 'sl')
+        $qb->select('sl.id,sl.name,sl.colorCode')->from("UVDeskCoreBundle:SupportLabel", 'sl')
                 ->andwhere('sl.user = :userId')
                 ->setParameter('userId', $currentUser->getId());
 
