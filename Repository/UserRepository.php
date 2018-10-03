@@ -22,7 +22,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         $params = !empty($params) ? array_reverse($params->all()) : [];
         $queryBuilder = $this->getEntityManager()->createQueryBuilder()
             ->select("user, userInstance, supportRole")
-            ->from('UVDeskSupportBundle:User', 'user')
+            ->from('UVDeskCoreBundle:User', 'user')
             ->leftJoin('user.userInstance', 'userInstance')
             ->leftJoin('userInstance.supportRole', 'supportRole')
             ->where('supportRole.id != :customerRole')->setParameter('customerRole', 4)
@@ -198,7 +198,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
     {
         $query = $this->getEntityManager()
             ->createQuery(
-                'SELECT u, dt FROM UVDeskSupportBundle:User u
+                'SELECT u, dt FROM UVDeskCoreBundle:User u
                 JOIN u.userInstance dt
                 WHERE u.email = :email 
                 AND dt.supportRole != :roles' 
@@ -212,7 +212,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
     public function getSupportGroups(Request $request = null)
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder()
-            ->select('supportGroup.id, supportGroup.name')->from('UVDeskSupportBundle:SupportGroup', 'supportGroup')
+            ->select('supportGroup.id, supportGroup.name')->from('UVDeskCoreBundle:SupportGroup', 'supportGroup')
             ->where('supportGroup.isActive = :isActive')->setParameter('isActive', true);
 
         if ($request) {
@@ -227,7 +227,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
     public function getSupportTeams(Request $request = null)
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder()
-            ->select('supportTeam.id, supportTeam.name')->from('UVDeskSupportBundle:SupportTeam', 'supportTeam')
+            ->select('supportTeam.id, supportTeam.name')->from('UVDeskCoreBundle:SupportTeam', 'supportTeam')
             ->where('supportTeam.isActive = :isActive')->setParameter('isActive', true);
         
         if ($request) {

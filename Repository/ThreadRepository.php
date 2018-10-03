@@ -26,7 +26,7 @@ class ThreadRepository extends \Doctrine\ORM\EntityRepository
             $subject = str_ireplace("FWD: ","",$subject);
         }
 
-        $ticket = $this->getEntityManager()->createQuery("SELECT t FROM UVDeskTicketBundle:Ticket t WHERE t.subject LIKE :referenceIds" )
+        $ticket = $this->getEntityManager()->createQuery("SELECT t FROM UVDeskCoreBundle:Ticket t WHERE t.subject LIKE :referenceIds" )
             ->setParameter('referenceIds', '%' . $subject . '%')
             ->setMaxResults(1)
             ->getOneOrNullResult();
@@ -38,7 +38,7 @@ class ThreadRepository extends \Doctrine\ORM\EntityRepository
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder()
             ->select("thread, user")
-            ->from('UVDeskTicketBundle:Thread', 'thread')
+            ->from('UVDeskCoreBundle:Thread', 'thread')
             ->leftJoin('thread.user', 'user')
             ->where('thread.ticket = :ticket')->setParameter('ticket', $ticket)
             ->andWhere('thread.threadType != :disabledThreadType')->setParameter('disabledThreadType', 'create')

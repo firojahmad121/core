@@ -1,4 +1,4 @@
-{% extends "@UVDeskCommunity/BackSupport/layout.html.twig" %}
+{% extends "@UVDeskCore//templates//layout.html.twig" %}
 
 {% block title %}
     {% if user.id %}
@@ -10,7 +10,8 @@
 
 {% block pageContent %}
 	<div class="uv-inner-section">
-		{{ include('@UVDeskCommunity/BackSupport/panel-sidebar.html.twig') }}
+		{{ include('@UVDeskCore/templates/panel-sidebar.html.twig') }}
+
         <style>
             .uv-element-block .uv-element-block {
                 margin: 6px 0;
@@ -25,7 +26,7 @@
                 width: 14px;
                 height: 14px;
                 display: inline-block;
-                background-image: url("../../../../bundles/webkuldefault/images/uvdesk-binaka-sprite.svg");
+                background-image: url("../../../../bundles/webkulcore/images/uvdesk-binaka-sprite.svg");
                 background-position:-13px -158px;
                 margin: 5px 0 0 10px;
                 float: right;
