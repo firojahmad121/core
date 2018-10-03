@@ -1,0 +1,8 @@
+# Authentication Resources
+helpdesk_member_handle_login:
+    path:     /login
+    controller: Webkul\UVDesk\CoreBundle\Controller\Authentication::login
+
+helpdesk_member_handle_logout:
+    path:     /logout
+    controller: Webkul\UVDesk\CoreBundle\Controller\Authentication::logout

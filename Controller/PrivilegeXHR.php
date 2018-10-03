@@ -1,41 +1,43 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Controller\Dashboard;
+namespace Webkul\UVDesk\CoreBundle\Controller;
 
-use Webkul\UVDesk\CoreBundle\Entity\User;
+use Webkul\UVDesk\CoreBundle\Entity;
+use Webkul\UVDesk\CoreBundle\Entity\SupportPrivilege;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class TeamXHR extends Controller
+class PrivilegeXHR extends Controller
 {
-    public function listTeamsXHR(Request $request)
+    public function listPrivilegeXHR(Request $request) 
     {
         if (true === $request->isXmlHttpRequest()) {
-            $paginationResponse = $this->getDoctrine()->getRepository('UVDeskCoreBundle:SupportTeam')->getAllSupportTeams($request->query, $this->container);
+            $paginationResponse = $this->getDoctrine()->getRepository('UVDeskCoreBundle:SupportPrivilege')->getAllPrivileges($request->query, $this->container);
 
             return new Response(json_encode($paginationResponse), 200, ['Content-Type' => 'application/json']);
         }
-
+        
         return new Response(json_encode([]), 404, ['Content-Type' => 'application/json']);
     }
 
-    public function deleteTeamXHR($supportTeamId)
+    public function deletePrivilegeXHR($supportPrivilegeId)
     {
-        $request = $this->container->get('request_stack')->getCurrentRequest();
+        // $this->isAccessAuthorized('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE');
+        $request = $this->get('request_stack')->getCurrentRequest();
 
         if ("DELETE" == $request->getMethod()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $supportTeam = $entityManager->getRepository('UVDeskCoreBundle:SupportTeam')->findOneById($supportTeamId);
+            $supportPrivilege = $entityManager->getRepository('UVDeskCoreBundle:SupportPrivilege')->findOneById($supportPrivilegeId);
 
-            if (!empty($supportTeam)) {
-                $entityManager->remove($supportTeam);
+            if (!empty($supportPrivilege)) {
+                $entityManager->remove($supportPrivilege);
                 $entityManager->flush();
 
                 return new Response(json_encode([
                     'alertClass' => 'success',
-                    'alertMessage' => 'Support Team removed successfully.',
+                    'alertMessage' => 'Support Privilege removed successfully.',
                 ]), 200, ['Content-Type' => 'application/json']);
             }
         }

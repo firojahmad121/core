@@ -1,5 +1,9 @@
 # Member panel agent dashboard resources
-helpdesk_router_member_resources:
+helpdesk_router_member_authentication_resources:
+    resource: "@UVDeskCoreBundle/Resources/config/routes/auth.yaml"
+
+# Member panel agent dashboard resources
+helpdesk_router_member_panel_resources:
     resource: "@UVDeskCoreBundle/Resources/config/routes/members.yaml"
 
 # Member panel agent dashboard resources

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Controller\Dashboard;
+namespace Webkul\UVDesk\CoreBundle\Controller;
 
 use Webkul\UVDesk\UVDeskCoreBundle\Entity;
 use Webkul\UVDesk\UVDeskCoreBundle\Form;
