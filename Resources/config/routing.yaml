@@ -13,3 +13,7 @@ helpdesk_router_member_ticket_resources:
 # Member panel customer dashboard resources
 helpdesk_router_member_customer_resources:
     resource: "@UVDeskCoreBundle/Resources/config/routes/customers.yaml"
+
+# Member panel customer dashboard resources
+helpdesk_router_member_public_resources:
+    resource: "@UVDeskCoreBundle/Resources/config/routes/public.yaml"

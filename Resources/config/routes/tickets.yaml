@@ -1,214 +1,214 @@
 # Ticket List Resources
 helpdesk_member_ticket_collection:
     path:     /tickets
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::listTicketCollection
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::listTicketCollection
 
 helpdesk_member_ticket_collection_xhr:
     path:     /tickets/xhr
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::listTicketCollectionXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::listTicketCollectionXHR
 
 helpdesk_member_ticket_collection_mass_action_xhr:
     path:     /tickets/mass-xhr
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::updateTicketCollectionXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::updateTicketCollectionXHR
 
 helpdesk_member_ticket_collection_load_filter_options_xhr:
     path:     /tickets/filter-options
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::loadTicketFilterOptionsXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::loadTicketFilterOptionsXHR
 
 helpdesk_member_ticket_collection_search_filter_options_xhr:
     path:     /tickets/search-filter-options
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::loadTicketCollectionSearchFilterOptions
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::loadTicketCollectionSearchFilterOptions
 
 # Ticket Resources
 helpdesk_member_ticket:
     path:     /ticket/view/{ticketId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::loadTicket
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::loadTicket
     defaults: { ticketId: 0 }
 
 helpdesk_member_ticket_xhr:
     path:     /ticket/xhr/{ticketId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::loadTicketXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::loadTicketXHR
     defaults: { ticketId: 0 }
 
 helpdesk_member_create_ticket:
     path:     /ticket/save
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::saveTicket
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::saveTicket
     methods: [POST, PUT]
 
 search_ticket_filter_options_xhr:
     path: /ticket/search-filter-options
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::getSearchFilterOptionsXhr
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::getSearchFilterOptionsXhr
 
 helpdesk_member_trash_ticket:
     path:     /ticket/trash/{ticketId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::trashTicket
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::trashTicket
 
 helpdesk_member_delete_ticket:
     path:     /ticket/delete/{ticketId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::deleteTicket
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::deleteTicket
 
 helpdesk_member_ticket_saved_reply_xhr:
     path:     /ticket/saved-reply-apply/{id}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::loadTicketSavedReplies
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::loadTicketSavedReplies
     defaults: { id: 0 }
 
 helpdesk_member_ticket_add_label_xhr:
     path:     /ticket/labels/save
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::saveTicketLabel
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::saveTicketLabel
 
 helpdesk_member_ticket_label_xhr:
     path:     /ticket/labels/update/{ticketLabelId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::ticketLabelXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::ticketLabelXHR
     defaults: { ticketLabelId: 0 }
 
 helpdesk_member_bookmark_ticket_xhr:
     path:     /ticket/bookmark/xhr
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::bookmarkTicketXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::bookmarkTicketXHR
 
 helpdesk_member_update_ticket_details_xhr:
     path:     /ticket/update/details/{ticketId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::updateTicketDetails
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::updateTicketDetails
 
 helpdesk_member_update_ticket_attributes_xhr:
     path:     /ticket/update/attributes/{ticketId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::updateTicketAttributes
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::updateTicketAttributes
     defaults: { ticketId: 0 }
 
 helpdesk_member_ticket_download_attachment:
     path:     /ticket/download/{id}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::downloadAttachment
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::downloadAttachment
     defaults: { id: 0 }
 
 helpdesk_member_ticket_download_attachment_zip:
     path:     /ticket/download-zip/{threadId}/{task}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::downloadZipAttachment
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::downloadZipAttachment
     defaults: { threadId: 0, task: 0 }
 
 helpdesk_member_ticket_manage_collaborators_xhr:
     path:     /ticket/collaborator/{id}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::updateCollaboratorXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::updateCollaboratorXHR
     defaults: { id: 0 }
 
 helpdesk_member_ticket_save_draft:
     path:     /ticket/save-draft/{id}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::saveTicketDraft
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::saveTicketDraft
     defaults: { id: 0 }
 
 helpdesk_member_ticket_search_filter_options:
     path:     /ticket/search-filter-options
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::loadTicketSearchFilterOptions
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::loadTicketSearchFilterOptions
 
 # Ticket Thread Resources
 helpdesk_member_thread_collection_xhr:
     path:     /threads/ajax/{ticketId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\ThreadXHR::listTicketThreadCollectionXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\ThreadXHR::listTicketThreadCollectionXHR
     defaults: { ticketId: 0 }
 
 helpdesk_member_thread_encoded_image_uploader:
     path:     /thread/encoded-images/save/{ticketId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Thread::base64ImageUpload
+    controller: Webkul\UVDesk\CoreBundle\Controller\Thread::base64ImageUpload
 
 helpdesk_member_add_ticket_thread:
     path:     /thread/add/{ticketId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Thread::saveThread
+    controller: Webkul\UVDesk\CoreBundle\Controller\Thread::saveThread
     defaults: { ticketId: 0 }
 
 helpdesk_member_thread_xhr:
     path:     /threads/ajax/{threadId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Thread::threadXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\Thread::threadXHR
     defaults: { threadId: 0 }
 
 helpdesk_member_thread_update_xhr:
     path:     /threads/update/{threadId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Thread::updateThreadXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\Thread::updateThreadXHR
     defaults: { threadId: 0 }
 
 # Email Templates Resources
 email_templates_action:
     path:     /templates
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Email::templates
+    controller: Webkul\UVDesk\CoreBundle\Controller\Email::templates
     defaults: { panelId: 'settings' }
 
 email_templates_xhraction:
     path:     /template-ajax/{template}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Email::templatesxhr
+    controller: Webkul\UVDesk\CoreBundle\Controller\Email::templatesxhr
     defaults: { template: 0 }
 
 email_templates_addaction:
     path:     /template/add
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Email::templateForm
+    controller: Webkul\UVDesk\CoreBundle\Controller\Email::templateForm
 
 email_templates_editaction:
     path:     /template/edit/{template}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Email::templateForm
+    controller: Webkul\UVDesk\CoreBundle\Controller\Email::templateForm
     defaults: { template: 0 }
 
 email_setting:
     path:     /email-setting
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Email::emailSetting
+    controller: Webkul\UVDesk\CoreBundle\Controller\Email::emailSetting
     defaults: { panelId: 'settings' }
 
 # Ticket Tag Resources
 helpdesk_member_ticket_tag_collection:
     path:     /support-tags
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::listTagCollection
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::listTagCollection
     defaults: { panelId: 'productivity' }
 
 helpdesk_member_ticket_tag_collection_xhr:
     path:     /support-tags/xhr
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::listTagCollectionXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::listTagCollectionXHR
 
 helpdesk_member_ticket_create_tag_xhr:
     path:     /support-tags/create
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::createTicketTagXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::createTicketTagXHR
 
 helpdesk_member_update_ticket_tag_xhr:
     path:     /support-tags/update/{tagId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::updateTicketTagXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::updateTicketTagXHR
     defaults: { tagId: 0 }
 
 helpdesk_member_remove_ticket_tag_xhr:
     path:     /support-tags/remove/{tagId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::removeTicketTagXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::removeTicketTagXHR
     defaults: { tagId: 0 }
 
 # Ticket Type Resources
 helpdesk_member_ticket_type_collection:
     path:     /ticket-types
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::listTicketTypeCollection
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::listTicketTypeCollection
     defaults: { panelId: 'productivity' }
 
 helpdesk_member_ticket_type_collection_xhr:
     path:     /ticket-types/xhr
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::listTicketTypeCollectionXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::listTicketTypeCollectionXHR
 
 helpdesk_member_create_ticket_type:
     path:     /ticket-types/create
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::ticketType
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::ticketType
     defaults: { panelId: 'productivity' }
 
 helpdesk_member_remove_ticket_type:
     path:     /ticket-types/remove/{typeId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\TicketXHR::removeTicketTypeXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\TicketXHR::removeTicketTypeXHR
     defaults: { typeId: 0 }
 
 helpdesk_member_update_ticket_type:
     path:     /ticket-types/update/{ticketTypeId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Members\Ticket::ticketType
+    controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::ticketType
     defaults: { panelId: 'productivity' }
 
 # Mailbox Resources
 helpdesk_member_mailbox_collection:
     path:     /mailbox
-    controller: Webkul\UVDesk\TicketBundle\Controller\Mailbox\MailboxChannel::listMailboxCollection
+    controller: Webkul\UVDesk\CoreBundle\Controller\MailboxChannel::listMailboxCollection
     defaults: { panelId: 'channels' }
 
 helpdesk_member_mailbox_channel_verify_mail_auto_forwarding:
     path:     /mailbox/xhr/auto-forwarding-check/{mailboxId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Mailbox\MailboxChannelXHR::verifyEmailForwardingXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\MailboxChannelXHR::verifyEmailForwardingXHR
     defaults: { mailboxId : 0 } 
 
 helpdesk_member_mailbox_channel_xhr:
     path:     /mailbox/xhr/{mailboxId}
-    controller: Webkul\UVDesk\TicketBundle\Controller\Mailbox\MailboxChannelXHR::updateMailboxChannelXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\MailboxChannelXHR::updateMailboxChannelXHR
     defaults: { mailboxId: 0 } 
