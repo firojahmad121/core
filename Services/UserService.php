@@ -433,16 +433,54 @@ class UserService
 
     public function getWebsiteConfiguration($currentUser)
     {
+        $enabled_bundles = $this->container->getParameter('kernel.bundles');
+        
+        if (!in_array('UVDeskSupportCenterBundle', array_keys($enabled_bundles))) {
+            return [
+                'id' =>  1,
+                'website' =>  1,
+                'status' =>  1,
+                'brandColor' => '#7E91F0',
+                'pageBackgroundColor' => '#FFFFFF',
+                'headerBackgroundColor' => '#FFFFFF',
+                'bannerBackgroundColor' => '#7085F4',
+                'navTextColor' =>  '#7085F4',
+                'navActiveColor' => '#7085F4',
+                'linkColor' => '#7085F4',
+                'linkHoverColor' => '#7085F4',
+                'headerLinks' => null,
+                'footerLinks' => null,
+                'articleTextColor' => '#7085F4',
+                'whiteList' => null,
+                'blackList' => null,
+                'siteDescritption' => 'Hi! how can i help you.',
+                'metaDescription' => null,
+                'metaKeywords' => null,
+                'homepageContent' => null,
+                'ticketCreateOption' =>  1,
+                'createdAt' =>  '2018-09-21 16:20:01',
+                'updatedat' =>  '2018-09-21 16:20:01',
+                'broadcastMessage' => null,
+                'removeCustomerLoginButton' => null,
+                'disableCustomerlogin' =>  0,
+                'removeBrandingContent' => null,
+                'loginRequiredToCreate' => null,
+                'script' => null,
+                'customCss' => null,
+                'isActive' => 1,
+            ];
+        }
+
         // find current user from session(admin or customer)
         $em = $this->entityManager;
         $websiteRepo = $em->getRepository('UVDeskSupportCenterBundle:Website');
         $configurationRepo = $em->getRepository('UVDeskSupportCenterBundle:KnowledgebaseConfiguration');
 
         $website = $websiteRepo->findOneBy(['code' => $currentUser]);
-        if($website)
+        if ($website)
             $configuration = $configurationRepo->findOneBy(['website' => $website->getId(), 'isActive' => 1]);
 
-        return $configuration ? $configuration : false;
+        return $configuration ?: false;
     }
 
     public function getWebsiteDetails($currentUser)
