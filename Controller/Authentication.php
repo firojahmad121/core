@@ -1,11 +1,11 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Controller\Session;
+namespace Webkul\UVDesk\CoreBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class AuthenticationUtil extends Controller
+class Authentication extends Controller
 {
     public function login(Request $request)
     {

@@ -665,7 +665,7 @@
                 {% if currentUserDetails is defined and currentUserDetails.thumbnail is defined and currentUserDetails.thumbnail is not empty %}
                     <img class='uv-avatar' src="{{ currentUserDetails.thumbnail }}"/>
                 {% else %}
-                    <img class='uv-avatar' src="{{ asset('bundles/uvdeskcommunity/images/uv-avatar-batman.png') }}"/>
+                    <img class='uv-avatar' src="{{ asset('bundles/uvdeskcore/images/uv-avatar-batman.png') }}"/>
                 {% endif %}
                 
                 <div class="uv-profile-info">
@@ -680,7 +680,6 @@
 
                     <ul>
                         <li><a href="{{ path('edit_profile') }}">Profile</a></li>
-                        <li><a href="{{ path('webkul_support_center_front_solutions') }}" target="_blank">Support</a></li>
                         <li><a class="uv-text-danger" href="{{ path('helpdesk_member_handle_logout') }}">Sign Out</a></li>
                     </ul>
                 </div>
@@ -812,5 +811,5 @@
 {# Ticket Create Popup #}	
 {% if user_service.isAccessAuthorized('ROLE_AGENT_CREATE_TICKET') %}	
     {{ ticket_service.appendTwigSnippet('createMemberTicket')|raw }}	
-    {# {% include('UVDeskTicketBundle:Snippets:createMemberTicketSnippet.html.twig') only %} #}	
+    {# {% include('UVDeskCoreBundle:Snippets:createMemberTicketSnippet.html.twig') only %} #}	
 {% endif %} 

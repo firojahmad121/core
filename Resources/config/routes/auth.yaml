@@ -1,7 +1,0 @@
-helpdesk_member_handle_login:
-    path:     /login
-    controller: Webkul\UVDesk\CoreBundle\Controller\Session\AuthenticationUtil::login
-
-helpdesk_member_handle_logout:
-    path:     /logout
-    controller: Webkul\UVDesk\CoreBundle\Controller\Session\AuthenticationUtil::logout
