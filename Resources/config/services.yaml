@@ -10,6 +10,11 @@ services:
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
         tags: ['doctrine.fixture.orm']
 
+    uvdesk:
+        public: true
+        class: Webkul\UVDesk\CoreBundle\Services\HelpdeskService
+        arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
+    
     user.provider:
         public: true
         class: Webkul\UVDesk\CoreBundle\Providers\UserProvider
@@ -18,11 +23,6 @@ services:
     user.service:
         public: true
         class: Webkul\UVDesk\CoreBundle\Services\UserService
-        arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
-    
-    support.service:
-        public: true
-        class: Webkul\UVDesk\CoreBundle\Services\SupportService
         arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
     
     email.service:

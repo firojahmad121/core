@@ -1,5 +1,5 @@
 <div class="uv-aside" {% if app.request.cookies and app.request.cookies.get('uv-asideView') %}style="display: none;"{% endif %}>
-    {% set navigationPanel = support_service.getPanelSidebarRoutes() %}
+    {% set navigationPanel = uvdesk_service.getPanelSidebarRoutes() %}
     
     {% if navigationPanel.routes is defined and navigationPanel.routes is not empty %}
         <div class="uv-aside-head">

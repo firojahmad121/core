@@ -295,7 +295,7 @@ class TicketService
         $paginationData = $pagination->getPaginationData();
 
         $paginationParams['page'] = 'replacePage';
-        $paginationData['url'] = '#' . $this->container->get('support.service')->buildPaginationQuery($paginationParams);
+        $paginationData['url'] = '#' . $this->container->get('uvdesk.service')->buildPaginationQuery($paginationParams);
         // $container->get('default.service')->buildSessionUrl('ticket',$queryParameters);
 
 
@@ -476,7 +476,7 @@ class TicketService
         }
 
         $paginationParams['page'] = 'replacePage';
-        $paginationData['url'] = '#' . $this->container->get('support.service')->buildPaginationQuery($paginationParams);
+        $paginationData['url'] = '#' . $this->container->get('uvdesk.service')->buildPaginationQuery($paginationParams);
 
         foreach ($pagination->getItems() as $threadDetails) {
             $threadResponse = [
@@ -731,7 +731,7 @@ class TicketService
         $paginationData = $pagination->getPaginationData();
 
         $paginationParams['page'] = 'replacePage';
-        $paginationData['url'] = '#' . $this->container->get('support.service')->buildPaginationQuery($paginationParams);
+        $paginationData['url'] = '#' . $this->container->get('uvdesk.service')->buildPaginationQuery($paginationParams);
 
         return [
             'types' => array_map(function ($ticketType) {
@@ -769,7 +769,7 @@ class TicketService
         $paginationData = $pagination->getPaginationData();
 
         $paginationParams['page'] = 'replacePage';
-        $paginationData['url'] = '#' . $this->container->get('support.service')->buildPaginationQuery($paginationParams);
+        $paginationData['url'] = '#' . $this->container->get('uvdesk.service')->buildPaginationQuery($paginationParams);
 
         return [
             'tags' => array_map(function ($supportTag) {

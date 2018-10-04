@@ -26,6 +26,7 @@ class CoreExtension extends Extension
 
         $configuration = $this->getConfiguration($configs, $container);
         
+        // Load bundle configurations
         foreach ($this->processConfiguration($configuration, $configs) as $param => $value) {
             switch ($param) {
                 case 'default':
@@ -41,7 +42,6 @@ class CoreExtension extends Extension
                                 break;
                         }
                     }
-
                     break;
                 default:
                     $container->setParameter("uvdesk.$param", $value);

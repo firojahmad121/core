@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\DomCrawler\Crawler;
 
-class SupportService
+class HelpdeskService
 {
 	protected $container;
 	protected $requestStack;
@@ -38,18 +38,6 @@ class SupportService
         '  ',
     ];
 
-	private static $panelNavigations = [
-		'settings' => [
-			'helpdesk_agents',
-		],
-		'productivity' => [],
-		'users' => [],
-		'knowledgebase' => [],
-		'account' => [],
-		'reports' => [],
-		'channels' => [],
-	];
-
 	public function __construct(ContainerInterface $container, RequestStack $requestStack, EntityManager $entityManager)
 	{
 		$this->container = $container;
@@ -59,7 +47,16 @@ class SupportService
 
 	public function getLocales()
 	{
-		return ['en' => 'English', 'fr' => 'French', 'it' => 'Italian', 'ar' => 'Arabic', 'de' => 'German', 'es' => 'Spanish', 'tr' => 'Turkish', 'da' => 'Danish'];
+		return [
+            'en' => 'English',
+            'fr' => 'French',
+            'it' => 'Italian',
+            'ar' => 'Arabic',
+            'de' => 'German',
+            'es' => 'Spanish',
+            'tr' => 'Turkish',
+            'da' => 'Danish'
+        ];
     }
     
     public function getTimezones()
@@ -79,6 +76,11 @@ class SupportService
 		$request = $this->requestStack->getCurrentRequest();
 
 		return str_replace('/' . $request->getLocale() . '/', '/' . $locale . '/', $request->getRequestUri());
+    }
+
+    public function getDashboardPanelItems()
+    {
+
     }
 
 	public function getPanelSidebarRoutes()
@@ -274,12 +276,6 @@ class SupportService
         return $http_query;
     }
 
-        /**
-     * objectSerializer This function convert Entity object into json contenxt
-     * @param Object $object Customer Entity object
-     * @return JSON Customer JSON context
-     */
-    
     public function getEntityManagerResult($entity, $callFunction, $args = false, $extraPrams = false)
     {
 

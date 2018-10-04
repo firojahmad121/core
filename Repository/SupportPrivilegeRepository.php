@@ -58,7 +58,7 @@ class SupportPrivilegeRepository extends \Doctrine\ORM\EntityRepository
         $paginationData = $results->getPaginationData();
         $queryParameters = $results->getParams();
 
-        $paginationData['url'] = '#'.$container->get('support.service')->buildPaginationQuery($queryParameters);
+        $paginationData['url'] = '#'.$container->get('uvdesk.service')->buildPaginationQuery($queryParameters);
 
         $parsedCollection = array_map(function($privilege) {
             return [

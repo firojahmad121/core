@@ -183,7 +183,7 @@ class Account extends AbstractController
 
                         if(isset($data['userSubGroup'])){
                             foreach ($data['userSubGroup'] as $userSubGroup) {
-                                if($userSubGrp = $this->get('support.service')->getEntityManagerResult(
+                                if($userSubGrp = $this->get('uvdesk.service')->getEntityManagerResult(
                                             'UVDeskCoreBundle:SupportTeam',
                                             'findOneBy', [
                                                 'id' => $userSubGroup
@@ -207,7 +207,7 @@ class Account extends AbstractController
 
                         if(isset($data['groups'])){
                             foreach ($data['groups'] as $userGroup) {
-                                if($userGrp = $this->get('support.service')->getEntityManagerResult(
+                                if($userGrp = $this->get('uvdesk.service')->getEntityManagerResult(
                                             'UVDeskCoreBundle:SupportGroup',
                                             'findOneBy', [
                                                 'id' => $userGroup
@@ -230,7 +230,7 @@ class Account extends AbstractController
 
                         if(isset($data['agentPrivilege'])){
                             foreach ($data['agentPrivilege'] as $supportPrivilege) {
-                                if($supportPlg = $this->get('support.service')->getEntityManagerResult(
+                                if($supportPlg = $this->get('uvdesk.service')->getEntityManagerResult(
                                             'UVDeskCoreBundle:SupportPrivilege',
                                             'findOneBy', [
                                                 'id' => $supportPrivilege
@@ -367,7 +367,7 @@ class Account extends AbstractController
 
                     if(isset($data['userSubGroup'])){
                         foreach ($data['userSubGroup'] as $userSubGroup) {
-                            if($userSubGrp = $this->get('support.service')->getEntityManagerResult(
+                            if($userSubGrp = $this->get('uvdesk.service')->getEntityManagerResult(
                                         'UVDeskCoreBundle:SupportTeam',
                                         'findOneBy', [
                                             'id' => $userSubGroup
@@ -382,7 +382,7 @@ class Account extends AbstractController
                     if(isset($data['groups'])){
 
                         foreach ($data['groups'] as $userGroup) {
-                            if($userGrp = $this->get('support.service')->getEntityManagerResult(
+                            if($userGrp = $this->get('uvdesk.service')->getEntityManagerResult(
                                         'UVDeskCoreBundle:SupportGroup',
                                         'findOneBy', [
                                             'id' => $userGroup
@@ -397,7 +397,7 @@ class Account extends AbstractController
                     
                     if(isset($data['agentPrivilege'])){
                         foreach($data['agentPrivilege'] as $supportPrivilege) {
-                            if($supportPlg = $this->get('support.service')->getEntityManagerResult(
+                            if($supportPlg = $this->get('uvdesk.service')->getEntityManagerResult(
                                         'UVDeskCoreBundle:SupportPrivilege',
                                         'findOneBy', [
                                             'id' => $supportPrivilege

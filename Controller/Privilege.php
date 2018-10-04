@@ -20,7 +20,7 @@ class Privilege extends Controller
         // $this->isAuthorized('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE');
         $formErrors = [];
         $supportPrivilege = new SupportPrivilege();
-        $supportPrivilegeResources = $this->get('support.service')->getSupportPrivelegesResources();
+        $supportPrivilegeResources = $this->get('uvdesk.service')->getSupportPrivelegesResources();
         if ('POST' == $request->getMethod()) {
             // $form = $this->createForm(new Privilege($this->container),$privilege, array('validation_groups' => array('AgentPrivilege', 'uniquePrivilege')));
             // $form->handleRequest($request);
@@ -77,7 +77,7 @@ class Privilege extends Controller
         }
         
         $formErrors = [];
-        $supportPrivilegeResources = $this->get('support.service')->getSupportPrivelegesResources();
+        $supportPrivilegeResources = $this->get('uvdesk.service')->getSupportPrivelegesResources();
 
         if ('POST' == $request->getMethod()) {
             //$form = $this->createForm(new Privilege($this->container),$privilege, array('validation_groups' => array('AgentPrivilege', 'uniquePrivilege')));

@@ -13,7 +13,7 @@
         <!-- Custom CSS -->
         {% set websiteConfiguration = user_service.getWebsiteConfiguration('website_branding') %}
 
-        {{ include('@UVDeskCore/templates/lightskin.html.twig') }}
+        {{ include('@UVDeskCore/Templates/lightskin.html.twig') }}
         
         {% block templateCSS %}{% endblock %}
 
@@ -39,7 +39,7 @@
                 </div>
                 <style>.uv-loader-view {display: none;}</style>
             </noscript>
-            {% if support_service.requestHeadersSent() == false %}
+            {% if uvdesk_service.requestHeadersSent() == false %}
                 {% for flashMessage in app.session.flashbag.get('success') %}
                     <div class="uv-notification page-load uv-success">
                         <span class="uv-notification-close"></span>
@@ -75,14 +75,14 @@
 
         {% block sidebar %}
             {% if currentUser is defined and currentUser is not empty %}
-                {% include "@UVDeskCore/templates/sidebar.html.twig" %}
+                {% include "@UVDeskCore/Templates/sidebar.html.twig" %}
             {% endif %}
         {% endblock %}
 
         {% block pageWrapper %}
             <div class="uv-paper">
                 {% block pageHeader %}
-                    {% include "@UVDeskCore/templates/header.html.twig" %}
+                    {% include "@UVDeskCore/Templates/header.html.twig" %}
                 {% endblock %}
 
                 <div class="uv-wrapper">
@@ -94,7 +94,7 @@
         {% endblock %}
         
         {% block footer %}
-            {% include "@UVDeskCore/templates/pagination.html.twig" %}
+            {% include "@UVDeskCore/Templates/pagination.html.twig" %}
 
             {# Confirm Action Dialog #}
             <div class="uv-pop-up-overlay" id="confirm-modal">

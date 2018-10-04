@@ -61,7 +61,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         $paginationAttributes = $pagination->getPaginationData();
         
         $paginationParams['page'] = 'replacePage';
-        $paginationAttributes['url'] = '#' . $container->get('support.service')->buildPaginationQuery($paginationParams);
+        $paginationAttributes['url'] = '#' . $container->get('uvdesk.service')->buildPaginationQuery($paginationParams);
         
         return [
             'pagination_data' => $paginationAttributes,
@@ -141,7 +141,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         $paginationData = $results->getPaginationData();
         $queryParameters = $results->getParams();
         $queryParameters['page'] = "replacePage";
-        $paginationData['url'] = '#'.$container->get('support.service')->buildPaginationQuery($queryParameters);
+        $paginationData['url'] = '#'.$container->get('uvdesk.service')->buildPaginationQuery($queryParameters);
 
         $this->container = $container;
         $data = array();

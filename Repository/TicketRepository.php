@@ -95,7 +95,7 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
         $queryParameters = $results->getParams();
 
         $queryParameters['page'] = "replacePage";
-        $paginationData['url'] = '#'.$container->get('support.service')->buildPaginationQuery($queryParameters);
+        $paginationData['url'] = '#'.$container->get('uvdesk.service')->buildPaginationQuery($queryParameters);
 
         $data = array();
         $userService = $container->get('user.service');

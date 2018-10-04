@@ -1,4 +1,4 @@
-{% extends "@UVDeskCore//templates//layout.html.twig" %}
+{% extends "@UVDeskCore//Templates//layout.html.twig" %}
 
 {% block title %}{{ '#' ~ ticket.id ~ ' ' ~ ticket.subject }}{% endblock %}
 
@@ -1104,7 +1104,7 @@
     {{ parent() }}
 
     {# {{ include('WebkulDefaultBundle:Default:attachment.html.twig') }} #}
-    {{ include("@UVDeskCore/templates/tinyMCE.html.twig") }}
+    {{ include("@UVDeskCore/Templates/tinyMCE.html.twig") }}
 
     <script id="thread_list_empty_tmp" type="text/template">
         <div class="uv-no-threads">Nothing interesting here...</div>
@@ -1205,7 +1205,7 @@
                     <div class="uv-dropdown-container">
                         <ul class="uv-lang-list language" data-action="language">
                             <label>{{ 'Language'|trans }}</label>
-                            {% for localeCode, localeName in support_service.getLocales() %}
+                            {% for localeCode, localeName in uvdesk_service.getLocales() %}
                                 <li data-value="{{ localeCode }}">
                                     <img class="locale-image" src='{{ asset("bundles/uvdeskcore/images/country-flags/" ~ localeCode|lower|replace({" ": "-"}) ~ ".png") }}' alt="{{ localeCode }}" width="24px">
                                     <span>{{ localeName|trans }}</span>

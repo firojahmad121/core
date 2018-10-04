@@ -1,4 +1,4 @@
-{% extends "@UVDeskCore//templates//layout.html.twig" %}
+{% extends "@UVDeskCore//Templates//layout.html.twig" %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -210,6 +210,11 @@
     <div class="uv-area">
         <!-- Dashboard Navigation -->
         <div id="manage" class="uv-tab-view uv-tab-view-active" data-tab="manage">
+			{% for panel in uvdesk_service.getDashboardPanelItems() %}
+				<div class="uv-brick">
+				
+				</div>
+			{% endfor %}
             <!-- CHANNELS -->
             <div class="uv-brick">
                 <div class="uv-brick-head">
