@@ -2,8 +2,9 @@
 
 namespace Webkul\UVDesk\CoreBundle\Package;
 
-use Webkul\UVDesk\CoreBundle\DependencyInjection\HelpdeskExtension;
+use Webkul\UVDesk\PackageManager\Extensions\HelpdeskExtension;
 
 class Extension extends HelpdeskExtension
 {
+
 }

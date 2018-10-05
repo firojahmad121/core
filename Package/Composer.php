@@ -2,19 +2,18 @@
 
 namespace Webkul\UVDesk\CoreBundle\Package;
 
-use Webkul\UVDesk\CoreBundle\Package\Extension;
 use Webkul\UVDesk\PackageManager\Composer\ComposerPackage;
 use Webkul\UVDesk\PackageManager\Composer\ComposerPackageExtension;
+use Webkul\UVDesk\CoreBundle\Package\HelpdeskExtension as CoreBundleExtension;
 
 class Composer extends ComposerPackageExtension
 {
     public function loadPackageConfiguration()
     {
-        $composerPackage = new ComposerPackage();
+        $composerPackage = new ComposerPackage(new CoreBundleExtension());
         $packageMessage = require __DIR__ . "/../Templates/CLI/on-boarding.php";
 
         $composerPackage
-            ->setExtension(Extension::class)
             ->writeToConsole($packageMessage)
             ->movePackageConfig('config/packages/uvdesk.yaml', 'Templates/config.yaml')
             ->movePackageConfig('config/routes/uvdesk.yaml', 'Templates/routes.yaml');
