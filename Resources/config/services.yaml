@@ -10,7 +10,7 @@ services:
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
         tags: ['doctrine.fixture.orm']
 
-    uvdesk:
+    uvdesk.service:
         public: true
         class: Webkul\UVDesk\CoreBundle\Services\HelpdeskService
         arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
