@@ -2,14 +2,11 @@
 
 namespace Webkul\UVDesk\CoreBundle\Package;
 
-// use Symfony\Component\Yaml\Yaml;
-// use Symfony\Component\EventDispatcher\Event;
-// use Symfony\Component\Console\Output\ConsoleOutput;
 use Webkul\UVDesk\CoreBundle\Package\Extension;
 use Webkul\UVDesk\PackageManager\Composer\ComposerPackage;
-use Webkul\UVDesk\PackageManager\Composer\ComposerPackageListener;
+use Webkul\UVDesk\PackageManager\Composer\ComposerPackageExtension;
 
-class Composer extends ComposerPackageListener
+class Composer extends ComposerPackageExtension
 {
     public function loadPackageConfiguration()
     {

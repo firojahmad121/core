@@ -3,6 +3,5 @@ uvdesk:
     email_domain: "@@localhost"
 
     default:
-        first_run: enabled
         templates:
             email: mail.html.twig

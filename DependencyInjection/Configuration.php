@@ -16,7 +16,6 @@ class Configuration implements ConfigurationInterface
                 ->node('email_domain', 'scalar')->defaultValue('@localhost')->end()
                 ->node('default', 'array')
                     ->children()
-                        ->node('first_run', 'scalar')->defaultValue('disabled')->end()
                         ->node('templates', 'array')
                             ->children()
                                 ->node('email', 'scalar')->defaultValue('mail.html.twig')->end()
