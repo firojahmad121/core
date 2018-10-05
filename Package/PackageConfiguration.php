@@ -4,7 +4,7 @@ namespace Webkul\UVDesk\CoreBundle\Package;
 
 use Webkul\UVDesk\PackageManager\Extensions\HelpdeskExtension;
 
-class Extension extends HelpdeskExtension
+class PackageConfiguration extends HelpdeskExtension
 {
 
 }
