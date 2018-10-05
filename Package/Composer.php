@@ -13,9 +13,9 @@ class Composer extends ComposerPackageExtension
         $packageMessage = require __DIR__ . "/../Templates/CLI/on-boarding.php";
 
         $composerPackage
-            ->writeToConsole($packageMessage)
             ->movePackageConfig('config/packages/uvdesk.yaml', 'Templates/config.yaml')
-            ->movePackageConfig('config/routes/uvdesk.yaml', 'Templates/routes.yaml');
+            ->movePackageConfig('config/routes/uvdesk.yaml', 'Templates/routes.yaml')
+            ->writeToConsole($packageMessage);
         
         return $composerPackage;
     }
