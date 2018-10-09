@@ -4,7 +4,7 @@ namespace Webkul\UVDesk\CoreBundle\Package;
 
 use Webkul\UVDesk\PackageManager\Extensions\HelpdeskExtension;
 
-class PackageConfiguration extends HelpdeskExtension
+class UVDeskCoreConfiguration extends HelpdeskExtension
 {
     public function loadDashboardItems()
     {

@@ -7,15 +7,13 @@ use Webkul\UVDesk\PackageManager\Composer\ComposerPackageExtension;
 
 class Composer extends ComposerPackageExtension
 {
-    public function loadPackageConfiguration()
+    public function loadConfiguration()
     {
-        $composerPackage = new ComposerPackage(new PackageConfiguration());
-        $packageMessage = require __DIR__ . "/../Templates/CLI/on-boarding.php";
-
+        $composerPackage = new ComposerPackage(new UVDeskCoreConfiguration());
         $composerPackage
             ->movePackageConfig('config/packages/uvdesk.yaml', 'Templates/config.yaml')
             ->movePackageConfig('config/routes/uvdesk.yaml', 'Templates/routes.yaml')
-            ->writeToConsole($packageMessage);
+            ->writeToConsole(require __DIR__ . "/../Templates/CLI/on-boarding.php");
         
         return $composerPackage;
     }
