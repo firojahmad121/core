@@ -6,6 +6,8 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Webkul\UVDesk\PackageManager\Extensions as UVDeskPackageExtensions;
+use Webkul\UVDesk\PackageManager\ExtensionOptions as UVDeskPackageExtensionOptions;
 
 class CoreExtension extends Extension
 {
@@ -24,9 +26,9 @@ class CoreExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
 
+        // Load bundle configurations
         $configuration = $this->getConfiguration($configs, $container);
         
-        // Load bundle configurations
         foreach ($this->processConfiguration($configuration, $configs) as $param => $value) {
             switch ($param) {
                 case 'default':
@@ -48,5 +50,50 @@ class CoreExtension extends Extension
                     break;
             }
         }
+
+        // Extension Defaults
+        $helpdeskDashboardItemCollection = [
+            UVDeskPackageExtensionOptions\HelpdeskExtension\Section::CHANNELS => [],
+            UVDeskPackageExtensionOptions\HelpdeskExtension\Section::USERS => [],
+            UVDeskPackageExtensionOptions\HelpdeskExtension\Section::AUTOMATION => [],
+            UVDeskPackageExtensionOptions\HelpdeskExtension\Section::KNOWLEDGEBASE => [],
+            UVDeskPackageExtensionOptions\HelpdeskExtension\Section::SETTINGS => [],
+        ];
+
+        $helpdeskNavigationItemCollection = [];
+
+        // Register extensions
+        $registeredExtensionClassPaths = require $container->getParameter('kernel.project_dir') . '/config/extensions.php';
+
+        foreach ($registeredExtensionClassPaths as $extensionClassPath) {
+            if (false == class_exists($extensionClassPath)) {
+                throw new \Exception("Registered extension \"$extensionClassPath\" not found.");
+            }
+
+            $extensionConfiguration = new $extensionClassPath();
+
+            switch (true) {
+                case $extensionConfiguration instanceof UVDeskPackageExtensions\HelpdeskExtension:
+                    // Register helpdesk extension dashboard items
+                    foreach ($extensionConfiguration->loadDashboardItems() as $section => $dashboardItemCollection) {
+                        foreach ($dashboardItemCollection as $dashboardItem) {
+                            if (array_key_exists($section, $helpdeskDashboardItemCollection)) {
+                                array_push($helpdeskDashboardItemCollection[$section], $dashboardItem);
+                            }
+                        }
+                    }
+
+                    // Register helpdesk extension panel navigation items
+                    foreach ($extensionConfiguration->loadNavigationItems() as $navigationItem) {
+                        array_push($helpdeskNavigationItemCollection, $navigationItem);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        $container->setParameter("uvdesk.helpdesk.dashboard_items", $helpdeskDashboardItemCollection);
+        $container->setParameter("uvdesk.helpdesk.navigation_items", $helpdeskNavigationItemCollection);
     }
 }

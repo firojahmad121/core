@@ -70,51 +70,21 @@
 	</div>
 
 	<ul class="uv-menubar">
+		{# Sidebar Navigation #}
         {% set route = app.request.attributes.get('_route') %}
 
-		{# Dashboard #}
-		<li data-toggle="tooltip" data-placement="right" title="Home">
-			<a {% if route == 'helpdesk_member_dashboard' %}class="uv-item-active"{% endif %} href="{{path('helpdesk_member_dashboard')}}">
-				<span class="uv-icon">
-					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="18px">
-                        <path fill-rule="evenodd"  fill="rgb(158, 158, 158)" d="M8.000,18.000 L8.000,12.000 L12.000,12.000 L12.000,18.000 L17.000,18.000 L17.000,10.000 L20.000,10.000 L10.000,0.000 L-0.000,10.000 L3.000,10.000 L3.000,18.000 L8.000,18.000 Z"/>
-					</svg>
-				</span>
+		{% for navigationItem in uvdesk_service.getHelpdeskNavigationSidebarItems() %}
+			<li data-toggle="tooltip" data-placement="right" title="{{ navigationItem.name }}">
+				<a href="{{ path(navigationItem.route) }}">
+					<span class="uv-icon">
+						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="18px">
+							{{ navigationItem.icon_svg | raw }}
+						</svg>
+					</span>
 
-				<span class="uv-menu-item">Home</span>
-			</a>
-		</li>
-
-		{# Tickets #}
-		<li data-toggle="tooltip" data-placement="right" title="Tickets">
-			<a {% if route == 'helpdesk_member_ticket_collection' or route == 'helpdesk_member_ticket' %}class="uv-item-active" {% endif %} href="{{ path('helpdesk_member_ticket_collection') }}">
-				<span class="uv-icon">
-					<svg
-					 xmlns="http://www.w3.org/2000/svg"
-					 xmlns:xlink="http://www.w3.org/1999/xlink"
-					 width="20px" height="20px">
-					<path fill-rule="evenodd"  fill="rgb(158, 158, 158)"
-					 d="M19.000,4.000 L17.000,4.000 L16.995,12.998 L4.000,13.000 L4.000,15.000 C4.000,15.550 4.450,16.000 5.000,16.000 L16.000,16.000 L20.000,20.000 L20.000,5.000 C20.000,4.450 19.550,4.000 19.000,4.000 ZM15.000,10.000 L15.000,1.000 C15.000,0.450 14.550,0.000 14.000,0.000 L1.000,0.000 C0.450,0.000 -0.000,0.450 -0.000,1.000 L-0.000,15.000 L4.000,11.000 L14.000,11.000 C14.550,11.000 15.000,10.550 15.000,10.000 Z"/>
-					</svg>
-				</span>
-				<span class="uv-menu-item">Tickets</span>
-			</a>
-		</li>
-
-		{# Knowledgebase #}
-        {# <li data-toggle="tooltip" data-placement="right" title="Knowledgebase">
-            <a {% if route in ['webkul_support_center_solution','folder_add_action','folder_edit_action','webkul_support_center_category','webkul_support_center_solution_category','category_add_action', 'category_edit_action', 'webkul_support_center_article', 'webkul_support_center_category_articles', 'webkul_support_center_solution_articles', 'article_add_action', 'article_edit_action'] %}Class="uv-item-active" {% endif %} href="{{ path('webkul_support_center_solution') }}">
-                <span class="uv-icon">
-					<svg
-					xmlns="http://www.w3.org/2000/svg"
-					xmlns:xlink="http://www.w3.org/1999/xlink"
-					width="16px" height="20px">
-					<path fill-rule="evenodd" fill="rgb(158, 158, 158)"
-					d="M14.000,0.000 L2.000,0.000 C0.969,0.000 0.000,0.901 0.000,2.000 L0.000,18.000 C0.000,19.099 0.969,20.000 2.000,20.000 L14.000,20.000 C15.031,20.000 16.000,19.099 16.000,18.000 L16.000,2.000 C16.000,0.901 15.031,0.000 14.000,0.000 ZM3.000,3.000 L9.000,3.000 L9.000,11.000 L6.000,9.000 L3.000,11.000 L3.000,3.000 Z"/>
-					</svg>
-				</span>
-			<span class="uv-menu-item">Knowledgebase</span>
-			</a>
-		</li> #}
+					<span class="uv-menu-item">{{ navigationItem.name }}</span>
+				</a>
+			</li>
+		{% endfor %}
 	</ul>
 </div>

@@ -24,7 +24,7 @@ class Account extends AbstractController
         $user = $this->getUser();
         $originalUser = clone $user;
         $errors = [];
-        // dump($encoder);die;
+
         if($request->getMethod() == "POST") {
             $data     = $request->request->all();
             $dataFiles = $request->files->get('user_form');

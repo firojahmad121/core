@@ -78,9 +78,14 @@ class HelpdeskService
 		return str_replace('/' . $request->getLocale() . '/', '/' . $locale . '/', $request->getRequestUri());
     }
 
-    public function getDashboardPanelItems()
+    public function getHelpdeskDashboadPanelItems()
     {
+        return $this->container->getParameter('uvdesk.helpdesk.dashboard_items');
+    }
 
+    public function getHelpdeskNavigationSidebarItems()
+    {
+        return $this->container->getParameter('uvdesk.helpdesk.navigation_items');
     }
 
 	public function getPanelSidebarRoutes()

@@ -209,267 +209,138 @@
 {% block pageContent %}
     <div class="uv-area">
         <!-- Dashboard Navigation -->
+		{% set dashboardItems = uvdesk_service.getHelpdeskDashboadPanelItems() %}
+
         <div id="manage" class="uv-tab-view uv-tab-view-active" data-tab="manage">
-			{% for panel in uvdesk_service.getDashboardPanelItems() %}
-				<div class="uv-brick">
-				
-				</div>
-			{% endfor %}
             <!-- CHANNELS -->
-            <div class="uv-brick">
-                <div class="uv-brick-head">
-                    <h6>Channels</h6>
-                    <p>Channel acts as a funnel for the tickets which are created from different mediums</p>
-                </div>
+			{% if dashboardItems.HELPDESK_CHANNELS is defined and dashboardItems.HELPDESK_CHANNELS is not empty %}
+				<div class="uv-brick">
+					<div class="uv-brick-head">
+						<h6>Channels</h6>
+						<p>Channel acts as a funnel for the tickets which are created from different mediums</p>
+					</div>
 
-                <div class="uv-brick-section">
-                    <a href="{{ path('helpdesk_member_mailbox_collection') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M30,33L6,18V12L30,27,54,12v6ZM5.9,5.992A5.589,5.589,0,0,0,1.745,7.817,5.882,5.882,0,0,0-.016,12.027v35.93a5.875,5.875,0,0,0,1.761,4.211A5.581,5.581,0,0,0,5.9,53.992H54.069a5.588,5.588,0,0,0,4.155-1.825A5.8,5.8,0,0,0,60,48V12a5.847,5.847,0,0,0-1.776-4.183,5.6,5.6,0,0,0-4.155-1.825H5.9Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Mailbox</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
+					<div class="uv-brick-section">
+						{% for dashboardItem in dashboardItems.HELPDESK_CHANNELS %}
+							<a href="{{ path(dashboardItem.route) }}">
+								<div class="uv-brick-container">
+									<div class="uv-brick-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
+											{{ dashboardItem.brick_svg | raw }}
+										</svg>
+									</div>
 
-            <!-- USERS  -->
-            <div class="uv-brick">
-                <div class="uv-brick-head">
-                    <h6>Users</h6>
-                    <p>Control your Groups, Teams, Agents and Customers</p>
-                </div>
+									<p>{{ dashboardItem.name }}</p>
+								</div>
+							</a>
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
 
-                <div class="uv-brick-section">
-					{# Groups #}
-					<a href="{{path('helpdesk_member_support_group_collection')}}">
-						<div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M54,36V52H45V36H42V24a3.807,3.807,0,0,1,4-4h7a3.807,3.807,0,0,1,4,4V36H54ZM49.5,18A4.5,4.5,0,1,1,54,13.5,4.487,4.487,0,0,1,49.5,18ZM33,52H27V39H20l6.37-16.081A4.224,4.224,0,0,1,30.379,20h0.253a4.244,4.244,0,0,1,4.009,2.922L40,39H33V52ZM30.49,18a4.5,4.5,0,1,1,4.5-4.5A4.487,4.487,0,0,1,30.49,18ZM15,52H6V36H3V24a3.807,3.807,0,0,1,4-4h7a3.807,3.807,0,0,1,4,4V36H15V52ZM10.5,18A4.5,4.5,0,1,1,15,13.5,4.487,4.487,0,0,1,10.5,18Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Groups</p>
-                        </div>
-                    </a>
+			<!-- USERS -->
+			{% if dashboardItems.HELPDESK_USERS is defined and dashboardItems.HELPDESK_USERS is not empty %}
+				<div class="uv-brick">
+					<div class="uv-brick-head">
+						<h6>Users</h6>
+						<p>Control your Groups, Teams, Agents and Customers</p>
+					</div>
 
-					{# Teams #}
-                    <a href="{{path('helpdesk_member_support_team_collection')}}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M45,36V52H36V36H33V24a3.807,3.807,0,0,1,4-4h7a3.807,3.807,0,0,1,4,4V36H45ZM40.5,18A4.5,4.5,0,1,1,45,13.5,4.487,4.487,0,0,1,40.5,18ZM24,52H15V36H12V24a3.807,3.807,0,0,1,4-4h7a3.807,3.807,0,0,1,4,4V36H24V52ZM19.5,18A4.5,4.5,0,1,1,24,13.5,4.487,4.487,0,0,1,19.5,18Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Teams</p>
-                        </div>
-                    </a>
+					<div class="uv-brick-section">
+						{% for dashboardItem in dashboardItems.HELPDESK_USERS %}
+							<a href="{{ path(dashboardItem.route) }}">
+								<div class="uv-brick-container">
+									<div class="uv-brick-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
+											{{ dashboardItem.brick_svg | raw }}
+										</svg>
+									</div>
 
-                    <a href="{{ path('helpdesk_member_account_collection') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewbox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M30.5,2.974A22.308,22.308,0,0,0,8,25.081V42c0,4.078,2.85,8,7,8h8V29.994H13V25.081A17.337,17.337,0,0,1,30.5,7.887,17.337,17.337,0,0,1,48,25.081v4.913H38V50H48v2H31v5H46c4.15,0,7-3.278,7-7.355V25.081A22.308,22.308,0,0,0,30.5,2.974Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Agents</p>
-                        </div>
-                    </a>
-
-					{# Privileges #}
-                    <a href="{{ path('helpdesk_member_privilege_collection') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewbox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M44.985,21H43V16A13.239,13.239,0,0,0,30,3,13.24,13.24,0,0,0,17,16v5H14.989a5.087,5.087,0,0,0-5,5.143V51.857a5.087,5.087,0,0,0,5,5.143h30a5.087,5.087,0,0,0,5-5.143V26.143A5.087,5.087,0,0,0,44.985,21Zm-15,22.987a4.987,4.987,0,1,1,5-4.987A5.008,5.008,0,0,1,29.987,43.987ZM38,21H22V16a8,8,0,1,1,16,0v5Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Privileges</p>
-                        </div>
-                    </a>
-
-					{# Customers #}
-                    <a href="{{path('helpdesk_member_manage_customer_account_collection')}}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewbox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M39.025,28a7,7,0,1,0-7.013-7A6.976,6.976,0,0,0,39.025,28ZM22.013,28A7,7,0,1,0,15,21,6.976,6.976,0,0,0,22.013,28Zm-0.751,4.29c-5.082,0-15.267,2.674-15.267,8V46H37V40C37,34.675,26.344,32.287,21.262,32.287Zm17.449,0c-0.633,0-1.352.046-2.116,0.114,2.53,1.92,4.4,4.216,4.4,7.6v6H53.978V40.287C53.978,34.961,43.793,32.287,38.711,32.287Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Customers</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
+									<p>{{ dashboardItem.name }}</p>
+								</div>
+							</a>
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
 
             <!-- KNOWLEDGEBASE -->
-            {# <div class="uv-brick">
-                <div class="uv-brick-head">
-                    <h6>Knowledgebase</h6>
-                    <p>Knowledgebase is a source of rigid and complex information which helps Customers to help themselves</p>
-                </div>
+			{% if dashboardItems.HELPDESK_KNOWLEDGEBASE is defined and dashboardItems.HELPDESK_KNOWLEDGEBASE is not empty %}
+				<div class="uv-brick">
+					<div class="uv-brick-head">
+						<h6>Knowledgebase</h6>
+						<p>Knowledgebase is a source of rigid and complex information which helps Customers to help themselves</p>
+					</div>
 
-                <div class="uv-brick-section">
-                    <a href="{{path('webkul_support_center_solution')}}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M25.216,11.023h-14.4a4.708,4.708,0,0,0-4.777,4.624L6.011,43.394a4.729,4.729,0,0,0,4.8,4.625H49.223a4.729,4.729,0,0,0,4.8-4.625L54,21a5.234,5.234,0,0,0-5-5H30Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Folders</p>
-                        </div>
-                    </a>
+					<div class="uv-brick-section">
+						{% for dashboardItem in dashboardItems.HELPDESK_KNOWLEDGEBASE %}
+							<a href="{{ path(dashboardItem.route) }}">
+								<div class="uv-brick-container">
+									<div class="uv-brick-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
+											{{ dashboardItem.brick_svg | raw }}
+										</svg>
+									</div>
 
-                    <a href="{{path('webkul_support_center_category')}}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M6,18h6V12l-6,.014V18Zm10-6v6H54V12H16ZM6,28h6V22l-6,.014V28Zm10-6v6H54V22H16ZM6,38h6V32l-6,.014V38Zm10-6v6H54V32H16ZM6,48h6V42l-6,.014V48Zm10-6v6H54V42H16Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Categories</p>
-                        </div>
-                    </a>
-
-                    <a href="{{path('webkul_support_center_article')}}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewbox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M34.743,5.977h-19a4.769,4.769,0,0,0-4.726,4.8L11,49.19a4.77,4.77,0,0,0,4.726,4.8h28.52a4.79,4.79,0,0,0,4.749-4.8V20.381ZM32,23V9L46,23H32Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Articles</p>
-                        </div>
-                    </a>
-                </div>
-            </div> #}
+									<p>{{ dashboardItem.name }}</p>
+								</div>
+							</a>
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
 
             <!-- AUTOMATION -->
-            {# <div class="uv-brick">
-                <div class="uv-brick-head">
-                    <h6>Productivity</h6>
-                    <p>Automate your processes by creating set of rules and presets to respond faster to the tickets</p>
-                </div>
+			{% if dashboardItems.HELPDESK_AUTOMATION is defined and dashboardItems.HELPDESK_AUTOMATION is not empty %}
+				<div class="uv-brick">
+					<div class="uv-brick-head">
+						<h6>Productivity</h6>
+						<p>Automate your processes by creating set of rules and presets to respond faster to the tickets</p>
+					</div>
 
-                <div class="uv-brick-section">
-                    <a href="{{ path('helpdesk_member_workflow_collection') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M25.783,21.527L10.245,6.019,6.016,10.248,21.524,25.756ZM37.512,6.019l6.119,6.119L6.016,49.783l4.229,4.229L47.89,16.4l6.119,6.119V6.019h-16.5ZM38.5,34.245l-4.229,4.229,9.389,9.389-6.149,6.149h16.5v-16.5L47.89,43.634Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Workflows</p>
-                        </div>
-                    </a>
-					<a href="{{ path('prepare_response_action')}}">
-						<div class="uv-brick-container">
-							<div class="uv-brick-icon">
-								<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-									<path fill-rule="evenodd" d="M25.783,21.527L10.245,6.019,6.016,10.248,21.524,25.756ZM37.512,6.019l6.119,6.119L6.016,49.783l4.229,4.229L47.89,16.4l6.119,6.119V6.019h-16.5ZM38.5,34.245l-4.229,4.229,9.389,9.389-6.149,6.149h16.5v-16.5L47.89,43.634Z"
-									/>
-								</svg>
-							</div>
-							<p>{{ 'Prepared Responses'|trans }}</p>
-						</div>
-					</a>
-                    <a href="{{ path('helpdesk_member_ticket_type_collection') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewbox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M6,44v5H22V44H6ZM6,11v5H33V11H6ZM33,54V49H54V44H33V39H28V54h5ZM17,23v5H6v5H17v5h5V23H17ZM54,33V28H28v5H54ZM39,21h5V16H54V11H44V6H39V21Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Ticket Types</p>
-                        </div>
-                    </a>
+					<div class="uv-brick-section">
+						{% for dashboardItem in dashboardItems.HELPDESK_AUTOMATION %}
+							<a href="{{ path(dashboardItem.route) }}">
+								<div class="uv-brick-container">
+									<div class="uv-brick-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
+											{{ dashboardItem.brick_svg | raw }}
+										</svg>
+									</div>
 
-                    <a href="{{ path('helpdesk_member_ticket_tag_collection') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewbox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M42.935,14.247A4.683,4.683,0,0,0,39,12H11a5.182,5.182,0,0,0-5.015,5.313V43.74A5.164,5.164,0,0,0,11.036,49l27.782,0.026a4.972,4.972,0,0,0,4.117-2.22L53.972,30.526Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Tags</p>
-                        </div>
-                    </a>
-                </div>
-
-            </div> #}
+									<p>{{ dashboardItem.name }}</p>
+								</div>
+							</a>
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
 
             <!-- SETTINGS -->
-            <div class="uv-brick">
-                <div class="uv-brick-head">
-                    <h6>Settings</h6>
-                    <p>Manage your Brand Identity, Company Information and other details at a glance</p>
-                </div>
+			{% if dashboardItems.HELPDESK_SETTINGS is defined and dashboardItems.HELPDESK_SETTINGS is not empty %}
+				<div class="uv-brick">
+					<div class="uv-brick-head">
+						<h6>Settings</h6>
+						<p>Manage your Brand Identity, Company Information and other details at a glance</p>
+					</div>
 
-                <div class="uv-brick-section">
-                    {# <a href="{{ path('branding_theme') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M30,6a24,24,0,0,0,0,48,4,4,0,0,0,2.96-6.693,3.985,3.985,0,0,1,2.987-6.64h4.72A13.338,13.338,0,0,0,54,27.333C54,15.547,43.253,6,30,6ZM15.333,30a4,4,0,1,1,4-4A3.995,3.995,0,0,1,15.333,30Zm8-10.667a4,4,0,1,1,4-4A3.995,3.995,0,0,1,23.333,19.333Zm13.333,0a4,4,0,1,1,4-4A3.995,3.995,0,0,1,36.667,19.333Zm8,10.667a4,4,0,1,1,4-4A3.995,3.995,0,0,1,44.667,30Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Branding</p>
-                        </div>
-                    </a> #}
+					<div class="uv-brick-section">
+						{% for dashboardItem in dashboardItems.HELPDESK_SETTINGS %}
+							<a href="{{ path(dashboardItem.route) }}">
+								<div class="uv-brick-container">
+									<div class="uv-brick-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
+											{{ dashboardItem.brick_svg | raw }}
+										</svg>
+									</div>
 
-                    <a href="{{ path('email_templates_action') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewbox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M49.224,52.979H10.813a4.783,4.783,0,0,1-4.8-4.736V24.566a4.7,4.7,0,0,1,2.281-4.025l3.082-1.78,3.4,2.779-4.582,2.648,19.83,12.218,19.83-12.218-4.6-2.66,3.4-2.779,3.1,1.793A4.68,4.68,0,0,1,54,24.566l0.024,23.678A4.783,4.783,0,0,1,49.224,52.979ZM30.018,32.4L16,24V7H44V23.748L30.018,32V32.4ZM20,11h4v4H20V11Zm6,0h8v4H26V11Zm-6,7h4v4H20V18Zm6,0H40v4H26V18Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Email Templates</p>
-                        </div>
-                    </a>
-
-                    <a href="{{ path('email_setting') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M49.224,54.979H10.813a4.783,4.783,0,0,1-4.8-4.736V26.566a4.7,4.7,0,0,1,2.281-4.025l3.082-1.78,3.4,2.779-4.582,2.648,19.83,12.218,19.83-12.218-4.6-2.66,3.4-2.779,3.1,1.793A4.68,4.68,0,0,1,54,26.566l0.024,23.678A4.783,4.783,0,0,1,49.224,54.979Zm-9.287-35.7a8.723,8.723,0,0,0,0-2.549l2.821-2.145a0.644,0.644,0,0,0,.16-0.832l-2.674-4.5a0.681,0.681,0,0,0-.815-0.286l-3.328,1.3a9.841,9.841,0,0,0-2.259-1.275L33.334,5.549A0.646,0.646,0,0,0,32.679,5H27.332a0.646,0.646,0,0,0-.655.546L26.169,8.994a10.347,10.347,0,0,0-2.259,1.275l-3.328-1.3a0.661,0.661,0,0,0-.816.286l-2.673,4.5a0.63,0.63,0,0,0,.16.832l2.82,2.145a10.052,10.052,0,0,0-.094,1.275,10.049,10.049,0,0,0,.094,1.274l-2.82,2.146a0.644,0.644,0,0,0-.16.832l2.673,4.5a0.681,0.681,0,0,0,.816.286l3.328-1.3a9.835,9.835,0,0,0,2.259,1.274l0.508,3.446a0.647,0.647,0,0,0,.655.546h5.347a0.646,0.646,0,0,0,.655-0.546l0.508-3.446A10.337,10.337,0,0,0,36.1,25.743l3.328,1.3a0.661,0.661,0,0,0,.815-0.286l2.674-4.5a0.644,0.644,0,0,0-.16-0.832Zm-9.932,3.277a4.553,4.553,0,1,1,4.678-4.551A4.621,4.621,0,0,1,30.006,22.558Z"></path>
-                                </svg>
-                            </div>
-                            <p>Email Settings</p>
-                        </div>
-                    </a>
-
-                    {# <a href="{{ path('branding_spam') }}">
-                        <div class="uv-brick-container">
-                            <div class="uv-brick-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewbox="0 0 60 60">
-                                    <path fill-rule="evenodd" d="M29.994,5.98A24.007,24.007,0,1,0,53.974,29.987,24,24,0,0,0,29.994,5.98ZM12,29.365A17.359,17.359,0,0,1,29.36,12a17.148,17.148,0,0,1,10.634,3.668L15.666,40A17.156,17.156,0,0,1,12,29.365ZM30.629,48a14.544,14.544,0,0,1-9.634-3.537L44.455,21a14.549,14.549,0,0,1,3.536,9.636A17.358,17.358,0,0,1,30.629,48Z"
-                                    />
-                                </svg>
-                            </div>
-                            <p>Block Spam</p>
-                        </div>
-                    </a> #}
-                </div>
-            </div>
+									<p>{{ dashboardItem.name }}</p>
+								</div>
+							</a>
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
         </div>
     </div>
 {% endblock %}
