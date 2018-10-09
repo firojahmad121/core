@@ -1,19 +1,15 @@
 # Member panel agent dashboard resources
-helpdesk_router_member_authentication_resources:
+uvdesk_core_member_authentication_routing_resources:
     resource: "@UVDeskCoreBundle/Resources/config/routes/auth.yaml"
 
 # Member panel agent dashboard resources
-helpdesk_router_member_panel_resources:
+uvdesk_core_member_panel_routing_resources:
     resource: "@UVDeskCoreBundle/Resources/config/routes/members.yaml"
 
 # Member panel agent dashboard resources
-helpdesk_router_member_ticket_resources:
+uvdesk_core_member_ticket_routing_resources:
     resource: "@UVDeskCoreBundle/Resources/config/routes/tickets.yaml"
 
 # Member panel customer dashboard resources
-helpdesk_router_member_customer_resources:
+uvdesk_core_member_customer_routing_resources:
     resource: "@UVDeskCoreBundle/Resources/config/routes/customers.yaml"
-
-# Member panel customer dashboard resources
-helpdesk_router_member_public_resources:
-    resource: "@UVDeskCoreBundle/Resources/config/routes/public.yaml"
