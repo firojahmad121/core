@@ -135,6 +135,7 @@ access_token_xhr:
     path:     member/access-token
     defaults: { _controller: UVDeskCoreBundle:Api:accessTokenXhr }
     methods: [GET,POST]
+
 helpdesk_member_saved_filters_xhr:
     path:     /saved-filter-xhr/{filterId}
     controller: Webkul\UVDesk\CoreBundle\Controller\AccountXHR::savedFiltersXHR
