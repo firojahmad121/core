@@ -194,7 +194,7 @@ class HelpdeskService
                     'routes' => [
                         [
                             'name' => 'Branding',
-                            'link' => $router->generate('branding_theme'),
+                            'link' => $router->generate('helpdesk_member_knowledgebase_theme'),
                             'isActive' => false,
                             'isEnabled' => true,
                         ],
@@ -212,7 +212,7 @@ class HelpdeskService
                         ],
                         [
                             'name' => 'Block Spam',
-                            'link' => $router->generate('branding_spam'),
+                            'link' => $router->generate('helpdesk_member_knowledgebase_spam'),
                             'isActive' => false,
                             'isEnabled' => true,
                         ],
@@ -225,19 +225,19 @@ class HelpdeskService
                     'routes' => [
                         [
                             'name' => 'New Folder',
-                            'link' => $router->generate('folder_add_action'),
+                            'link' => $router->generate('helpdesk_member_knowledgebase_create_folder'),
                             'isActive' => false,
                             'isEnabled' => true,
                         ],
                         [
                             'name' => 'New Category',
-                            'link' => $router->generate('category_add_action'),
+                            'link' => $router->generate('helpdesk_member_knowledgebase_create_category'),
                             'isActive' => false,
                             'isEnabled' => true,
                         ],
                         [
                             'name' => 'New Article',
-                            'link' => $router->generate('article_add_action'),
+                            'link' => $router->generate('helpdesk_member_knowledgebase_create_article'),
                             'isActive' => false,
                             'isEnabled' => true,
                         ],
