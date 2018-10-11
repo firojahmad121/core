@@ -14,7 +14,7 @@ class Composer extends ComposerPackageExtension
             ->movePackageConfig('config/packages/uvdesk.yaml', 'Templates/config.yaml')
             ->movePackageConfig('config/routes/uvdesk.yaml', 'Templates/routes.yaml')
             ->writeToConsole(require __DIR__ . "/../Templates/CLI/on-boarding.php")
-            ->updateSecurityConfig('Templates/security-configs.yaml');
+            ->combineProjectConfig('config/packages/security.yaml', 'Templates/security-configs.yaml');
         
         return $composerPackage;
     }
