@@ -29,6 +29,7 @@ Webkul\UVDesk\CoreBundle\Entity\Website:
             type: datetime
         isActive:
             type: boolean
+            nullable: true
             options:
                 default: true
     lifecycleCallbacks: {  }
