@@ -1,0 +1,33 @@
+Webkul\UVDesk\CoreBundle\Entity\Website:
+    type: entity
+    table: null
+    repositoryClass: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        code:
+            type: string
+            length: 255
+        logo:
+            type: string
+            length: 255
+        favicon:
+            type: string
+            length: 255
+        createdAt:
+            type: datetime
+            column: created_at
+        updatedAt:
+            type: datetime
+            column: updated_at
+        isActive:
+            type: boolean
+            column: is_active
+    lifecycleCallbacks: {  }

@@ -224,20 +224,20 @@ class HelpdeskService
                     'name' => 'Knowledgebase',
                     'routes' => [
                         [
-                            'name' => 'New Folder',
-                            'link' => $router->generate('helpdesk_member_knowledgebase_create_folder'),
+                            'name' => 'Folders',
+                            'link' => $router->generate('helpdesk_member_knowledgebase_folders_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
                         ],
                         [
-                            'name' => 'New Category',
-                            'link' => $router->generate('helpdesk_member_knowledgebase_create_category'),
+                            'name' => 'Categories',
+                            'link' => $router->generate('helpdesk_member_knowledgebase_category_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
                         ],
                         [
-                            'name' => 'New Article',
-                            'link' => $router->generate('helpdesk_member_knowledgebase_create_article'),
+                            'name' => 'Articles',
+                            'link' => $router->generate('helpdesk_member_knowledgebase_article_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
                         ],
@@ -246,7 +246,8 @@ class HelpdeskService
                 break;
 			default:
 				break;
-		}
+        }
+        
 		return $navigationPanel;
     }
     
