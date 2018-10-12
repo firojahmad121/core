@@ -11,17 +11,17 @@ Webkul\UVDesk\CoreBundle\Entity\Website:
     fields:
         name:
             type: string
-            length: 255
+            length: 191
         code:
             type: string
-            length: 255
+            length: 191
             unique: true
         logo:
             type: string
-            length: 255
+            length: 191
         favicon:
             type: string
-            length: 255
+            length: 191
             nullable: true
         createdAt:
             type: datetime
