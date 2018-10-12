@@ -475,7 +475,7 @@ class UserService
         // find current user from session(admin or customer)
         $em = $this->entityManager;
         $websiteRepo = $em->getRepository('UVDeskCoreBundle:Website');
-        $configurationRepo = $em->getRepository('UVDeskSupportCenterBundle:KnowledgebaseConfiguration');
+        $configurationRepo = $em->getRepository('UVDeskSupportCenterBundle:KnowledgebaseWebsite');
 
         $website = $websiteRepo->findOneBy(['code' => $currentUser]);
         if ($website)
@@ -651,8 +651,8 @@ class UserService
 
     public function getWebsiteView()
     {
-        $website = $this->entityManager->getRepository('UVDeskCoreBundle:Website')->findOneBy(['code'=>'website_branding']);
-        $layout  = $this->entityManager->getRepository('UVDeskSupportCenterBundle:KnowledgebaseConfiguration')->findOneBy(['website'=>$website->getId()]);
+        $website = $this->entityManager->getRepository('UVDeskCoreBundle:Website')->findOneBy(['code'=>'knowledgebase']);
+        $layout  = $this->entityManager->getRepository('UVDeskSupportCenterBundle:KnowledgebaseWebsite')->findOneBy(['website'=>$website->getId()]);
       
         $homepageContent = $layout->getHomepageContent();
         // dump($homepageContent);die;

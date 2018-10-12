@@ -358,7 +358,7 @@ class HelpdeskService
 
     public function getActiveConfiguration($websiteId)
     {
-        $configurationRepo = $this->entityManager->getRepository('UVDeskSupportCenterBundle:KnowledgebaseConfiguration');
+        $configurationRepo = $this->entityManager->getRepository('UVDeskSupportCenterBundle:KnowledgebaseWebsite');
         $configuration = $configurationRepo->findOneBy(['website' => $websiteId, 'isActive' => 1]);
 
         return $configuration;

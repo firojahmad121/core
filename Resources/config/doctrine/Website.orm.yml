@@ -15,19 +15,20 @@ Webkul\UVDesk\CoreBundle\Entity\Website:
         code:
             type: string
             length: 255
+            unique: true
         logo:
             type: string
             length: 255
         favicon:
             type: string
             length: 255
+            nullable: true
         createdAt:
             type: datetime
-            column: created_at
         updatedAt:
             type: datetime
-            column: updated_at
         isActive:
             type: boolean
-            column: is_active
+            options:
+                default: true
     lifecycleCallbacks: {  }
