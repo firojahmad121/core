@@ -291,7 +291,7 @@
 			{% endif %}
 
             <!-- AUTOMATION -->
-			{% if dashboardItems.AUTOMATION is defined and dashboardItems.AUTOMATION is not empty %}
+			{% if dashboardItems.HELPDESK_AUTOMATION is defined and dashboardItems.HELPDESK_AUTOMATION is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">
 						<h6>Productivity</h6>
@@ -299,7 +299,7 @@
 					</div>
 
 					<div class="uv-brick-section">
-						{% for dashboardItem in dashboardItems.AUTOMATION %}
+						{% for dashboardItem in dashboardItems.HELPDESK_AUTOMATION %}
 							<a href="{{ path(dashboardItem.route) }}">
 								<div class="uv-brick-container">
 									<div class="uv-brick-icon">
