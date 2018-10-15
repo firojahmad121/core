@@ -203,7 +203,7 @@ class Ticket extends Controller
 
     public function listTicketTypeCollection(Request $request)
     {
-        return $this->render('@UVDeskCore/TicketTypes/ticketTypeList.html.twig');
+        return $this->render('@UVDeskCore/ticketTypeList.html.twig');
     }
 
     public function ticketType(Request $request)
@@ -255,7 +255,11 @@ class Ticket extends Controller
 
     public function listTagCollection(Request $request)
     {
-        return $this->render('@UVDeskCore/SupportTags/supportTagList.html.twig');
+        $enabled_bundles = $this->container->getParameter('kernel.bundles');
+
+        return $this->render('@UVDeskCore/supportTagList.html.twig', [
+            'articlesEnabled' => in_array('UVDeskSupportCenterBundle', array_keys($enabled_bundles)),
+        ]);
     }
 
     public function removeTicketTagXHR($tagId, Request $request)

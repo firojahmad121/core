@@ -87,7 +87,6 @@ SVG;
 <path fill-rule="evenodd" fill="rgb(158, 158, 158)" d="M14.000,0.000 L2.000,0.000 C0.969,0.000 0.000,0.901 0.000,2.000 L0.000,18.000 C0.000,19.099 0.969,20.000 2.000,20.000 L14.000,20.000 C15.031,20.000 16.000,19.099 16.000,18.000 L16.000,2.000 C16.000,0.901 15.031,0.000 14.000,0.000 ZM3.000,3.000 L9.000,3.000 L9.000,11.000 L6.000,9.000 L3.000,11.000 L3.000,3.000 Z" />
 SVG;
 
-
     public function loadDashboardItems()
     {
         return [
@@ -125,51 +124,19 @@ SVG;
                     'brick_svg' => self::CUSTOMERS_BRICK_SVG,
                 ],
             ],
-            // HelpdeskSection::KNOWLEDGEBASE => [
-            //     [
-            //         'name' => 'Folders',
-            //         'route' => 'webkul_support_center_solution',
-            //         'brick_svg' => self::FOLDERS_BRICK_SVG,
-            //     ],
-            //     [
-            //         'name' => 'Categories',
-            //         'route' => 'webkul_support_center_category',
-            //         'brick_svg' => self::CATEGORIES_BRICK_SVG,
-            //     ],
-            //     [
-            //         'name' => 'Articles',
-            //         'route' => 'webkul_support_center_article',
-            //         'brick_svg' => self::ARTICLES_BRICK_SVG,
-            //     ],
-            // ],
-            // HelpdeskSection::AUTOMATION => [
-            //     [
-            //         'name' => 'Workflows',
-            //         'route' => 'helpdesk_member_workflow_collection',
-            //         'brick_svg' => self::WORKFLOWS_BRICK_SVG,
-            //     ],
-            //     [
-            //         'name' => 'Prepared Responses',
-            //         'route' => 'prepare_response_action',
-            //         'brick_svg' => self::PREPARED_RESPONSES_BRICK_SVG,
-            //     ],
-            //     [
-            //         'name' => 'Ticket Types',
-            //         'route' => 'helpdesk_member_ticket_type_collection',
-            //         'brick_svg' => self::TICKET_TYPE_BRICK_SVG,
-            //     ],
-            //     [
-            //         'name' => 'Tags',
-            //         'route' => 'helpdesk_member_ticket_tag_collection',
-            //         'brick_svg' => self::TAG_BRICK_SVG,
-            //     ],
-            // ],
+            HelpdeskSection::AUTOMATION => [
+                [
+                    'name' => 'Ticket Types',
+                    'route' => 'helpdesk_member_ticket_type_collection',
+                    'brick_svg' => self::TICKET_TYPE_BRICK_SVG,
+                ],
+                [
+                    'name' => 'Tags',
+                    'route' => 'helpdesk_member_ticket_tag_collection',
+                    'brick_svg' => self::TICKET_TYPE_BRICK_SVG,
+                ],
+            ],
             HelpdeskSection::SETTINGS => [
-                // [
-                //     'name' => 'Branding',
-                //     'route' => 'branding_theme',
-                //     'brick_svg' => self::BRANDING_BRICK_SVG,
-                // ],
                 [
                     'name' => 'Email Templates',
                     'route' => 'email_templates_action',
@@ -180,11 +147,6 @@ SVG;
                     'route' => 'email_setting',
                     'brick_svg' => self::EMAIL_SETTINGS_BRICK_SVG,
                 ],
-                // [
-                //     'name' => 'Block Spam',
-                //     'route' => 'branding_spam',
-                //     'brick_svg' => self::BLOCK_SPAM_BRICK_SVG,
-                // ],
             ],
         ];
     }
@@ -202,11 +164,6 @@ SVG;
                 'route' => 'helpdesk_member_ticket_collection',
                 'icon_svg' => self::TICKETS_ICON_SVG,
             ],
-            // [
-            //     'name' => 'Knowledgebase',
-            //     'route' => 'webkul_support_center_solution',
-            //     'icon_svg' => self::KNOWLEDGEBASE_ICON_SVG,
-            // ],
         ];
     }
 }

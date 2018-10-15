@@ -58,7 +58,9 @@
                         <tr>
                             <th>Code</th>
                             <th>Total Ticket(s)</th>
-                            <th>Total Article(s)</th>
+							{% if articlesEnabled is defined and articlesEnabled == true %}
+								<th>Total Article(s)</th>
+							{% endif %}
                             <th class="uv-last">Action</th>
                         </tr>
                     </thead>
@@ -116,11 +118,13 @@
 				<%= ticketCount %>
 			</a>
 		</td>
-		<td data-value="{{ 'Name'|trans }}">
-			<a href="{{ path('webkul_support_center_article') }}#search/tag:<%= name %>">
-				<%= articleCount %>
-			</a>
-		</td>
+		{% if articlesEnabled is defined and articlesEnabled == true %}
+			<td data-value="{{ 'Name'|trans }}">
+				<a href="{{ path('helpdesk_member_knowledgebase_article_collection') }}#search/tag:<%= name %>">
+					<%= articleCount %>
+				</a>
+			</td>
+		{% endif %}
 		<td data-value="{{ 'Action'|trans }}" class="uv-last">
 			{% if user_service.isAccessAuthorized('ROLE_AGENT_DELETE_TAG') %}
 				<div class="uv-btn-stroke delete-tag">
