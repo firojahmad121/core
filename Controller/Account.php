@@ -79,7 +79,7 @@ class Account extends AbstractController
                     $userInstance = $this->container->get('user.service')->getUserDetailById($user->getId());
 
                     if(isset($dataFiles['profileImage'])){
-                        $fileName  = $this->container->get('fileupload.service')->upload($dataFiles['profileImage']);
+                        $fileName  = $this->container->get('uvdesk.core.fs.upload.manager')->upload($dataFiles['profileImage']);
                         $userInstance->setProfileImagePath($fileName);
                     }
                     $userInstance  = $userInstance->setContactNumber($data['contactNumber']);
@@ -173,7 +173,7 @@ class Account extends AbstractController
                         $userInstance->setContactNumber($data['contactNumber']);
                         $userInstance->setSource('website');
                         if(isset($dataFiles['profileImage'])){
-                            $fileName  = $this->container->get('fileupload.service')->upload($dataFiles['profileImage']);
+                            $fileName  = $this->container->get('uvdesk.core.fs.upload.manager')->upload($dataFiles['profileImage']);
                             $userInstance->setProfileImagePath($fileName);
                         }
                         $userInstance->setSignature($data['signature']);
@@ -355,7 +355,7 @@ class Account extends AbstractController
                     $userInstance->setSource('website');
                     
                     if(isset($dataFiles['profileImage'])){
-                        $fileName  = $this->container->get('fileupload.service')->upload($dataFiles['profileImage']);
+                        $fileName  = $this->container->get('uvdesk.core.fs.upload.manager')->upload($dataFiles['profileImage']);
                         $userInstance->setProfileImagePath($fileName);
                     }
                     $userInstance->setSignature($data['signature']);

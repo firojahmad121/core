@@ -1,6 +1,7 @@
 uvdesk:
     site_url: 127.0.0.1
     email_domain: "@@localhost"
+    upload_manager: uvdesk.core.fs.upload.manager
 
     default:
         templates:

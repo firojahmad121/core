@@ -14,6 +14,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->node('site_url', 'scalar')->defaultValue('127.0.0.1')->end()
                 ->node('email_domain', 'scalar')->defaultValue('@localhost')->end()
+                ->node('upload_manager', 'scalar')->defaultValue('uvdesk.core.fs.upload.manager')->end()
                 ->node('default', 'array')
                     ->children()
                         ->node('templates', 'array')

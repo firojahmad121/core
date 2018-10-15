@@ -111,7 +111,7 @@ class Customer extends Controller
                         $userInstance->setContactNumber($data['contactNumber']);
                     }
                     if(isset($contentFile['profileImage'])){
-                        $fileName  = $this->container->get('fileupload.service')->upload($contentFile['profileImage']);
+                        $fileName  = $this->container->get('uvdesk.core.fs.upload.manager')->upload($contentFile['profileImage']);
                         $userInstance->setProfileImagePath($fileName);
                     }
                         

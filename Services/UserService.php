@@ -171,7 +171,7 @@ class UserService
             $userInstance->setIsStarred(!empty($extras['starred']) ? (bool) $extras['starred'] : false);
 
             if (!empty($extras['image'])) {
-                $fileName = $this->container->get('fileupload.service')->upload($extras['image']);
+                $fileName = $this->container->get('uvdesk.core.fs.upload.manager')->upload($extras['image']);
 
                 if (!empty($fileName)) {
                     $userInstance->setProfileImagePath($fileName);
