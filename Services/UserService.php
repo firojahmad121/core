@@ -316,10 +316,10 @@ class UserService
         $qb = $this->entityManager->createQueryBuilder();
 
         if($this->getCurrentUser()->getRole() == "ROLE_AGENT" && $this->getCurrentUser()->detail['agent']->getTicketView() != UserData::GLOBAL_ACCESS) {
-            $qb->from('UVDeskTicketBundle:Ticket', 't')
+            $qb->from('UVDeskCoreBundle:Ticket', 't')
                 ->leftJoin('t.customer', 'c');
 
-            $this->entityManager->getRepository('WebkulTicketBundle:Ticket')->addPermissionFilter($qb, $this->container, false);
+            $this->entityManager->getRepository('WebkulCoreBundle:Ticket')->addPermissionFilter($qb, $this->container, false);
         } else {
             $qb->from('WebkulUserBundle:User', 'c');
         }
@@ -354,10 +354,10 @@ class UserService
     public function getCustomersCount()
     {
         $qb = $this->entityManager->createQueryBuilder();
-        $qb->select($qb->expr()->countDistinct('c.id')."as customerCount")->from('UVDeskTicketBundle:Ticket', 't')
+        $qb->select($qb->expr()->countDistinct('c.id')."as customerCount")->from('UVDeskCoreBundle:Ticket', 't')
                 ->leftJoin('t.customer', 'c');
 
-        $this->entityManager->getRepository('UVDeskTicketBundle:Ticket')->addPermissionFilter($qb, $this->container, false);
+        $this->entityManager->getRepository('UVDeskCoreBundle:Ticket')->addPermissionFilter($qb, $this->container, false);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -586,7 +586,7 @@ class UserService
 
         // getCustomerTickets
         $qb = $this->entityManager->createQueryBuilder();
-        $query = $qb->delete('UVDeskTicketBundle:Ticket', 't')
+        $query = $qb->delete('UVDeskCoreBundle:Ticket', 't')
                     ->andwhere('t.customer = :customerId')
                     ->setParameter('customerId', $customer->getId())
                     ->getQuery();
@@ -632,7 +632,7 @@ class UserService
         }
 
         $qb = $this->entityManager->createQueryBuilder();
-        $query = $qb->update('UVDeskTicketBundle:Ticket', 't')
+        $query = $qb->update('UVDeskCoreBundle:Ticket', 't')
                     ->set('t.agent', ':nullAgent')
                     ->andwhere('t.agent = :agentId')
                     ->setParameter('agentId', $user->getId())

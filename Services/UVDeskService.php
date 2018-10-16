@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\DomCrawler\Crawler;
 
-class HelpdeskService
+class UVDeskService
 {
 	protected $container;
 	protected $requestStack;

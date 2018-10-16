@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Webkul\UVDesk\CoreBundle\Entity as CoreEntities;
 use Doctrine\Bundle\FixturesBundle\Fixture as DoctrineFixture;
 
-class Website extends DoctrineFixture
+class Websites extends DoctrineFixture
 {
     public function load(ObjectManager $entityManager)
     {

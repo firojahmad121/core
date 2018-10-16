@@ -1,18 +1,7 @@
 services:
-    Webkul\UVDesk\CoreBundle\Console\:
-        resource: '../../Console/*'
-        exclude: '../../Console/{UTF8Symbol.php,ANSIEscapeSequence.php}'
-        arguments: ['@service_container', '@doctrine.orm.entity_manager']
-        tags: ['console.command']
-    
-    Webkul\UVDesk\CoreBundle\Fixtures\:
-        resource: '../../Fixtures/*'
-        arguments: ['@service_container', '@doctrine.orm.entity_manager']
-        tags: ['doctrine.fixture.orm']
-
     uvdesk.service:
         public: true
-        class: Webkul\UVDesk\CoreBundle\Services\HelpdeskService
+        class: Webkul\UVDesk\CoreBundle\Services\UVDeskService
         arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
     
     user.provider:
@@ -38,3 +27,32 @@ services:
     uvdesk.core.fs.upload.manager:
         public: true
         class: Webkul\UVDesk\CoreBundle\FileSystem\DefaultManager
+    
+    Webkul\UVDesk\CoreBundle\Security\TicketVoter:
+        arguments: ['@service_container', '@security.access.decision_manager']
+        tags:
+            - { name: security.voter }
+    
+    Webkul\UVDesk\CoreBundle\Console\:
+        resource: '../../Console/*'
+        exclude: '../../Console/{UTF8Symbol.php,ANSIEscapeSequence.php}'
+        arguments: ['@service_container', '@doctrine.orm.entity_manager']
+        tags: ['console.command']
+    
+    Webkul\UVDesk\CoreBundle\Fixtures\:
+        resource: '../../Fixtures/*'
+        arguments: ['@service_container', '@doctrine.orm.entity_manager']
+        tags: ['doctrine.fixture.orm']
+    
+    Webkul\UVDesk\CoreBundle\EventListener\ORMLifecycle:
+        arguments: ['@service_container']
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postLoad }
+    
+    Webkul\UVDesk\CoreBundle\EventListener\ConsoleListener:
+        arguments: ['@service_container', '@doctrine.orm.entity_manager']
+        tags:
+            - { name: kernel.event_listener, event: console.command }
+            - { name: kernel.event_listener, event: console.terminate }

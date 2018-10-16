@@ -22,7 +22,7 @@ Webkul\UVDesk\CoreBundle\DataProxies\CreateTicketDataClass:
                 message: 'This field is mandatory'
                 groups: [CreateTicket, CustomerCreateTicket]
 
-# Webkul\UVDesk\TicketBundle\Entity\Mailbox:
+# Webkul\UVDesk\CoreBundle\Entity\Mailbox:
 #     group_sequence:
 #         - Mailbox
 #     constraints:
@@ -44,12 +44,12 @@ Webkul\UVDesk\CoreBundle\DataProxies\CreateTicketDataClass:
 #                 groups: [Mailbox]
 
 
-# Webkul\UVDesk\TicketBundle\Entity\TicketType:
+# Webkul\UVDesk\CoreBundle\Entity\TicketType:
 #     group_sequence:
 #         - Type
 #         - uniqueType
 #     constraints:
-#         - Webkul\TicketBundle\Validator\Constraints\UniqueType: {groups:[uniqueType]}
+#         - Webkul\CoreBundle\Validator\Constraints\UniqueType: {groups:[uniqueType]}
 #     properties:
 #         name:
 #             - NotBlank: { groups: [Type]  }

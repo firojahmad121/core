@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Webkul\UVDesk\CoreBundle\Entity as CoreEntities;
 use Doctrine\Bundle\FixturesBundle\Fixture as DoctrineFixture;
 
-class EmailTemplate extends DoctrineFixture
+class EmailTemplates extends DoctrineFixture
 {
     private static $seeds = [
         [

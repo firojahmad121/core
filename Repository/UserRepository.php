@@ -185,7 +185,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 
     public function getCustomerTicketCount($customerId) {
         $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('COUNT(t.id) as countTicket')->from('UVDeskTicketBundle:Ticket', 't');
+        $qb->select('COUNT(t.id) as countTicket')->from('UVDeskCoreBundle:Ticket', 't');
         $qb->andwhere('t.status = 1');
         $qb->andwhere('t.isTrashed != 1');
         $qb->andwhere('t.customer = :customerId');
