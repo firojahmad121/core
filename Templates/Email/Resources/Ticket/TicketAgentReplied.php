@@ -1,11 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
-<html style="font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%">
+<?php
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-</head>
+namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Ticket;
 
-<body style="font-family: Helvetica;padding: 10px;border: 1px solid #D2D2D2;font-size: 15px;color: #343b41;margin:0" class="fullbodymsg">
+use Webkul\UVDesk\CoreBundle\Templates\Email\UVDeskEmailTemplateInterface;
+
+abstract class TicketAgentReplied implements UVDeskEmailTemplateInterface
+{
+    private static $name = 'Agent Reply To The Customer\'s ticket';
+    private static $subject = 'New Reply Added on ticket #{% ticket.id %}';
+    private static $message = <<<MESSAGE
     <p></p>
     <p></p>
     <p></p>
@@ -68,6 +71,20 @@
     <p></p>
     <p style="border-top: 1px solid #ddd;text-align: center;margin-top: 15px;font-size: 12px;padding-top: 5px;color: #aaa">This email is a service from %companyNamePlaceholder%. Delivered by
         <a href="https://uvdesk.com" style="background-color:transparent">UVdesk</a>.</p>
-</body>
+MESSAGE;
 
-</html>
+    public static function getName()
+    {
+        return self::$name;
+    }
+
+    public static function getSubject()
+    {
+        return self::$subject;
+    }
+
+    public static function getMessage()
+    {
+        return self::$message;
+    }
+}

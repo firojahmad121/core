@@ -23,12 +23,8 @@ Webkul\UVDesk\CoreBundle\Entity\EmailTemplates:
         subject:
             type: string
             length: 191
-            nullable: true
         message:
             type: text
-        messageInline:
-            type: text
-            nullable: true
         templateType:
             type: string
             nullable: true

@@ -30,11 +30,6 @@ class EmailTemplates
     /**
      * @var string
      */
-    private $messageInline;
-
-    /**
-     * @var string
-     */
     private $templateType;
 
     /**
@@ -128,30 +123,6 @@ class EmailTemplates
     public function getMessage()
     {
         return $this->message;
-    }
-
-    /**
-     * Set messageInline
-     *
-     * @param string $messageInline
-     *
-     * @return EmailTemplates
-     */
-    public function setMessageInline($messageInline)
-    {
-        $this->messageInline = $messageInline;
-
-        return $this;
-    }
-
-    /**
-     * Get messageInline
-     *
-     * @return string
-     */
-    public function getMessageInline()
-    {
-        return $this->messageInline;
     }
 
     /**
