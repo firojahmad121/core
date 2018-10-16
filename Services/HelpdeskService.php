@@ -88,6 +88,11 @@ class HelpdeskService
         return $this->container->getParameter('uvdesk.helpdesk.navigation_items');
     }
 
+    public function getFileUploadManager()
+    {
+        return $this->container->get($this->container->getParameter('uvdesk.upload_manager.id'));
+    }
+
 	public function getPanelSidebarRoutes()
 	{
 		$router = $this->container->get('router');

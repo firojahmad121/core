@@ -8,9 +8,8 @@ use Webkul\UVDesk\CoreBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Webkul\UVDesk\SupportBundle\Entity\SupportRole;
-use Webkul\UVDesk\SupportBundle\Entity\UserInstance;
-use Webkul\UVDesk\SupportBundle\Services\FileUploader;
+use Webkul\UVDesk\CoreBundle\Entity\SupportRole;
+use Webkul\UVDesk\CoreBundle\Entity\UserInstance;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UserService
@@ -171,7 +170,7 @@ class UserService
             $userInstance->setIsStarred(!empty($extras['starred']) ? (bool) $extras['starred'] : false);
 
             if (!empty($extras['image'])) {
-                $fileName = $this->container->get('uvdesk.core.fs.upload.manager')->upload($extras['image']);
+                $fileName = $this->container->get('uvdesk.service')->getFileUploadManager()->upload($extras['image']);
 
                 if (!empty($fileName)) {
                     $userInstance->setProfileImagePath($fileName);

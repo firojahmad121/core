@@ -56,7 +56,7 @@ class UserProfile extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Webkul\UVDesk\SupportBundle\Entity\User',
+            'data_class' => 'Webkul\UVDesk\CoreBundle\Entity\User',
             'cascade_validation' => true,
             'allow_extra_fields' => true,
             'csrf_protection' => false,

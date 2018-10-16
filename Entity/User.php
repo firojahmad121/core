@@ -56,7 +56,7 @@ class User implements AdvancedUserInterface
     private $grantedRoles = [];
 
     /**
-     * @var \Webkul\UVDesk\SupportBundle\Entity\UserInstance
+     * @var \Webkul\UVDesk\CoreBundle\Entity\UserInstance
      */
     private $activeInstance;
 
