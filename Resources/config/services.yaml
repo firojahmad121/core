@@ -37,4 +37,4 @@ services:
     
     uvdesk.core.fs.upload.manager:
         public: true
-        class: Webkul\UVDesk\CoreBundle\FileSystem\DefaultHandler
+        class: Webkul\UVDesk\CoreBundle\FileSystem\DefaultManager
