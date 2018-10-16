@@ -27,7 +27,7 @@ class RefreshMailboxCommand extends Command
 
     protected function configure()
     {
-        $this->setName('uvdesk:sync-mailbox');
+        $this->setName('uvdesk:mailbox:refresh-tickets');
         $this->setDescription('Check if any new emails have been received and process them into tickets');
 
         $this->addArgument('emails', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, "Email address of the mailboxes you wish to update");

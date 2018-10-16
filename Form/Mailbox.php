@@ -41,11 +41,12 @@ class Mailbox extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {   
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Webkul\UVDesk\CoreBundle\Entity\Mailbox',
             'cascade_validation' => true,
             'csrf_protection' => false,
-        ));
+            'validation_groups' => ['Mailbox'],
+        ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
