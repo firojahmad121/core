@@ -1509,7 +1509,7 @@ input[type="radio"][disabled="disabled"] + .uv-radio-view {
   animation: jelly 0.5s ease-in-out;
 }
 .uv-pop-up-box .uv-pop-up-close {
-  background: url("/../bundles/uvdeskcorecenter/images/icon-close.svg");
+  background: url("/../bundles/uvdeskcore/images/icon-close.svg");
   width: 15px;
   height: 15px;
   position: absolute;
