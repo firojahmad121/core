@@ -2,10 +2,10 @@
 
 namespace Webkul\UVDesk\CoreBundle\Controller;
 
-use Webkul\UVDesk\UVDeskCoreBundle\Entity;
-use Webkul\UVDesk\UVDeskCoreBundle\Form;
-use Webkul\UVDesk\UVDeskCoreBundle\Entity\User;
-use Webkul\UVDesk\UVDeskCoreBundle\Entity\SupportTeam;
+// use Webkul\UVDesk\UVDeskCore\Entity;
+use Webkul\UVDesk\CoreBundle\Form;
+use Webkul\UVDesk\CoreBundle\Entity\User;
+use Webkul\UVDesk\CoreBundle\Entity\SupportTeam;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,7 +21,9 @@ class Team extends Controller
 
     public function createTeam(Request $request)
     {
-        $supportTeam = new SupportTeam;
+    
+        $supportTeam = new SupportTeam();
+
         $errors = [];
 
         if($request->getMethod() == "POST") {
@@ -31,16 +33,8 @@ class Team extends Controller
             $oldUsers = ($usersList = $supportTeam->getUsers()) ? $usersList->toArray() : $usersList;
             $oldGroups = ($grpList =  $supportTeam->getSupportGroups()) ? $grpList->toArray() : $grpList;
 
-           // $form = $this->createForm(Form\SubGroup::class, $subGroup, ['container' => $this->container,]);
-            
-            $form = $this->createForm(Form\SubGroup::class, $supportTeam, [
-                'container' => $this->container,
-            ]);
-
-            $form->handleRequest($request);
-
             $allDetails = $request->request->all(); 
-      
+
             $em = $this->getDoctrine()->getManager();
             $supportTeam->setName($allDetails['name']);
             $supportTeam->setDescription($allDetails['description']);
@@ -84,9 +78,7 @@ class Team extends Controller
             $em->persist($supportTeam);
             $em->flush();
 
-
             return $this->redirect($this->generateUrl('helpdesk_member_support_team_collection'));
-
 
             if ($form->isSubmitted() && $form->isValid() && !($errors = $this->customBlankValidation($subGroup, ['groups']))) {
 
@@ -147,7 +139,7 @@ class Team extends Controller
             }
         }
 
-        return $this->render('@UVDeskCoreBundle/Teams/createSupportTeam.html.twig', [
+        return $this->render('@UVDeskCore/Teams/createSupportTeam.html.twig', [
                 'team' => $supportTeam,
                 'errors' => json_encode($errors)
         ]);
@@ -169,11 +161,11 @@ class Team extends Controller
             $oldUsers = ($usersList = $supportTeam->getUsers()) ? $usersList->toArray() : $usersList;
             $oldGroups = ($grpList = $supportTeam->getSupportGroups()) ? $grpList->toArray() : $grpList;
            
-            $form = $this->createForm(Form\SubGroup::class, $supportTeam, [
-                'container' => $this->container,
-            ]);
+            // $form = $this->createForm(Form\SubGroup::class, $supportTeam, [
+            //     'container' => $this->container,
+            // ]);
 
-            $form->handleRequest($request);
+            // $form->handleRequest($request);
             $allDetails = $request->request->all(); 
             
             $em = $this->getDoctrine()->getManager();

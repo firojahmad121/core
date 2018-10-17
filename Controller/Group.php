@@ -45,9 +45,6 @@ class Group extends Controller
             $oldUsers = ($usersList = $group->getUsers()) ? $usersList->toArray() : [];
             $oldTeam  = ($teamList = $group->getSupportTeams()) ? $teamList->toArray() : [];
             
-            $form = $this->createForm(Form\Group::class, $group, [
-                'container' => $this->container,
-            ]);
 
             $allDetails = $request->request->all();
             
@@ -171,14 +168,14 @@ class Group extends Controller
                     ->where(implode(' OR ', $userTeam))
                     ->getQuery()->getResult();
             }
-
-
-            foreach ($userList as $user) {
-                $userInstance = $user->getAgentInstance();
-                $userInstance->addSupportGroup($group);
-                $em->persist($userInstance);
+            if(!empty($userList)){
+                foreach ($userList as $user) {
+                    $userInstance = $user->getAgentInstance();
+                    $userInstance->addSupportGroup($group);
+                    $em->persist($userInstance);
+                }    
             }
-
+           
             // Add Teams to Group
             foreach ($userTeam as $supportTeam) {
                 $group->addSupportTeam($supportTeam);
@@ -187,53 +184,7 @@ class Group extends Controller
             $em->persist($group);
             $em->flush();
 
-
-            // foreach ($userList as $user) {
-            //     $userInstance = $user->getAgentInstance();
-            //     $userInstance->addSupportGroup($group);
-            //     // dump($userInstance->getSupportGroups()->toArray());
-            //     // die;
-            //     $em->persist($userInstance);
-            // }
-
-            // //Add Teams to Group
-            // foreach ($userTeam as $supportTeam) {
-            //     $group->addSupportTeam($supportTeam);
-            // }
            
-            return $this->redirect($this->generateUrl('helpdesk_member_support_group_collection'));
-
-
-            // $usersList = (!empty($allDetails['users']))? $allDetails['users'] : [];
-            // $userTeam  = (!empty($allDetails['supportTeams']))? $allDetails['supportTeams'] : [];
-            // if(!empty($usersList)){
-            //     foreach ($usersList as $user) {
-            //             $userInstance = $em->getRepository('UVDeskCoreBundle:UserInstance')->findOneBy(['user' => $user]);
-            //             $group       = $em->getRepository('UVDeskCoreBundle:SupportGroup')->find(['id' => $supportGroup->getId()]);
-            
-            //             if(!$oldUsers || !in_array($user, $oldUsers)) {
-            //                 $userInstance->addSupportGroup($group);
-            //                 $em->persist($userInstance);
-            //             }elseif($oldUsers && ($key = array_search($user, $oldUsers)) !== false)
-            //                 unset($oldUsers[$key]);
-
-            //             // foreach($userTeam as $team){
-            //             //     if(!$oldUsers || !in_array($user, $oldUsers)) {
-            //             //         $supportTeam = $em->getRepository('UVDeskCoreBundle:SupportTeam')->find(['id' => $team]);
-            //             //         $group->addSupportTeam($supportTeam);
-            //             //         $em->persist($group);
-            //             //     }elseif($oldUsers && ($key = array_search($user, $oldUsers)) !== false)
-            //             //         unset($oldUsers[$key]);
-            //             // }
-                  
-            //     }
-            //     foreach ($oldUsers as $removeUser) {
-            //         $removeUser->removeSupportGroup($group);
-            //         $em->persist($removeUser);
-            //     }
-            // }  
-            // $em->flush();    
-
             return $this->redirect($this->generateUrl('helpdesk_member_support_group_collection'));
             
             if ($form->isSubmitted() && $form->isvalid()) {

@@ -64,7 +64,7 @@ class ConsoleListener
         }
         
         $output = $event->getOutput();
-        $mailboxes = $this->container->getParameter('uvdesk.mailboxes');
+        $mailboxes = $this->container->getParameter('uvdesk_tickets')['mailbox'];
         $mailboxRepository = $this->entityManager->getRepository('UVDeskCoreBundle:Mailbox');
 
         // Check for any duplicate mailboxes for an email
@@ -72,7 +72,7 @@ class ConsoleListener
             if ($occurrences > 1) {
                 $output->writeln([
                     "\n <fg=red;>[MIS-CONFIG]</> <comment>Multiple mailboxes have been configured for email </comment><info>$email</info><comment>.</comment>",
-                    "\n Please verify your configuration settings under <info>uvdesk.mailboxes</info>.\n",
+                    "\n Please verify your configuration settings under <info>uvdesk_tickets.mailboxes</info>.\n",
                 ]);
 
                 $event->disableCommand();
@@ -97,7 +97,7 @@ class ConsoleListener
 
                 $output->writeln([
                     "\n <fg=red;>[MIS-CONFIG]</> <info>$mailboxName</info><comment> has been setup as a localized mailbox but no configurations were found for email </comment><info>$mailboxEmail</info><comment>.</comment>",
-                    "\n Please verify your configuration settings under <info>uvdesk.mailboxes</info>.\n",
+                    "\n Please verify your configuration settings under <info>uvdesk_tickets.mailboxes</info>.\n",
                 ]);
 
                 $event->disableCommand();
