@@ -44,7 +44,5 @@ class EmailTemplates extends DoctrineFixture
 
             $entityManager->flush();
         }
-
-        die;
     }
 }
