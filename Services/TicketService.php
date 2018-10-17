@@ -28,7 +28,7 @@ class TicketService
 
     public function getUniqueReplyTo()
     {
-        return sprintf("support.%s%s", TokenGenerator::generateToken(22, '0123456789abcdefghijklmnopqrstuvwxyz'), $this->container->getParameter('uvdesk_tickets')['domain']);
+        return sprintf("support.%s%s", TokenGenerator::generateToken(22, '0123456789abcdefghijklmnopqrstuvwxyz'), $this->container->getParameter('uvdesk.email_domain'));
     }
 
     public function getRandomRefrenceId()
@@ -40,7 +40,7 @@ class TicketService
     }
     public function getDefaultType()
     {
-        $typeCode = $this->container->getParameter('uvdesk_tickets')['default']['type'];
+        $typeCode = $this->container->getParameter('uvdesk.default.type');
         $ticketType = $this->entityManager->getRepository('UVDeskCoreBundle:TicketType')->findOneByCode($typeCode);
 
         return !empty($ticketType) ? $ticketType : null;
@@ -48,7 +48,7 @@ class TicketService
 
     public function getDefaultStatus()
     {
-        $statusCode = $this->container->getParameter('uvdesk_tickets')['default']['status'];
+        $statusCode = $this->container->getParameter('uvdesk.default.status');
         $ticketStatus = $this->entityManager->getRepository('UVDeskCoreBundle:TicketStatus')->findOneByCode($statusCode);
 
         return !empty($ticketStatus) ? $ticketStatus : null;
@@ -56,7 +56,7 @@ class TicketService
 
     public function getDefaultPriority()
     {
-        $priorityCode = $this->container->getParameter('uvdesk_tickets')['default']['priority'];
+        $priorityCode = $this->container->getParameter('uvdesk.default.priority');
         $ticketPriority = $this->entityManager->getRepository('UVDeskCoreBundle:TicketPriority')->findOneByCode($priorityCode);
 
         return !empty($ticketPriority) ? $ticketPriority : null;
