@@ -24,7 +24,6 @@ class PrivilegeXHR extends Controller
 
     public function deletePrivilegeXHR($supportPrivilegeId)
     {
-        // $this->isAccessAuthorized('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE');
         $request = $this->get('request_stack')->getCurrentRequest();
 
         if ("DELETE" == $request->getMethod()) {

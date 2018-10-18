@@ -114,8 +114,8 @@ class Group extends Controller
             }
             $em->persist($group);
             $em->flush();
-
-
+    
+            $this->addFlash('success', 'Success ! Group information updated successfully.');
             return $this->redirect($this->generateUrl('helpdesk_member_support_group_collection'));
         }
         return $this->render('@UVDeskCore/Groups/updateSupportGroup.html.twig', [
@@ -183,9 +183,9 @@ class Group extends Controller
             
             $em->persist($group);
             $em->flush();
-           
-            return $this->redirect($this->generateUrl('helpdesk_member_support_group_collection'));
 
+            $this->addFlash('success', 'Success ! Group information saved successfully.');
+            return $this->redirect($this->generateUrl('helpdesk_member_support_group_collection'));
         }
 
         return $this->render('@UVDeskCore/Groups/createSupportGroup.html.twig', [
