@@ -183,54 +183,14 @@ class Group extends Controller
             
             $em->persist($group);
             $em->flush();
-
            
             return $this->redirect($this->generateUrl('helpdesk_member_support_group_collection'));
-            
-            if ($form->isSubmitted() && $form->isvalid()) {
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($group);
-                $usersList = $group->getUsers();
-                
-                foreach ($usersList as $user) {
-                    if(!$oldUsers || !in_array($user, $oldUsers)) {
-                        $user->addGroup($group);
-                        $em->persist($user);
-                    }elseif($oldUsers && ($key = array_search($user, $oldUsers)) !== false)
-                        unset($oldUsers[$key]);
-                }
 
-                foreach ($oldUsers as $removeUser) {
-                    $removeUser->removeGroup($group);
-                    $em->persist($removeUser);
-                }
-                $em->flush();
-
-                if($request->attributes->get('id')) {
-                    $this->get('event.manager')->trigger([
-                            'event' => 'group.updated',
-                            'entity' => $group
-                        ]);
-                    $message = $this->translate('Success! Group has been updated successfully.');
-                } else {
-                    $this->get('event.manager')->trigger([
-                            'event' => 'group.created',
-                            'entity' => $group
-                        ]);
-                    $message = $this->translate('Success! Group has been added successfully.');
-                }
-
-                $this->addFlash('success', $message);
-
-                return $this->redirect($this->generateUrl('helpdesk_member_support_group_collection'));
-            } else {
-                $errors = $this->getFormErrors($form);
-            }
         }
 
         return $this->render('@UVDeskCore/Groups/createSupportGroup.html.twig', [
                 'group' => $group,
                 'errors' => json_encode($errors)
-            ]);
+        ]);
     }
 }
