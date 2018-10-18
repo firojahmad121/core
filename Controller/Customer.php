@@ -24,7 +24,7 @@ class Customer extends Controller
             if($request->getMethod() == "POST") {
                 $contentFile = $request->files->get('customer_form');
 
-                $tempUser = $em->getRepository('UVDencodePasswordeskCoreBundle:User')->findBy(['email' =>  $request->request->get('customer_form')['email']]);
+                $tempUser = $em->getRepository('UVDeskCoreBundle:User')->findBy(['email' =>  $request->request->get('customer_form')['email']]);
                 if(!$tempUser) {
 
                     $content = $request->request->all();
