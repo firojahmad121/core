@@ -1,8 +1,8 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Workflows\Ticket;
+namespace Webkul\UVDesk\CoreBundle\Workflows\Agent;
 
-class AddAgentReply
+class AgentForgotPassword
 {
     public static function getAlias()
     {

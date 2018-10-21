@@ -2,7 +2,7 @@
 
 namespace Webkul\UVDesk\CoreBundle\Workflows\Ticket;
 
-class AddAgentReply
+class AddNote
 {
     public static function getAlias()
     {
