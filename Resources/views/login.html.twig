@@ -19,7 +19,6 @@
     }
 </style>
 {% endblock %}
-
 {% block pageWrapper %}
     <div class="uv-large-box-plank">
 		<div class="uv-large-box-rt">
@@ -100,10 +99,10 @@
                     }],
                     '_password': [{
                         required: true,
-                        msg: '{{ "This field is mandatory"|trans }}'
+                        msg: '{{"This field is mandatory"|trans }}'
                     },{
                         minLength: 8,
-                        msg: '{{ "Password must contains 8 Characters"|trans }}'
+                        msg: '{{"Password must contains 8 Characters"|trans }}'
                     }]
                 }
             });

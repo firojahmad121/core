@@ -24,7 +24,7 @@ class MailboxChannelXHR extends Controller
     {
         if ("POST" == $request->getMethod() && null != $request->get('message')) {
             $message = $request->get('message');
-            $this->get('mailbox.service')->processMail($message);
+            $this->get('uvdesk.core.mailbox')->processMail($message);
         }
         
         return new Response(null, 200, ['Content-Type' => 'application/json']);

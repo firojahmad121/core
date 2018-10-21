@@ -42,6 +42,11 @@ class CoreExtension extends Extension
                                     $container->setParameter("uvdesk.default.templates.$template", $templateValue);
                                 }
                                 break;
+                            case 'ticket':
+                                foreach ($defaultItemValue as $option => $optionValue) {
+                                    $container->setParameter("uvdesk.default.ticket.$option", $optionValue);
+                                }
+                                break;
                             default:
                                 $container->setParameter("uvdesk.default.$defaultItem", $defaultItemValue);
                                 break;

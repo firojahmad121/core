@@ -21,10 +21,20 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->node('default', 'array')
                     ->children()
+<<<<<<< HEAD
                         // ->node('mailbox', 'scalar')->end()
                         // ->node('status', 'scalar')->cannotBeEmpty()->end()
                         // ->node('priority', 'scalar')->cannotBeEmpty()->end()
                         // ->node('type', 'scalar')->cannotBeEmpty()->end()
+=======
+                        ->node('ticket', 'array')
+                            ->children()
+                                ->node('type', 'scalar')->defaultValue('support')->end()
+                                ->node('status', 'scalar')->defaultValue('open')->end()
+                                ->node('priority', 'scalar')->defaultValue('low')->end()
+                            ->end()
+                        ->end()
+>>>>>>> b4d98bbbb8c522d2fb7da5825d39a148b0b0f1ce
                         ->node('templates', 'array')
                             ->children()
                                 ->node('email', 'scalar')->defaultValue('mail.html.twig')->end()

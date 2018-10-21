@@ -6,6 +6,10 @@ uvdesk:
     
     # Default resources
     default:
+        ticket:
+            type: support
+            status: open
+            priority: low
         templates:
             email: mail.html.twig
     
