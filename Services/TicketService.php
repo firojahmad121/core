@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Webkul\UVDesk\CoreBundle\Entity\Ticket;
 use Webkul\UVDesk\CoreBundle\Entity\Thread;
+use Webkul\UVDesk\CoreBundle\Entity\Attachment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Webkul\UVDesk\CoreBundle\Utils\TokenGenerator;
@@ -28,7 +29,7 @@ class TicketService
 
     public function getUniqueReplyTo()
     {
-        return sprintf("support.%s%s", TokenGenerator::generateToken(22, '0123456789abcdefghijklmnopqrstuvwxyz'), $this->container->getParameter('uvdesk_tickets')['domain']);
+        return sprintf("support.%s%s", TokenGenerator::generateToken(22, '0123456789abcdefghijklmnopqrstuvwxyz'), $this->container->getParameter('uvdesk.email_domain'));
     }
 
     public function getRandomRefrenceId()
@@ -88,7 +89,6 @@ class TicketService
     public function createTicket(array $params = [])
     {
         $thread = $this->entityManager->getRepository('UVDeskCoreBundle:Thread')->findOneByMessageId($params['messageId']);
-
         if (empty($thread)) {
             $user = $this->entityManager->getRepository('UVDeskCoreBundle:User')->findOneByEmail($params['from']);
 
@@ -119,7 +119,6 @@ class TicketService
         if ('website' == $ticketData['source']) {
             $ticketData['messageId'] = $this->getRandomRefrenceId();
         }
-
         // Set Defaults
         $ticketType = !empty($ticketData['type']) ? $ticketData['type'] : $this->getDefaultType();
         $ticketStatus = !empty($ticketData['status']) ? $ticketData['status'] : $this->getDefaultStatus();
@@ -152,7 +151,6 @@ class TicketService
     public function createThread(Ticket $ticket, array $threadData)
     {
         $threadData['isLocked'] = 0;
-        // $this->ticketLastReply = $this->getLastReply($ticket->getId(), false);
         
         if ('forward' === $threadData['threadType']) {
             $threadData['replyTo'] = $threadData['to'];
@@ -198,7 +196,29 @@ class TicketService
         $this->entityManager->persist($thread);
         $this->entityManager->flush();
 
+        // Uploading Attachments
+        $fileNames['fileNames'] = $threadData['attachments'];
+        if(!empty($fileNames['fileNames'])){
+            $this->saveThreadAttachment($thread, $fileNames['fileNames']);
+        }
+
         return $thread;
+    }
+
+    public function saveThreadAttachment($thread,$fileNames) {
+        foreach ($fileNames as $file) {
+
+            $fileName  = $this->container->get('uvdesk.service')->getFileUploadManager()->upload($file);
+
+            $attachment = new Attachment();
+
+            $attachment->setPath($fileName);
+            $attachment->setThread($thread);
+            $this->entityManager->persist($attachment);
+            $this->entityManager->flush();
+
+            $this->attachments[] = $attachment;
+        }
     }
 
     public function getTypes()
@@ -593,15 +613,6 @@ class TicketService
                     $this->entityManager->persist($ticket);
                     $this->entityManager->flush();
 
-                    //Event Triggered
-                    // if($flag) {
-                    //     $this->container->get('event.manager')->trigger([
-                    //             'event' => 'ticket.status.updated',
-                    //             'entity' => $ticket,
-                    //             'targetEntity' => $status,
-                    //             'notePlaceholders' => $notePlaceholders
-                    //         ]);
-                    // }
                     break;
                 case 'type':
                     $type = $this->entityManager->getRepository('UVDeskCoreBundle:TicketType')->find($data['targetId']);

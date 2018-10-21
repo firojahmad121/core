@@ -1,8 +1,8 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Workflows\Ticket;
+namespace Webkul\UVDesk\CoreBundle\Workflows\Task;
 
-class AddAgentReply
+class UpdateTask
 {
     public static function getAlias()
     {

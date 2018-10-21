@@ -106,6 +106,7 @@ class Ticket extends Controller
     
     public function saveTicket(Request $request)
     {
+
         $requestParams = $request->request->all();
         $entityManager = $this->getDoctrine()->getManager();
         $response = $this->redirect($this->generateUrl('helpdesk_member_ticket_collection'));
@@ -125,9 +126,8 @@ class Ticket extends Controller
 
             if ($referralURL === $expectedReferralURL) {
                 $referralTicket = $entityManager->getRepository('UVDeskCoreBundle:Ticket')->findOneById($referralId);
-                
-                if (!empty($referralTicket)) {
-                    $ticketValidationGroup = 'CustomerCreateTicket';
+                if (!empty($referraelTicket)) {
+                    $ticketValidatieonGroup = 'CustomerCreateTicket';
                     
                 }
             }
@@ -182,6 +182,7 @@ class Ticket extends Controller
             'createdBy' => 'agent',
             'customer' => $customer,
             'user' => $this->getUser(),
+            'attachments' => $request->files->get('attachments'),
         ];
 
         $thread = $this->get('ticket.service')->createTicketBase($ticketData);
