@@ -1,0 +1,13 @@
+uvdesk:
+    site_url: 'localhost:8000'
+    email_domain: "@@localhost"
+    upload_manager:
+        id: uvdesk.core.fs.upload.manager
+    
+    # Default resources
+    default:
+        templates:
+            email: mail.html.twig
+    
+    # Configure your mailboxes here
+    mailboxes: ~

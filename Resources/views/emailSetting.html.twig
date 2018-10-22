@@ -1,0 +1,218 @@
+{% extends "@UVDeskCore//Templates//layout.html.twig" %}
+{% block title %} 
+    {% trans %}Email Setting{% endtrans %}
+{% endblock %}
+
+{% block pageContent %} 
+    <style>
+        .hide {
+            display: none;
+        }
+        .email-command-table {
+            border-collapse: collapse;
+        }
+        .uv-table table.email-command-table tbody td, table.email-command-table thead th  {
+            border: 1px solid #d3d3d3;
+        }
+        .uv-paper .uv-element-block.uv-margin-top-30 {
+            margin-top: 30px;
+        }
+        .uv-checkbox *{
+            cursor: pointer;
+        }
+    </style>
+	<div class="uv-inner-section">
+        {{ include('@UVDeskCore/Templates/panel-sidebar.html.twig') }}
+		
+		<div class="uv-view {% if app.request.cookies and app.request.cookies.get('uv-asideView') %}uv-aside-view{% endif %}">
+            <h1>
+                {% trans %}Email Setting{% endtrans %} 
+            </h1>
+            <div id="email-setting-view">
+                         
+                <div class="uv-element-block">
+                    <form id="email-setting-form" method="POST" action="{{ path('email_setting') }}"> 
+                        <div class="uv-element-block">
+                            <div class="uv-field-label">
+                                {% trans %}Email Commands{% endtrans %}
+                            </div>
+                            <div>
+                                <div class="uv-element-block">
+                                    <label>
+                                        <div class="uv-checkbox">
+                                            <input type="checkbox" name="emailsetting_form[allowEmailCommand]" value="1">
+                                            {# <input type="checkbox" name="emailsetting_form[allowEmailCommand]" value="1" {% if(form.vars.value.allowEmailCommand) %}checked="checked"{% endif %}> #}
+                                            <span class="uv-checkbox-view"></span>
+                                        </div>
+                                        <span class="uv-checkbox-label">{{'is Active'|trans }}</span>
+                                    </label>
+                                    <span class="uv-field-info uv-margin-top-10">{% trans %}Email Command status enables or disables use of email commands{% endtrans %}</span>
+                                </div>
+                                <p>
+                                    {% trans %}User can perform actions to Ticket by adding suitable lines in beginning of reply. Correct Command lines starting with @ in email message, will be executed and removed from reply.{% endtrans %}
+                                    <span class="more" data-id="#email-command-table">
+                                        <a href="#">{{ 'Show More'|trans }}</a>
+                                    </span>
+                                    <span class="less hide" data-id="#email-command-table">
+                                        <a href="#">{{ 'Show Less'|trans }}</a>
+                                    </span>
+                                </p>
+                                <div class="uv-table">
+                                    <table class="hide email-command-table" id="email-command-table">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ 'Action'|trans }}</th>
+                                                <th>{{ 'Command'|trans }}</th>
+                                                <th colspan="2">{{ 'Example'|trans }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{ 'Assign agent'|trans }}</td>
+                                                <td>@agent</td>
+                                                <td>@agent agentEmail@mail.com
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{ 'Change Priority'|trans }}</td>
+                                                <td>@priority</td>
+                                                <td><div>@priority 1 or</div>
+                                                    <div>@priority low or</div>
+                                                    <div>@priority Low</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{ 'Change Status'|trans }}</td>
+                                                <td>@status</td>
+                                                <td><div>@status 1 or</div>
+                                                    <div>@status pending or</div>
+                                                    <div>@status Pending</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{ 'Change group'|trans }}</td>
+                                                <td>@group</td>
+                                                <td><div>@group 47 or</div>
+                                                    <div>@group groupname or</div>
+                                                    <div>@group 'quotedname'</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{ 'Change type'|trans }}</td>
+                                                <td>@type</td>
+                                                <td><div>@type 2 or</div>
+                                                    <div>@type tickettype or</div>
+                                                    <div>@group 'quotedtypename'</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{ 'Add/Remove Star'|trans }}</td>
+                                                <td>@star</td>
+                                                <td>@star 1
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uv-element-block uv-margin-top-30">
+                            <div class="uv-element-block">
+                                <div class="uv-field-label">
+                                    {% trans %}Email Delimiter{% endtrans %}
+                                </div>
+                                <div class="uv-element-block">
+                                    <label>
+                                        <div class="uv-checkbox">
+                                            <input type="checkbox" name="emailsetting_form[enableReplyTrimming]" value="1" {% if(form.vars.value.enableReplyTrimming is defined and form.vars.value.enableReplyTrimming) %}checked="checked"{% endif %}>
+                                            <span class="uv-checkbox-view"></span>
+                                        </div>
+                                        <span class="uv-checkbox-label">{{'is Active'|trans }}</span>
+                                    </label>
+                                    <span class="uv-field-info uv-margin-top-10">{% trans %}Enable Email trimming{% endtrans %}</span>
+                                </div>                                
+                                {# <input type="text" class="uv-field" id="emailsetting_delimiter" name="emailsetting_form[emailDelimiter]"  value="{% if(form.vars.value.emailDelimiter) %}{{ form.vars.value.emailDelimiter }}{% endif %}"> #}
+                                <input type="text" class="uv-field" id="emailsetting_delimiter" name="emailsetting_form[emailDelimiter]"  value="">
+                                <span class="uv-field-info">
+                                    {% trans %}Email delimiter with 20 to 100 Characters{% endtrans %} 
+                                </span>
+                            </div>
+                            <div class="uv-element-block">
+                                <p>{% trans %}Often Reply emails like from gmail contains extra and redundant previous mail data. This data can be removed by adding delimiter i.e. specific line before each reply. You can customize delimiter according to your language or requirement. default delimiter is{% endtrans %}:
+                                    <br><i><--Please add content above this line--></i>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="uv-element-block">
+                            <button type="submit" class="uv-btn" id="emailsetting_form_save" >{{'Save Changes'|trans}}</button>
+                            {# <button type="submit" class="uv-btn" id="emailsetting_form_save" {% if user_service.checkCompanyPermission('email_settings') %}name="emailsetting_form[save]"{% else %}disabled="disabled"{% endif %}>{{'Save Changes'|trans}}</button> #}
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block footer %}
+{{ parent() }}
+
+<script type="text/javascript">
+    $('document').ready(function() {
+        $('.more').on('click', function(e) {
+            $($(this).attr('data-id')).toggleClass('hide');
+            $(this).addClass('hide');
+            $(this).siblings('.less').removeClass('hide');
+        });
+        $('.less').on('click', function(e) {
+            $($(this).attr('data-id')).toggleClass('hide');
+            $(this).addClass('hide');
+            $(this).siblings('.more').removeClass('hide');
+        });
+    });
+
+    $(function() {
+        var FullView = Backbone.View.extend({
+            el: $('#email-setting-form'),
+            events: {
+                'click button[type=submit]': 'submitForm',
+                'change .uv-field': 'formChanged',
+            },
+            formChanged: function() {
+                this.validateValue();
+            },
+            submitForm: function(e) {
+                e.preventDefault();
+                if(this.validateValue()) {
+                    $(e.target).attr('disabled', true);
+                    $('#email-setting-form').submit();
+                }
+            },
+            validateValue: function() {
+                elem = $('#emailsetting_delimiter');
+                val = elem.val();
+                if(!val || (val.length >= 20 && val.length <= 100) ) {
+                    this.$el.find('.uv-field-error-icon').remove();
+                    this.$el.find('.uv-field-success-icon').remove();
+                    this.$el.find('.uv-field-message').remove();
+                    elem.removeClass('uv-field-error');
+                    elem.after('<span class="uv-field-success-icon"></span>');
+                    return true;
+                } else {
+                    this.$el.find('.uv-field-error-icon').remove();
+                    this.$el.find('.uv-field-success-icon').remove();
+                    this.$el.find('.uv-field-message').remove();                    
+                    elem.addClass('uv-field-error');
+                    elem.after('<span class="uv-field-error-icon"></span>');
+                    elem.closest('.uv-element-block').append('<span class="uv-field-message">{{ "Provide Email delimiter with 20 to 100 Characters"|trans }}</span>');
+                    return false;                    
+                }
+            },
+        });
+
+        var fullView = new FullView();
+    });
+</script>
+{% endblock %}
