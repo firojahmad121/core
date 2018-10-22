@@ -4,6 +4,8 @@ namespace Webkul\UVDesk\CoreBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Thread extends Controller
@@ -29,8 +31,8 @@ class Thread extends Controller
                 }
             }
 
-            // Deny access unles granted ticket view permission
-            $this->denyAccessUnlessGranted('AGENT_VIEW', $ticket);
+            // // Deny access unles granted ticket view permission
+            // $this->denyAccessUnlessGranted('AGENT_VIEW', $ticket);
 
             // Check if reply content is empty
             $parsedMessage = trim(strip_tags($params['reply'], '<img>'));
@@ -60,16 +62,26 @@ class Thread extends Controller
         
         // Create Thread
         $thread = $this->get('ticket.service')->createThread($ticket, $threadDetails);
-        $this->addFlash('success', ucwords($params['threadType']) . " added successfully.");
+        // $this->addFlash('success', ucwords($params['threadType']) . " added successfully.");
 
         // @TODO: Remove Agent Draft Thread
         // @TODO: Trigger Thread Created Event
+        // dump($thread);
+        
         $ticket->createdThread = $thread;
-        $this->get('uvdesk.automations')->trigger([
+
+        $event = new GenericEvent('ticket.replyAgent', [
             'entity' => $ticket,
-            'event' => 'ticket.reply.added'
+            'event' => 'ticket.replyAgent',
         ]);
 
+        $this->get('event_dispatcher')->dispatch('uvdesk.automation.workflow.execute', $event);
+        // $this->get('uvdesk.automations')->trigger([
+        //     'entity' => $ticket,
+        //     'event' => 'ticket.reply.added'
+        // ]);
+        
+        die;
         // Check if ticket status needs to be updated
         $updateTicketToStatus = !empty($params['status']) ? (trim($params['status']) ?: null) : null;
 

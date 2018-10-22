@@ -24,6 +24,11 @@ services:
         class: Webkul\UVDesk\CoreBundle\Services\TicketService
         arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
     
+    uvdesk.core.mailbox:
+        public: true
+        class: Webkul\UVDesk\CoreBundle\Channels\Services\MailboxService
+        arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
+    
     uvdesk.core.fs.upload.manager:
         public: true
         class: Webkul\UVDesk\CoreBundle\FileSystem\DefaultManager
@@ -56,3 +61,9 @@ services:
         tags:
             - { name: kernel.event_listener, event: console.command }
             - { name: kernel.event_listener, event: console.terminate }
+    
+    Webkul\UVDesk\CoreBundle\Workflows\:
+        resource: '../../Workflows/*'
+        arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
+        tags:
+            - { name: uvdesk.automations.workflow, event: workflow.execute }

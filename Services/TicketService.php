@@ -40,7 +40,7 @@ class TicketService
     }
     public function getDefaultType()
     {
-        $typeCode = $this->container->getParameter('uvdesk.default.type');
+        $typeCode = $this->container->getParameter('uvdesk.default.ticket.type');
         $ticketType = $this->entityManager->getRepository('UVDeskCoreBundle:TicketType')->findOneByCode($typeCode);
 
         return !empty($ticketType) ? $ticketType : null;
@@ -48,7 +48,7 @@ class TicketService
 
     public function getDefaultStatus()
     {
-        $statusCode = $this->container->getParameter('uvdesk.default.status');
+        $statusCode = $this->container->getParameter('uvdesk.default.ticket.status');
         $ticketStatus = $this->entityManager->getRepository('UVDeskCoreBundle:TicketStatus')->findOneByCode($statusCode);
 
         return !empty($ticketStatus) ? $ticketStatus : null;
@@ -56,7 +56,7 @@ class TicketService
 
     public function getDefaultPriority()
     {
-        $priorityCode = $this->container->getParameter('uvdesk.default.priority');
+        $priorityCode = $this->container->getParameter('uvdesk.default.ticket.priority');
         $ticketPriority = $this->entityManager->getRepository('UVDeskCoreBundle:TicketPriority')->findOneByCode($priorityCode);
 
         return !empty($ticketPriority) ? $ticketPriority : null;
@@ -105,7 +105,11 @@ class TicketService
             }
 
             $params['role'] = 4;
+<<<<<<< HEAD
             $params['mailbox'] = $this->container->get('mailbox.service')->getMailbox(current($params['replyTo'])); 
+=======
+            $params['mailbox'] = $this->container->get('uvdesk.core.mailbox')->getMailbox(current($params['replyTo'])); 
+>>>>>>> b4d98bbbb8c522d2fb7da5825d39a148b0b0f1ce
             $params['customer'] = $params['user'] = $user;
 
             return $this->createTicketBase($params);
@@ -124,7 +128,11 @@ class TicketService
         $ticketType = !empty($ticketData['type']) ? $ticketData['type'] : $this->getDefaultType();
         $ticketStatus = !empty($ticketData['status']) ? $ticketData['status'] : $this->getDefaultStatus();
         $ticketPriority = !empty($ticketData['priority']) ? $ticketData['priority'] : $this->getDefaultPriority();
+<<<<<<< HEAD
         $ticketMailbox = !empty($ticketData['mailbox']) ? $ticketData['mailbox'] : $this->container->get('mailbox.service')->getDefaultMailbox();
+=======
+        $ticketMailbox = !empty($ticketData['mailbox']) ? $ticketData['mailbox'] : $this->container->get('uvdesk.core.mailbox')->getDefaultMailbox();
+>>>>>>> b4d98bbbb8c522d2fb7da5825d39a148b0b0f1ce
 
         $ticketData['type'] = $ticketType;
         $ticketData['status'] = $ticketStatus;
