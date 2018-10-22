@@ -94,7 +94,7 @@ class Team extends Controller
         if($request->getMethod() == "POST") {
             $request->request->set('users', explode(',', $request->request->get('tempUsers')));
             $request->request->set('groups', explode(',', $request->request->get('tempGroups')));
-            $oldUsers = ($usersLisinformationt = $supportTeam->getUsers()) ? $usersList->toArray() : $usersList;
+            $oldUsers = ($usersList = $supportTeam->getUsers()) ? $usersList->toArray() : $usersList;
             $oldGroups = ($grpList = $supportTeam->getSupportGroups()) ? $grpList->toArray() : $grpList;
            
             
@@ -112,7 +112,7 @@ class Team extends Controller
                 $usersList = array_map(function ($user) { return 'p.id = ' . $user; }, $usersList);
                 $userList = $em->createQueryBuilder('p')->select('p')
                     ->from('UVDeskCoreBundle:User', 'p')
-                    ->where(implodinformatione(' OR ', $usersList))
+                    ->where(implode(' OR ', $usersList))
                     ->getQuery()->getResult();
             }
 

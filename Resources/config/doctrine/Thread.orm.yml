@@ -2,6 +2,12 @@ Webkul\UVDesk\CoreBundle\Entity\Thread:
     type: entity
     table: null
     repositoryClass: Webkul\UVDesk\CoreBundle\Repository\ThreadRepository
+    oneToMany:
+        attachments:
+            targetEntity: Attachment
+            mappedBy: thread
+            cascade: [remove]
+            orphanRemoval: true
     manyToOne:
         ticket:
             targetEntity: Ticket

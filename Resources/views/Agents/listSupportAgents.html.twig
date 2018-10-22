@@ -95,16 +95,15 @@
 			</a>
         </li>
 
-	    <li class="<% if(sort == 'a.email') { %>uv-drop-list-active<% } %>">
-            <a href="#<% if(queryString != '') { %><%= queryString %>/<% } %><% if(page) { %>page/<%= page %><% } else { %>page/1<% } %>/sort/a.email/<% if(sort == 'a.email') { %><% if(direction) { %>direction/<%= direction %><% } else { %>direction/desc<% } %><% } else { %>direction/asc<% } %>" data-field="a.email">
+	    <li class="<% if(sort == 'email') { %>uv-drop-list-active<% } %>">
+            <a href="#<% if(queryString != '') { %><%= queryString %>/<% } %><% if(page) { %>page/<%= page %><% } else { %>page/1<% } %>/sort/email/<% if(sort == 'email') { %><% if(direction) { %>direction/<%= direction %><% } else { %>direction/desc<% } %><% } else { %>direction/asc<% } %>" data-field="email">
 				Email
-				<% if(sort == 'a.email') { %>
+				<% if(sort == 'email') { %>
 					<span class="uv-sorting <% if(direction == 'asc') { %> descend <% } else { %> ascend <% } %>"></span>
 				<% } %>
 			</a>
         </li>
 	</script>
-
 	{# Type list item template #}
 	<script id="agent_list_item_tmp" type="text/template">
 		<td data-value="Name">

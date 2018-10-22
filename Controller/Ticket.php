@@ -9,6 +9,7 @@ use Webkul\UVDesk\CoreBundle\Form as CoreBundleForms;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Webkul\UVDesk\CoreBundle\Entity as CoreBundleEntities;
 use Webkul\UVDesk\CoreBundle\DataProxies as CoreBundleDataProxies;
+use ZipArchive;
 
 class Ticket extends Controller
 {
@@ -66,7 +67,6 @@ class Ticket extends Controller
             'totalReplies' => $ticketRepository->countTicketTotalThreads($ticket->getId()),
             'totalCustomerTickets' => $ticketRepository->countCustomerTotalTickets($user),
             'initialThread' => $this->get('ticket.service')->getTicketInitialThreadDetails($ticket),
-            // 'userDetails' => $userDetails,
             'ticketAgent' => !empty($agent) ? $agent->getAgentInstance()->getPartialDetails() : null,
             'customer' => $customer->getCustomerInstance()->getPartialDetails(),
             'currentUserDetails' => $user->getAgentInstance()->getPartialDetails(),
@@ -105,8 +105,7 @@ class Ticket extends Controller
     }
     
     public function saveTicket(Request $request)
-    {
-
+    {   
         $requestParams = $request->request->all();
         $entityManager = $this->getDoctrine()->getManager();
         $response = $this->redirect($this->generateUrl('helpdesk_member_ticket_collection'));
@@ -280,5 +279,32 @@ class Ticket extends Controller
         $response = new Response(json_encode($json));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
+    }
+
+    public function downloadZipAttachment(Request $request) {
+        
+        $response = new Response();
+        $em = $this->getDoctrine()->getManager();
+
+        $attachment = $em->getRepository('UVDeskCoreBundle:Attachment')->findBy([
+            'thread' => $request->attributes->get('threadId'),
+        ]);
+
+        if(!$attachment)
+            $this->noResultFound();
+        // if(in_array($attachment->getContentType(), ['dropbox-link', 'onedrive-link', 'box-link', 'googledrive-link']) || in_array($attachment->getFileSystem(), ['facebook', 'social'])) {
+        //     return $this->redirect($attachment->getpath());
+        // }
+        $zipname = 'ticketAttachments.zip';
+        $zip = new \ZipArchive;
+        $zip->open($zipname, \ZipArchive::CREATE);
+        foreach ($attachment as $attach) {
+             $zip->addFile($attach->getPath()); 
+        }
+        $zip->close();
+        header('Content-Type: application/zip');
+        header('Content-disposition: attachment; filename='.$zipname);
+        header('Content-Length: ' . filesize($zipname));
+        readfile($zipname);
     }
 }

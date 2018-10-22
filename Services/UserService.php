@@ -68,7 +68,7 @@ class UserService
              } else
                  return true;
          } elseif($this->isGranted('ROLE_AGENT')) {
-             $agentPrivileges =  $this->getUserPrivileges($this->getCurrentUser()->getId());
+             $agentPrivileges =  $this->getPrivileges($this->getCurrentUser()->getId());
              $agentPrivileges = array_merge($agentPrivileges, ['task_list', 'view_task', 'reports', 'report_productivity_action', 'report_agents_action', 'report_achievements_action', 'saved_filters_action', 'saved_replies']);
              return in_array($action, $agentPrivileges) ? true : false;
          } else {
