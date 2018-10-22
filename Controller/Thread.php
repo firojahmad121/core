@@ -71,7 +71,7 @@ class Thread extends Controller
         $ticket->createdThread = $thread;
 
         // Trigger agent reply event
-        $event = new GenericEvent('ticket.replyAgent', [
+        $event = new GenericEvent('uvdesk.ticket.agent_reply', [
             'entity' => $ticket,
         ]);
 
