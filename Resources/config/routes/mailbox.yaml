@@ -12,4 +12,4 @@ helpdesk_member_mailbox_channel_verify_mail_auto_forwarding:
 helpdesk_member_mailbox_channel_xhr:
     path:     /mailbox/xhr/{mailboxId}
     controller: Webkul\UVDesk\CoreBundle\Channels\MailboxChannelXHR::updateMailboxChannelXHR
-    defaults: { mailboxId: 0 } 
+    defaults: { mailboxId: 0 }

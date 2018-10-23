@@ -10,8 +10,13 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AccountXHR extends Controller
 {
+
     public function listAgentsXHR(Request $request)
     {
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT')){          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+         }
         if (true === $request->isXmlHttpRequest()) {
             $userRepository = $this->getDoctrine()->getRepository('UVDeskCoreBundle:User');
             $agentCollection = $userRepository->getAllAgents($request->query, $this->container);

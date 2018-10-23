@@ -13,7 +13,6 @@ class ConsoleListener
 {
     private $container;
     private $entityManager;
-
     public function __construct(ContainerInterface $container, EntityManager $entityManager)
     {
         $this->container = $container;
@@ -97,7 +96,7 @@ class ConsoleListener
 
                 $output->writeln([
                     "\n <fg=red;>[MIS-CONFIG]</> <info>$mailboxName</info><comment> has been setup as a localized mailbox but no configurations were found for email </comment><info>$mailboxEmail</info><comment>.</comment>",
-                    "\n Please verify your configuration settings under <info>uvdesk.mailboxes</info>.\n",
+                    "\n Please verify your configuration settings under <info>uvdesk_tickets.mailboxes</info>.\n",
                 ]);
 
                 $event->disableCommand();

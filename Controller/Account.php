@@ -44,18 +44,25 @@ class Account extends AbstractController
                 $form = $this->createForm(UserProfile::class, $user);
                 $form->handleRequest($request);
                 $form->submit(true);
+                // dump($user);die;
                 $encodedPassword = $this->container->get('security.password_encoder')->encodePassword($user, $data['password']['first']);
+
+                // dump($encoder->encodePassword($user, "adfasd")); die;
                 if ($form->isValid()) {
                    
                     if($data != null) {
 
+                        // if(!empty($data['oldPassword']) ) {
                         if(!empty($encodedPassword) ) {
                             $user->setPassword($encodedPassword);
+                            // dump("ddd");die;
                         } else {
                             $this->addFlash(
                                 'warning',
                                 'Error! Given current password is incorrect.'
                             );
+                            // dump("ggg");die;
+
                             return $this->redirect($this->generateUrl('helpdesk_member_profile'));
                         }
                     } else {
@@ -80,7 +87,18 @@ class Account extends AbstractController
                     $em->persist($userInstance);
                     $em->flush();
 
-                    $this->addFlash('success','Success ! Profile updated successfully.');
+                    //Event Triggered
+                    // $this->get('event.manager')->trigger([
+                    //         'event' => 'agent.updated',
+                    //         'entity' => $user
+                    //     ]);
+
+                    $this->addFlash(
+                        'success',
+                        'Success ! Profile update successfully.'
+                    );
+
+
                     return $this->redirect($this->generateUrl('helpdesk_member_profile'));
 
                 } else {
@@ -90,7 +108,11 @@ class Account extends AbstractController
                     $errors = $this->getFormErrors($form);
                 }
             } else {
-                $this->addFlash('warning',('Error ! User with same email is already exist.'));
+                $this->addFlash(
+                    'warning',
+                    $this->translate('Error ! User with same email is already exist.')
+                );
+
                 return $this->redirect($this->generateUrl('helpdesk_member_profile'));
             }
         }
@@ -233,12 +255,25 @@ class Account extends AbstractController
                         $em->persist($userInstance);
                         $em->flush();
 
-                        $this->addFlash('success',('Success ! Agent information updated successfully.'));
+                        //Event Triggered
+                        // $this->get('event.manager')->trigger([
+                        //         'event' => 'agent.created',
+                        //         'entity' => $user
+                        //     ]);
+                        
                         return $this->redirect($this->generateUrl('helpdesk_member_account_collection'));
                     }else {
-                        $this->addFlash('warning',('Error ! User with same email already exist.'));
+                        $this->addFlash(
+                            'warning',
+                            $this->translate('Error ! User with same email is already exist.')
+                        );
                     }
-
+                           
+                       // }
+                    // } else {
+                    //     $errors = $this->getFormErrors($form);
+                    // }
+                
                 $response = $this->render('@UVDeskCore/Agents/updateSupportAgent.html.twig', [
                     'user' => $user,
                     'instanceRole' => $instanceRole,
@@ -253,16 +288,27 @@ class Account extends AbstractController
                 ]);
                 break;
         }
+
         return $response;
     }
 
     public function listAgents(Request $request)
     {
+
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT')){          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+         }
         return $this->render('@UVDeskCore/Agents/listSupportAgents.html.twig', []);
     }
 
     public function createAgent(Request $request)
     {
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT')){          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+         }
+
         $user = new User();
         $em = $this->getDoctrine()->getManager();
         $userServiceContainer = $this->get('user.service');
@@ -291,6 +337,7 @@ class Account extends AbstractController
                     $user->setIsEnabled(isset($data['isActive'])? 1 : 0);
 
                     $userInstance = new UserInstance;
+
                     if(isset($data['role'])) {
                         $role = $em->getRepository('UVDeskCoreBundle:SupportRole')->findOneBy(array('code' => $data['role']));
                         $userInstance->setSupportRole($role);
@@ -313,6 +360,7 @@ class Account extends AbstractController
                     $userInstance->setIsActive($isActive);
                     $userInstance->setIsVerified(0);
 
+
                     if(isset($data['userSubGroup'])){
                         foreach ($data['userSubGroup'] as $userSubGroup) {
                             if($userSubGrp = $this->get('uvdesk.service')->getEntityManagerResult(
@@ -328,6 +376,7 @@ class Account extends AbstractController
                     }
                         
                     if(isset($data['groups'])){
+
                         foreach ($data['groups'] as $userGroup) {
                             if($userGrp = $this->get('uvdesk.service')->getEntityManagerResult(
                                         'UVDeskCoreBundle:SupportGroup',
@@ -336,8 +385,10 @@ class Account extends AbstractController
                                         ]
                                     )
                             )
+
                             $userInstance->addSupportGroup($userGrp);
                         }
+
                     }
                     
                     if(isset($data['agentPrivilege'])){
@@ -351,26 +402,34 @@ class Account extends AbstractController
                             )
                             $userInstance->addSupportPrivilege($supportPlg);
                         }
-                    } 
+                    }
+                            
                     $userInstance->setUser($user);
+                    
                     $user->addUserInstance($userInstance);
                     $em->persist($user);
                     $em->persist($userInstance);
                     $em->flush();
 
-                    $this->addFlash('success',('Success ! Agent information saved successfully.'));
-
+                  
+                    $this->addFlash(
+                        'success',('Success ! Agent added successfully.')
+                    );
                     return $this->redirect($this->generateUrl('helpdesk_member_account_collection'));
                 } else {
-
-                    $this->addFlash('warning',('Error ! User with same email already exist.'));
+                    $this->addFlash(
+                        'warning',
+                        $this->translate('Error ! User with same email is already exist.')
+                    );
                 }
+         
         }
         return $this->render('@UVDeskCore/Agents/createSupportAgent.html.twig', [
             'user' => $user,
             'errors' => json_encode([])
         ]);
     }
+
     protected function encodePassword(User $user, $plainPassword)
     {
         $encodedPassword = $this->container->get('security.password_encoder')->encodePassword($user, $plainPassword);

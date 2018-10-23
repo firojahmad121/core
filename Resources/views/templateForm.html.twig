@@ -2,23 +2,23 @@
 
 
 {% block title %}
-    {# {% if template.id %} #}
-		{# {{ 'Edit Email Template'|trans }} #}
-	{# {% else %} #}
+     {% if template.id %} 
+		 {{ 'Edit Email Template'|trans }} 
+	 {% else %} 
 		{{ 'Add Email Template'|trans }}
-	{# {% endif %} #}
+	 {% endif %} 
 {% endblock %}
 
 {% block pageContent %}
 	<div class="uv-inner-section">
-		{{ include('@UVDeskCore/Templates/panel-sidebar.html.twig') }}		
+		{{ include('@UVDeskCore/Templates/panel-sidebar.html.twig') }}
 		<div class="uv-view {% if app.request.cookies and app.request.cookies.get('uv-asideView') %}uv-aside-view{% endif %}">
 			<h1>
-				{# {% if template.id %} #}
-                    {# {{ 'Edit Email Template'|trans }} #}
-                {# {% else %} #}
+				{% if template.id %} 
+                	 {{ 'Edit Email Template'|trans }} 
+                {% else %} 
                     {{ 'Add Email Template'|trans }}
-                {# {% endif %} #}
+                {% endif %}
 			</h1>
 
 			<!--Form-->
@@ -92,8 +92,8 @@
 {% endblock %}
 {% block footer %}
 	{{ parent() }}
-    {# {{ include('WebkulDefaultBundle:Default:tinymce.html.twig') }} #}
-	{{ include('@UVDeskSupportCenter/Front/tinymce.html.twig') }}
+   
+	{{ include('@UVDeskCore/Templates/tinyMCE.html.twig') }}
 	
 	<script type="text/javascript">
 		var toolbarOptions = sfTinyMce.options.toolbar;

@@ -12,80 +12,92 @@ class Customer extends Controller
 {
     public function listCustomers(Request $request) 
     {
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_CUSTOMER')){          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+         }
         return $this->render('@UVDeskCore/Customers/listSupportCustomers.html.twig');
     }
 
     public function createCustomer(Request $request)
     {
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_CUSTOMER')){          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+        }
         $em = $this->getDoctrine()->getManager();
         $user = new user();
         $errors = [];
-
         if($request->getMethod() == "POST") {
-            $contentFile = $request->files->get('customer_form');
+                $contentFile = $request->files->get('customer_form');
 
-            $tempUser = $em->getRepository('UVDeskCoreBundle:User')->findBy(['email' =>  $request->request->get('customer_form')['email']]);
-            if(!$tempUser) {
+                $tempUser = $em->getRepository('UVDeskCoreBundle:User')->findBy(['email' =>  $request->request->get('customer_form')['email']]);
+                if(!$tempUser) {
 
-                $content = $request->request->all();
+                    $content = $request->request->all();
 
-                $content = $content['customer_form'];
-                
-                    $data = array(
-                                'firstName' => $content['firstName'],
-                                'lastName'  => $content['lastName'],
-                                'from'      => $content['email'],
-                                'fullname'  => $content['firstName'].' '.$content['lastName'],
-                                'contact'   => $content['contactNumber'],
-                                'active'    => isset($content['isActive']) && $content['isActive'] ? 1 : 0,
-                                'role'      => 4,
-                                'image'     => $contentFile['profileImage'],
-                                'source'    => 'website'
-                            );
+                    $content = $content['customer_form'];
+                    
+                        $data = array(
+                                    'firstName' => $content['firstName'],
+                                    'lastName'  => $content['lastName'],
+                                    'from'      => $content['email'],
+                                    'fullname'  => $content['firstName'].' '.$content['lastName'],
+                                    'contact'   => $content['contactNumber'],
+                                    'active'    => isset($content['isActive']) && $content['isActive'] ? 1 : 0,
+                                    'role'      => 4,
+                                    'image'     => $contentFile['profileImage'],
+                                    'source'    => 'website'
+                                );
 
-                    $user = $this->container->get('user.service')->getUserDetails($data);
-                    $this->addFlash('success', 'Success ! Customer saved successfully.');
+                        $user = $this->container->get('user.service')->getUserDetails($data);
+                        $this->addFlash('success', 'Success ! Customer saved successfully.');
 
-                    return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
-            } else {
-                $this->addFlash('warning', 'Error ! User with same email already exist.');
-            }
+                        return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
+                   
+                } else {
+                   
+                    $this->addFlash('warning', 'Error ! User with same email is already exist.');
+                }
         }
 
         return $this->render('@UVDeskCore/Customers/createSupportCustomer.html.twig', [
             'user' => $user,
             'errors' => json_encode($errors)
         ]);
+
     }
 
     public function editCustomer(Request $request)
     {
-      $em = $this->getDoctrine()->getManager();
-      $repository = $em->getRepository('UVDeskCoreBundle:User');
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_CUSTOMER')) {          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+        }
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('UVDeskCoreBundle:User');
 
-      if($userId = $request->attributes->get('customerId')) {
-          $user = $repository->findOneBy(['id' =>  $userId]);
-          if(!$user)
-              $this->noResultFound();
-      } else
-          $user = new user();
+        if($userId = $request->attributes->get('customerId')) {
+            $user = $repository->findOneBy(['id' =>  $userId]);
+            if(!$user)
+                $this->noResultFound();
+        } else
+            $user = new user();
           
-      $errors = [];
-      if ($request->getMethod() == "POST") {
+        $errors = [];
+        if($request->getMethod() == "POST") {
         $contentFile = $request->files->get('customer_form');
-        
-        if($userId) {
-            $data = $request->request->all();
-            $data = $data['customer_form'];
-            $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email' => $data['email']));
-            $errorFlag = 0;
+          if($userId) {
+              $data = $request->request->all();
+              $data = $data['customer_form'];
+              $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email' => $data['email']));
+              $errorFlag = 0;
+              if($checkUser) {
+                  if($checkUser->getId() != $userId)
+                      $errorFlag = 1;
+              }
 
-                if($checkUser) {
-                    if($checkUser->getId() != $userId)
-                        $errorFlag = 1;
-                }
-
-                if(!$errorFlag && 'hello@uvdesk.com' !== $user->getEmail()) {
+              if(!$errorFlag && 'hello@uvdesk.com' !== $user->getEmail()) {
 
                     $password = $user->getPassword();
                     $email = $user->getEmail();
@@ -120,12 +132,24 @@ class Customer extends Controller
                     $em->persist($user);
                     $em->flush();
 
-                    $this->addFlash('success', 'Success ! Customer information updated successfully.'); 
-                    return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
-                } else {
-                  $this->addFlash('warning', 'Error ! User with same email already exist.'); 
-                }
-            } 
+                    //Event Triggered
+                    //   $this->get('event.manager')->trigger([
+                    //           'event' => 'customer.updated',
+                    //           'entity' => $user
+                    // ]);
+
+                      return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
+                //   } else {
+                //       $errors = $this->getFormErrors($form);
+                //   }
+              } else {
+                  $this->addFlash(
+                      'warning',
+                      $this->translate('Error ! User with same email is already exist.')
+                  );
+                  return $this->redirect($this->generateUrl('edit_customer',array('id' => $userId)));
+              }
+          } 
         }
         
         return $this->render('@UVDeskCore/Customers/updateSupportCustomer.html.twig', [
@@ -141,9 +165,13 @@ class Customer extends Controller
 
         return $encoder->encodePassword($plainPassword, $user->getSalt());
     }
-    
+
     public function bookmarkCustomer(Request $request)
     {
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_CUSTOMER')) {          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+        }
         $json = array();
         $em = $this->getDoctrine()->getManager();
         $data = json_decode($request->getContent(), true);

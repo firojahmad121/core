@@ -28,6 +28,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->where('supportRole.id != :customerRole')->setParameter('customerRole', 4)
             ->orderBy('userInstance.createdAt', !isset($params['sort']) ? Criteria::DESC : Criteria::ASC);
 
+        
         foreach ($params as $field => $fieldValue) {
             if (in_array($field, $this->safeFields))
                 continue;
@@ -36,7 +37,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                 $queryBuilder->andWhere("user.$field = :$field")->setParameter($field, $fieldValue);
             } else {
                 if ('search' == $field) {
-                    $queryBuilder->andwhere("user.firstName LIKE :fullName OR user.email LIKE :email")
+                    $queryBuilder->andwhere("name LIKE :fullName OR user.email LIKE :email")
                         ->setParameter('fullName', '%' . urldecode($fieldValue) . '%')
                         ->setParameter('email', '%' . urldecode($fieldValue) . '%');
                 } else if ('isActive' == $field) {
@@ -52,7 +53,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         $paginationQueryBuilder = clone $queryBuilder;
         $totalUsers = (int) $paginationQueryBuilder->select('COUNT (DISTINCT user.id)')->getQuery()->getSingleScalarResult();
         $query = $queryBuilder->getQuery()->setHydrationMode(Query::HYDRATE_ARRAY)->setHint('knp_paginator.count', $totalUsers);
-
+        
         $pagination = $container->get('knp_paginator')->paginate($query, $currentPage, self::LIMIT, $options);
         
         // Parse result

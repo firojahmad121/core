@@ -32,6 +32,7 @@ class UserService
             return (bool) ($role == $securityContext->getToken()->getRoles()[0]->getRole());
         } catch (AuthenticationCredentialsNotFoundException $e) {
             // @TODO: Handle Authentication Failure
+            return false;
         }
 
         return false;
@@ -58,30 +59,44 @@ class UserService
 
         return true;
     }
-
-    public function checkPermission($action)
-    {
+    public function checkPermission($action) {
         $securityContext = $this->container->get('security.token_storage')->getToken();
+        // dump($action);die;
+        if($this->isGranted('ROLE_SUPER_ADMIN') || $this->isGranted('ROLE_ADMIN')) {
+             return true;
         
-        if ($this->isGranted('ROLE_SUPER_ADMIN') || $this->isGranted('ROLE_ADMIN')) {
-            return true;
-        } else if ($this->isGranted('ROLE_AGENT')) {
-            $agentPrivileges = $this->getPrivileges($this->getCurrentUser()->getId());
-            $agentPrivileges = array_merge($agentPrivileges, ['saved_filters_action', 'saved_replies']);
-            
-            return in_array($action, $agentPrivileges) ? true : false;
-        } else {
-            return false;
-        }
+         } elseif($this->isGranted('ROLE_AGENT')) {
+             $agentPrivileges =  $this->getUserPrivileges($this->getCurrentUser()->getId());
+             $agentPrivileges = array_merge($agentPrivileges, ['task_list', 'view_task', 'reports', 'report_productivity_action', 'report_agents_action', 'report_achievements_action', 'saved_filters_action', 'saved_replies']);
+             return in_array($action, $agentPrivileges) ? true : false;
+         } else {
+             return false;
+         }
     }
-
+    public function getUserPrivileges($userId) {
+        static $agentPrivilege = [];
+        
+        if(isset($agentPrivilege[$userId]))
+            return $agentPrivilege[$userId];
+        $userPrivileges = array();
+        $user = $this->entityManager->getRepository('UVDeskCoreBundle:User')->find($userId);
+      
+        $privileges = $user->getAgentInstance()->getSupportPrivileges();  
+                    if($privileges)
+                        foreach ($privileges as $privilege) {
+                           $userPrivileges = array_merge($userPrivileges, $privilege->getPrivileges());
+                        }
+        
+        $agentPrivilege[$userId] = $this->agentPrivilege[$userId] = $userPrivileges;  
+        // dump($userPrivileges);die; 
+        return $userPrivileges;
+    }
     public function getCurrentUser()
     {
-        if ($this->container->get('security.token_storage')->getToken()) {
+        if($this->container->get('security.token_storage')->getToken())
             return $this->container->get('security.token_storage')->getToken()->getUser();
-        } else {
+        else
             return false;
-        }
     }
 
     public function getSupportGroups(Request $request = null)

@@ -12,6 +12,12 @@ class CustomerXHR extends Controller
 {
     public function listCustomersXHR(Request $request) 
     {
+
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_CUSTOMER')) {          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+        }
+        
         $json = array();
         
         if($request->isXmlHttpRequest()) {
@@ -26,6 +32,10 @@ class CustomerXHR extends Controller
 
     public function removeCustomerXHR(Request $request) 
     {
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_CUSTOMER')) {          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+        }
         $json = array();
         if($request->getMethod() == "DELETE") {
             $em = $this->getDoctrine()->getManager();

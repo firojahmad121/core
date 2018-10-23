@@ -43,7 +43,7 @@ class MailboxService
 
     public function getDefaultMailbox()
     {
-        $defaultMailboxEmail = $this->container->getParameter('uvdesk.mailboxes');
+        $defaultMailboxEmail = $this->container->getParameter('uvdesk.default.ticket.mailbox');
         $mailbox = $this->entityManager->getRepository('UVDeskCoreBundle:Mailbox')->findOneByEmail($defaultMailboxEmail);
 
         return !empty($mailbox) ? $mailbox : null;
@@ -165,7 +165,7 @@ class MailboxService
         $mailData['replyTo'] = $addresses['to'];
         $mailData['inReplyTo'] = htmlspecialchars_decode($parser->getHeader('in-reply-to'));
         $mailData['referenceIds'] = htmlspecialchars_decode($parser->getHeader('references'));
-        $mailData['messageId'] = $parser->getHeader('message-id') ?: time() . '.' . uniqid() . $this->container->getParameter('uvdesk_tickets')['domain'];
+        $mailData['messageId'] = $parser->getHeader('message-id') ?: time() . '.' . uniqid() . $this->container->getParameter('uvdesk.email_domain');
         $mailData['cc'] = array_filter(explode(',', $parser->getHeader('cc'))) ?: [];
         $mailData['bcc'] = array_filter(explode(',', $parser->getHeader('bcc'))) ?: [];
         
