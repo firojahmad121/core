@@ -57,10 +57,11 @@ class EmailTemplatesRepository extends EntityRepository
         if(isset($queryParameters['template']))
             unset($queryParameters['template']);
 
-        $paginationData['url'] = '#'.$container->get('uvdesk.service')->symfony_http_build_query($queryParameters);
+        $paginationData['url'] = '#'.$container->get('uvdesk.service')->buildPaginationQuery($queryParameters);
 
         $json['templates'] = $results->getItems();
         $json['pagination_data'] = $paginationData;
+
         return $json;
     }
 

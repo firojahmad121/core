@@ -63,35 +63,7 @@ class UVDeskService
     {
         return \DateTimeZone::listIdentifiers();
     }
-    function symfony_http_build_query(){
-        $params = array();
-        $query['page'] = "replacePage";
 
-        if (isset($query['domain'])) unset($query['domain']);
-        if (isset($query['_locale'])) unset($query['_locale']);
-        
-        foreach ($query as $key => $value) {
-            $params[] = !isset($value) ? $key : $key . '/' . str_replace('%2F', '/', rawurlencode($value));
-        }
-
-        $http_query = implode('/', $params);
-        
-        if (isset($query['new'])) {
-            $http_query = str_replace('new/1', 'new', $http_query);
-        } else if (isset($query['unassigned'])) {
-            $http_query = str_replace('unassigned/1', 'unassigned', $http_query);
-        } else if (isset($query['notreplied'])) {
-            $http_query = str_replace('notreplied/1', 'notreplied', $http_query);
-        } else if (isset($query['mine'])) {
-            $http_query = str_replace('mine/1', 'mine', $http_query);
-        } else if (isset($query['starred'])) {
-            $http_query = str_replace('starred/1', 'starred', $http_query);
-        } else if (isset($query['trashed'])) {
-            $http_query = str_replace('trashed/1', 'trashed', $http_query);
-        }
-        
-        return $http_query;
-    }
     public function getPrivileges() {
         $agentPrivilegeCollection = [];
         // $agentPrivilegeCollection = $this->entityManager->getRepository('UserBundle:AgentPrivilege')->findAll();
@@ -126,7 +98,6 @@ class UVDeskService
 		$router = $this->container->get('router');
 		$navigationPanel = ['name' => null, 'routes' => []];
 
-        // dump($this->requestStack->getCurrentRequest()->get('panelId'));die;
 		switch (strtoupper($this->requestStack->getCurrentRequest()->get('panelId'))) {
             case 'CHANNELS':
                 $navigationPanel = [
@@ -273,6 +244,30 @@ class UVDeskService
                         ],
                     ],
                 ];
+                break;
+            case 'THEMES':
+                $enabled_bundles = $this->container->getParameter('kernel.bundles');
+
+                $navigationPanel = [
+                    'name' => 'Branding',
+                    'routes' => [
+                        [
+                            'name' => 'Helpdesk',
+                            'link' => $router->generate('helpdesk_member_helpdesk_theme'),
+                            'isActive' => false,
+                            'isEnabled' => true,
+                        ],
+                    ],
+                ];
+
+                if (in_array('UVDeskSupportCenterBundle', array_keys($enabled_bundles))) {
+                    $navigationPanel['routes'][1] = [
+                        'name' => 'Support Center',
+                        'link' => $router->generate('helpdesk_member_knowledgebase_theme'),
+                        'isActive' => false,
+                        'isEnabled' => true,
+                    ];
+                }
                 break;
             case 'KNOWLEDGEBASE':
                 $navigationPanel = [

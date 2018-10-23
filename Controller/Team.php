@@ -2,7 +2,6 @@
 
 namespace Webkul\UVDesk\CoreBundle\Controller;
 
-// use Webkul\UVDesk\UVDeskCore\Entity;
 use Webkul\UVDesk\CoreBundle\Form;
 use Webkul\UVDesk\CoreBundle\Entity\User;
 use Webkul\UVDesk\CoreBundle\Entity\SupportTeam;
@@ -15,19 +14,18 @@ class Team extends Controller
 {
     public function listTeams(Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
-       return $this->render('@UVDeskCore/Teams/listSupportTeams.html.twig');
+        }
+
+        return $this->render('@UVDeskCore/Teams/listSupportTeams.html.twig');
     }
 
     public function createTeam(Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
+        }
     
         $supportTeam = new SupportTeam();
 
@@ -60,7 +58,6 @@ class Team extends Controller
                     ->getQuery()->getResult();
             }
 
- 
             if (!empty($usersGroup)) {
                 $usersGroup = array_map(function ($group) { return 'p.id = ' . $group; }, $usersGroup);
             
@@ -68,7 +65,6 @@ class Team extends Controller
                     ->from('UVDeskCoreBundle:SupportGroup', 'p')
                     ->where(implode(' OR ', $usersGroup))
                     ->getQuery()->getResult();
-
             }
 
             foreach ($userList as $user) {
@@ -82,82 +78,26 @@ class Team extends Controller
                 $supportGroup->addSupportTeam($supportTeam);
                 $em->persist($supportGroup);
             }
+
             $em->persist($supportTeam);
             $em->flush();
 
+            $this->addFlash('success', 'Success ! Team information saved successfully.');
             return $this->redirect($this->generateUrl('helpdesk_member_support_team_collection'));
-
-            if ($form->isSubmitted() && $form->isValid() && !($errors = $this->customBlankValidation($subGroup, ['groups']))) {
-
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($subGroup);
-
-                foreach ($subGroup->getUsers() as $user) {
-                    if(!$oldUsers || !in_array($user, $oldUsers)){
-                        $user->addSubGroup($subGroup);
-                        $em->persist($user);
-                    } elseif($oldUsers && ($key = array_search($user, $oldUsers)) !== false)
-                        unset($oldUsers[$key]);
-                }
-
-                foreach ($oldUsers as $removeUser) {
-                    $removeUser->removeSubGroup($subGroup);
-                    $em->persist($removeUser);
-                }
-
-                foreach ($subGroup->getGroups() as $group) {
-                    if(!$oldGroups || !in_array($group, $oldGroups)){
-                        $group->addSubGroup($subGroup);
-                        $em->persist($group);
-                    } elseif($oldGroups && ($key = array_search($group, $oldGroups)) !== false)
-                        unset($oldGroups[$key]);
-                }
-
-                foreach ($oldGroups as $removeGroup) {
-                    $removeGroup->removeSubGroup($subGroup);
-                    $em->persist($removeGroup);
-                }
-
-                $em->flush();
-
-                if($request->attributes->get('id')) {
-                    $this->get('event.manager')->trigger([
-                            'event' => 'team.updated',
-                            'entity' => $subGroup
-                        ]);
-                    $message = $this->translate('Success! Team has been updated successfully.');
-                } else {
-                    $this->get('event.manager')->trigger([
-                            'event' => 'team.created',
-                            'entity' => $subGroup
-                        ]);
-                    $message = $this->translate('Success! Team has been added successfully.');
-                }
-
-                $this->addFlash('success', $message);
-
-                return $this->redirect($this->generateUrl('helpdesk_member_support_team_collection'));
-            } else {
-                $errors = array_merge($this->getFormErrors($form), $this->customBlankValidation($subGroup, ['groups']));
-                if(isset($errors['groups']))
-                    $errors['groups'] = $this->translate('This field is mandatory');
-                if(isset($errors['users']))
-                    $errors['users'] = $this->translate('This field is mandatory');
-            }
         }
 
         return $this->render('@UVDeskCore/Teams/createSupportTeam.html.twig', [
-                'team' => $supportTeam,
-                'errors' => json_encode($errors)
+            'team' => $supportTeam,
+            'errors' => json_encode($errors)
         ]);
     }
 
     public function editTeam(Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
+        }
+
         if($request->attributes->get('supportTeamId')){
             $supportTeam = $this->getDoctrine()->getRepository('UVDeskCoreBundle:SupportTeam')
                         ->findSubGroupById(['id' => $request->attributes->get('supportTeamId')]);
@@ -165,6 +105,7 @@ class Team extends Controller
             if(!$supportTeam)
                 $this->noResultFound();
         }
+
         $errors = [];
         if($request->getMethod() == "POST") {
             $request->request->set('users', explode(',', $request->request->get('tempUsers')));
@@ -172,11 +113,6 @@ class Team extends Controller
             $oldUsers = ($usersList = $supportTeam->getUsers()) ? $usersList->toArray() : $usersList;
             $oldGroups = ($grpList = $supportTeam->getSupportGroups()) ? $grpList->toArray() : $grpList;
            
-            // $form = $this->createForm(Form\SubGroup::class, $supportTeam, [
-            //     'container' => $this->container,
-            // ]);
-
-            // $form->handleRequest($request);
             $allDetails = $request->request->all(); 
             
             $em = $this->getDoctrine()->getManager();
@@ -235,68 +171,8 @@ class Team extends Controller
             $em->persist($supportTeam);
             $em->flush();
 
-
+            $this->addFlash('success', 'Success ! Team information updated successfully.');
             return $this->redirect($this->generateUrl('helpdesk_member_support_team_collection'));
-
-            
-            if ($form->isSubmitted() && $form->isValid() && !($errors = $this->customBlankValidation($subGroup, ['groups']))) {
-
-                $em = $this->getDoctrine()->getManager();
-                $subGroup->setCompany($company);
-                $em->persist($subGroup);
-
-                foreach ($subGroup->getUsers() as $user) {
-                    if(!$oldUsers || !in_array($user, $oldUsers)){
-                        $user->addSubGroup($subGroup);
-                        $em->persist($user);
-                    } elseif($oldUsers && ($key = array_search($user, $oldUsers)) !== false)
-                        unset($oldUsers[$key]);
-                }
-
-                foreach ($oldUsers as $removeUser) {
-                    $removeUser->removeSubGroup($subGroup);
-                    $em->persist($removeUser);
-                }
-
-                foreach ($subGroup->getGroups() as $group) {
-                    if(!$oldGroups || !in_array($group, $oldGroups)){
-                        $group->addSubGroup($subGroup);
-                        $em->persist($group);
-                    } elseif($oldGroups && ($key = array_search($group, $oldGroups)) !== false)
-                        unset($oldGroups[$key]);
-                }
-
-                foreach ($oldGroups as $removeGroup) {
-                    $removeGroup->removeSubGroup($subGroup);
-                    $em->persist($removeGroup);
-                }
-
-                $em->flush();
-
-                if($request->attributes->get('id')) {
-                    $this->get('event.manager')->trigger([
-                            'event' => 'team.updated',
-                            'entity' => $subGroup
-                        ]);
-                    $message = $this->translate('Success! Team has been updated successfully.');
-                } else {
-                    $this->get('event.manager')->trigger([
-                            'event' => 'team.created',
-                            'entity' => $subGroup
-                        ]);
-                    $message = $this->translate('Success! Team has been added successfully.');
-                }
-
-                $this->addFlash('success', $message);
-
-                return $this->redirect($this->generateUrl('helpdesk_member_support_team_collection'));
-            } else {
-                $errors = array_merge($this->getFormErrors($form), $this->customBlankValidation($subGroup, ['groups']));
-                if(isset($errors['groups']))
-                    $errors['groups'] = $this->translate('This field is mandatory');
-                if(isset($errors['users']))
-                    $errors['users'] = $this->translate('This field is mandatory');
-            }
         } 
         return $this->render('@UVDeskCore/Teams/updateSupportTeam.html.twig', [
                 'team' => $supportTeam,

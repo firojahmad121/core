@@ -142,7 +142,7 @@ email_templates_addaction:
 email_templates_editaction:
     path:     /template/edit/{template}
     controller: Webkul\UVDesk\CoreBundle\Controller\Email::templateForm
-    defaults: { template: 0,panelId: 'settings' }
+    defaults: { template: 0, panelId: 'settings' }
 
 email_setting:
     path:     /email-setting

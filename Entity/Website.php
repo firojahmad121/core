@@ -30,6 +30,11 @@ class Website
     /**
      * @var string
      */
+    private $themeColor;
+
+    /**
+     * @var string
+     */
     private $favicon;
 
     /**
@@ -47,8 +52,6 @@ class Website
      */
     private $isActive;
 
-
-    private $local;
 
     /**
      * Get id
@@ -130,6 +133,30 @@ class Website
     public function getLogo()
     {
         return $this->logo;
+    }
+
+        /**
+     * Set themeColor
+     *
+     * @param string $themeColor
+     *
+     * @return website
+     */
+    public function setThemeColor($themeColor)
+    {
+        $this->themeColor = $themeColor;
+
+        return $this;
+    }
+
+    /**
+     * Get themeColor
+     *
+     * @return string
+     */
+    public function getThemeColor()
+    {
+        return $this->themeColor;
     }
 
     /**
@@ -226,30 +253,6 @@ class Website
     public function getIsActive()
     {
         return $this->isActive;
-    }
-
-    /**
-     * Set local
-     *
-     * @param boolean $local
-     *
-     * @return website
-     */
-    public function setLocal($local)
-    {
-        $this->local = $local;
-
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return string
-     */
-    public function getLocal()
-    {
-        return $this->local;
     }
     
 }

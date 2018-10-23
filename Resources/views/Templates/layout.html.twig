@@ -8,11 +8,11 @@
         <link href="{{ asset('bundles/uvdeskcore/css/_uikit.css') }}" type="text/css" rel="stylesheet" media="all" />
         <link href="{{ asset('bundles/uvdeskcore/css/_custom.css') }}" type="text/css" rel="stylesheet" media="all" />
         <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" rel="stylesheet">
-     
-        <link href="{{ asset('bundles/uvdeskcore/css/_datepicker.css') }}" type="text/css" rel="stylesheet" media="all" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" type="text/css" rel="stylesheet">
 
         <!-- Custom CSS -->
         {% set websiteConfiguration = user_service.getWebsiteConfiguration('knowledgebase') %}
+        {% set website = user_service.getWebsiteDetails('helpdesk') %}
 
         {{ include('@UVDeskCore/Templates/lightskin.html.twig') }}
         

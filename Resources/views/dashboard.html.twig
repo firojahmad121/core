@@ -241,10 +241,8 @@
 			{% endif %}
 		{% endif %}
 
-
-			<!-- USERS -->
+		<!-- USERS -->
 		{% if user_service.checkPermission('ROLE_AGENT_MANAGE_GROUP') or user_service.checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP') or user_service.checkPermission('ROLE_AGENT_MANAGE_AGENT') or user_service.checkPermission('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE') or user_service.checkPermission('ROLE_AGENT_MANAGE_CUSTOMER') %}
-
 			{% if dashboardItems.HELPDESK_USERS is defined and dashboardItems.HELPDESK_USERS is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">
@@ -273,9 +271,8 @@
 			{% endif %}
 		{% endif %}	
 		
+		<!-- KNOWLEDGEBASE -->
 		{% if user_service.checkPermission('ROLE_AGENT_MANAGE_KNOWLEDGEBASE') %}
-		
-            <!-- KNOWLEDGEBASE -->
 			{% if dashboardItems.HELPDESK_KNOWLEDGEBASE is defined and dashboardItems.HELPDESK_KNOWLEDGEBASE is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">
@@ -285,7 +282,6 @@
 
 					<div class="uv-brick-section">
 						{% for dashboardItem in dashboardItems.HELPDESK_KNOWLEDGEBASE %}
-							
 							<a href="{{ path(dashboardItem.route) }}">
 								<div class="uv-brick-container">
 									<div class="uv-brick-icon">
@@ -301,11 +297,10 @@
 					</div>
 				</div>
 			{% endif %}
-
 		{% endif %}		
 
+		<!-- AUTOMATION -->
 		{% if user_service.checkPermission('ROLE_AGENT_MANAGE_WORKFLOW_MANUAL') or user_service.checkPermission('ROLE_AGENT_MANAGE_WORKFLOW_AUTOMATIC') or user_service.checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE') or user_service.checkPermission('ROLE_AGENT_MANAGE_TAG') or user_service.checkPermission('ROLE_ADMIN') %}
-			<!-- AUTOMATION -->
 			{% if dashboardItems.HELPDESK_AUTOMATION is defined and dashboardItems.HELPDESK_AUTOMATION is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">
@@ -334,10 +329,8 @@
 			{% endif %}
 		{% endif %}
 			
-
+		<!-- SETTINGS -->
 		{% if user_service.checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE') or user_service.checkPermission('ROLE_AGENT_MANAGE_CUSTOM_FIELD') or user_service.checkPermission('import_data') %}
-
-            <!-- SETTINGS -->
 			{% if dashboardItems.HELPDESK_SETTINGS is defined and dashboardItems.HELPDESK_SETTINGS is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">

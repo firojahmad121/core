@@ -14,19 +14,21 @@ use Webkul\UVDesk\CoreBundle\Entity\UserInstance;
 class Email extends Controller
 {    
     const LIMIT = 10;
+    
     protected function getTemplate($request)
     {
+        $emailTemplateRepository = $this->getDoctrine()->getRepository('UVDeskCoreBundle:EmailTemplates');
       
-       $data = $this->getDoctrine()
-                             ->getRepository('UVDeskCoreBundle:EmailTemplates')
-                             ->findOneby([
-                                    'id' => $request->attributes->get('template'),
-                                    'user' => $this->container->get('user.service')->getCurrentUser()->getId()
-                                ]);
-        $default = $this->getDoctrine()
-                             ->getRepository('UVDeskCoreBundle:EmailTemplates')
-                             ->findOneby(['id' => $request->attributes->get('template')]);  
-        return    $data == null ? $default : $data;
+        $data = $emailTemplateRepository->findOneby([
+            'id' => $request->attributes->get('template'),
+            'user' => $this->container->get('user.service')->getCurrentUser()->getId()
+        ]);
+
+        $default = $emailTemplateRepository->findOneby([
+            'id' => $request->attributes->get('template')
+        ]);  
+
+        return $data == null ? $default : $data;
     }
 
     public function templates(Request $request) 
@@ -60,6 +62,7 @@ class Email extends Controller
         } else {  
             $template = new Entity\EmailTemplates();
         }
+
         if(!$template)
             $this->noResultFound();
 
@@ -70,35 +73,31 @@ class Email extends Controller
         $errors = [];      
         $this->get('session')->getFlashBag()->clear();
 
-        if($request->getMethod() == 'POST') 
-        {
-           
-                $entityManager= $this->getDoctrine()->getManager();
-                $data = $request->request->all();
+        if($request->getMethod() == 'POST') {
+            $entityManager= $this->getDoctrine()->getManager();
+            $data = $request->request->all();
 
-                $user_instance = $this->container->get('security.token_storage')->getToken()->getUser();
-                $user_instance= $entityManager->getRepository(UserInstance::class)->findBy(['id'=>$user_instance->getId()]);
-              
-                $flag =0;
+            $user_instance = $this->container->get('security.token_storage')->getToken()->getUser();
+            $user_instance= $entityManager->getRepository(UserInstance::class)->findBy(['id'=>$user_instance->getId()]);
+            
+            $flag =0;
 
-                $template->setUser($user_instance[0]);
-                $template->setName($data['name']);
-                $template->setSubject($data['subject']);
-                $template->setMessage($data['message']);
-                $template->setTemplateType($data['templateFor']);
-                if(!$request->attributes->get('template'))
-                $entityManager->persist($template);
-                $entityManager->flush();
+            $template->setUser($user_instance[0]);
+            $template->setName($data['name']);
+            $template->setSubject($data['subject']);
+            $template->setMessage($data['message']);
+            $template->setTemplateType($data['templateFor']);
+            $entityManager->persist($template);
+            $entityManager->flush();
 
-                if($request->attributes->get('template')) 
-                    $message = 'Success! Template has been updated successfully.';
-                else
-                    $message = 'Success! Template has been added successfully.';
+            if($request->attributes->get('template')) 
+                $message = 'Success! Template has been updated successfully.';
+            else
+                $message = 'Success! Template has been added successfully.';
 
-                $this->addFlash('success', $message);
+            $this->addFlash('success', $message);
 
-                return $this->redirectToRoute('email_templates_action');
-         
+            return $this->redirectToRoute('email_templates_action');
         } 
 
         return $this->render('@UVDeskCore//templateForm.html.twig', array(
@@ -121,8 +120,7 @@ class Email extends Controller
                 $repository = $this->getDoctrine()->getRepository('UVDeskCoreBundle:EmailTemplates');
                 $json =  $repository->getTemplates($request->query, $this->container);
             }else{
-                if($request->attributes->get('template'))
-                {
+                if($request->attributes->get('template')){
                     if($templateBase = $this->getTemplate($request)) {
                         if($request->getMethod() == 'DELETE' ){
                             $em = $this->getDoctrine()->getManager();

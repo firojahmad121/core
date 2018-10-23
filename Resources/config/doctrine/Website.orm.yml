@@ -19,13 +19,12 @@ Webkul\UVDesk\CoreBundle\Entity\Website:
         logo:
             type: string
             length: 191
+        themeColor:
+            type: string
+            length: 191
         favicon:
             type: string
             length: 191
-            nullable: true
-        local:
-            type: string
-            length: 10
             nullable: true
         createdAt:
             type: datetime

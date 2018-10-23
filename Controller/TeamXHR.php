@@ -12,10 +12,10 @@ class TeamXHR extends Controller
 {
     public function listTeamsXHR(Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
+        }
+
         if (true === $request->isXmlHttpRequest()) {
             $paginationResponse = $this->getDoctrine()->getRepository('UVDeskCoreBundle:SupportTeam')->getAllSupportTeams($request->query, $this->container);
 
@@ -27,10 +27,10 @@ class TeamXHR extends Controller
 
     public function deleteTeamXHR($supportTeamId)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
+        }
+
         $request = $this->container->get('request_stack')->getCurrentRequest();
 
         if ("DELETE" == $request->getMethod()) {
@@ -50,5 +50,4 @@ class TeamXHR extends Controller
         
         return new Response(json_encode([]), 404, ['Content-Type' => 'application/json']);
     }
-
 }
