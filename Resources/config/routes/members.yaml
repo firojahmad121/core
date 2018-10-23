@@ -55,12 +55,12 @@ helpdesk_member_support_group_collection_xhr:
 helpdesk_member_create_support_group:
     path:     /create/group
     controller: Webkul\UVDesk\CoreBundle\Controller\Group::createGroup
-    defaults: { panelId: 'users'}
+    defaults: { panelId: 'users' }
 
 helpdesk_member_update_support_group:
     path:     /group/{supportGroupId}
     controller: Webkul\UVDesk\CoreBundle\Controller\Group::editGroup
-    defaults: { panelId: 'users'}
+    defaults: { panelId: 'users' }
 
 helpdesk_member_remove_support_group_xhr:
     path:      /group/delete/xhr/{supportGroupId}
@@ -81,23 +81,23 @@ helpdesk_member_support_team_collection_xhr:
 helpdesk_member_create_support_team:
     path:     /create/team
     controller: Webkul\UVDesk\CoreBundle\Controller\Team::createTeam
-    defaults: { panelId: 'users'}
+    defaults: { panelId: 'users' }
 
 helpdesk_member_update_support_team:
     path:     /team/{supportTeamId}
     controller: Webkul\UVDesk\CoreBundle\Controller\Team::editTeam
-    defaults: { panelId: 'users'}
+    defaults: { panelId: 'users' }
 
 helpdesk_member_remove_support_team_xhr:
     path:     /team/delete/xhr/{supportTeamId}
     controller: Webkul\UVDesk\CoreBundle\Controller\TeamXHR::deleteTeamXHR
-    defaults: { panelId: 'users', supportTeamId: 0}
+    defaults: { panelId: 'users', supportTeamId: 0 }
 
 # Support Privilege Resources
 helpdesk_member_privilege_collection:
     path:     /privileges
     controller: Webkul\UVDesk\CoreBundle\Controller\Privilege::listPrivilege
-    defaults: { panelId: 'users'}
+    defaults: { panelId: 'users' }
 
 helpdesk_member_privilege_collection_xhr:
     path:     /privileges/xhr
@@ -107,12 +107,12 @@ helpdesk_member_privilege_collection_xhr:
 helpdesk_member_create_privilege:
     path:     /create/privilege
     controller: Webkul\UVDesk\CoreBundle\Controller\Privilege::createPrivilege
-    defaults: { panelId: 'users'}
+    defaults: { panelId: 'users' }
 
 helpdesk_member_update_privilege:
     path:     /privilege/{supportPrivilegeId}
     controller: Webkul\UVDesk\CoreBundle\Controller\Privilege::editPrivilege
-    defaults: { panelId: 'users'}
+    defaults: { panelId: 'users' }
 
 helpdesk_member_remove_privilege_xhr:
     path:     /privilege/delete/xhr/{supportPrivilegeId}
@@ -129,7 +129,7 @@ edit_profile:
 access_token_xhr:
     path:     member/access-token
     defaults: { _controller: UVDeskCoreBundle:Api:accessTokenXhr }
-    methods: [GET,POST]
+    methods: [ GET, POST ]
 
 helpdesk_member_saved_filters_xhr:
     path:     /saved-filter-xhr/{filterId}
@@ -140,4 +140,4 @@ helpdesk_member_saved_filters_xhr:
 helpdesk_member_helpdesk_theme:
     path:   /theme/helpdesk
     controller: Webkul\UVDesk\CoreBundle\Controller\Theme::updateHelpdeskTheme
-    defaults: { panelId: 'themes', id: 0}
+    defaults: { panelId: 'themes', id: 0 }

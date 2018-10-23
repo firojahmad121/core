@@ -7,17 +7,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Theme extends Controller
 {
-    public function updateHelpdeskTheme(Request $request) {
-        if($request->getMethod() == "POST") {
+    public function updateHelpdeskTheme(Request $request)
+    {
+        if ($request->getMethod() == "POST") {
             $values = $request->request->all();
-            $em = $this->getDoctrine()->getManager();
-
-            $websiteRepo = $em->getRepository('UVDeskCoreBundle:Website');
-            $website = $websiteRepo->findOneBy(['code' => 'helpdesk']);
+            $entityManager = $this->getDoctrine()->getManager();
+            $website = $entityManager->getRepository('UVDeskCoreBundle:Website')->findOneByCode('helpdesk');
 
             $website->setThemeColor($values['themeColor']);
-            $em->persist($website);
-            $em->flush();
+
+            $entityManager->persist($website);
+            $entityManager->flush();
         }
 
         return $this->render('@UVDeskCore/theme.html.twig');
