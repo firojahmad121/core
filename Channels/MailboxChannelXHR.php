@@ -8,18 +8,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Webkul\UVDesk\CoreBundle\Entity\Mailbox;
 use Webkul\UVDesk\CoreBundle\Form\Mailbox as MailboxForm;
-use Doctrine\ORM\Query;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class MailboxChannelXHR extends Controller
 {
-
-    public function listMailboxCollection(Request $request) 
-    {
-        $query = $this->getDoctrine()->getRepository('UVDeskCoreBundle:Mailbox')->createQueryBuilder('mailbox')->getQuery();   
-        return $this->render('@UVDeskCore//mailboxList.html.twig',['mailboxes' => json_encode($query->getREsult(Query::HYDRATE_ARRAY))]);
-    }
     public function processMailXHR(Request $request)
     {
         if ("POST" == $request->getMethod() && null != $request->get('message')) {
@@ -52,10 +45,14 @@ class MailboxChannelXHR extends Controller
                     'replyTo' => $mailbox->getMailboxEmail()
                 );
             
-                $this->container->get('workflow.service')->sendMail($data,$mailbox);
+                $this->container->get('workflow.service')->sendMail($data, $mailbox);
             }
-            if($mailbox->getIsEnabled()) {
-                // $json['mailbox'] = json_decode($this->get('email.service')->objectSerializer($mailbox,$ignoredFields));
+
+            if ($mailbox->getIsEnabled()) {
+                dump($mailbox);
+                die;
+
+                $json['mailbox'] = json_decode($this->get('default.service')->objectSerializer($mailbox,$ignoredFields));
                 $json['alertClass'] = 'success';
                 $json['isActive'] = true;
             } else {
@@ -74,6 +71,7 @@ class MailboxChannelXHR extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $requestParams = json_decode($request->getContent(), true) ?: $request->request->all();
+
         switch (strtoupper($request->getMethod())) {
             case 'POST':
                 if (empty($requestParams['email']) || empty($requestParams['name'])) {
@@ -169,9 +167,7 @@ class MailboxChannelXHR extends Controller
                     ];
 
                     return new Response(json_encode($responseContent), 400, ['Content-Type' => 'application/json']);
-                }
-                else if (false == $mailboxChannelForm->isValid())
-                {
+                } else if (false == $mailboxChannelForm->isValid()) {
                     // Invalid form details
                     $responseContent = [
                         'alertClass' => 'danger',
@@ -179,10 +175,19 @@ class MailboxChannelXHR extends Controller
                     ];
 
                     return new Response(json_encode($responseContent), 400, ['Content-Type' => 'application/json']);
+                } else if (!empty($existingMailbox)) {
+                    // A mailbox has already been created with the specified email address
+                    $responseContent = [
+                        'alertClass' => 'danger',
+                        'alertMessage' => 'A mailbox already exists with the specified email address',
+                    ];
+
+                    return new Response(json_encode($responseContent), 400, ['Content-Type' => 'application/json']);
                 }
 
                 $entityManager->persist($mailbox);
                 $entityManager->flush();                
+                
                 return new Response(json_encode([
                     'alertClass' => 'success',
                     'alertMessage' => 'Mailbox updated successfully',

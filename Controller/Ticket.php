@@ -125,8 +125,9 @@ class Ticket extends Controller
 
             if ($referralURL === $expectedReferralURL) {
                 $referralTicket = $entityManager->getRepository('UVDeskCoreBundle:Ticket')->findOneById($referralId);
-                if (!empty($referraelTicket)) {
-                    $ticketValidatieonGroup = 'CustomerCreateTicket';
+                
+                if (!empty($referralTicket)) {
+                    $ticketValidationGroup = 'CustomerCreateTicket';
                     
                 }
             }
@@ -290,18 +291,20 @@ class Ticket extends Controller
             'thread' => $request->attributes->get('threadId'),
         ]);
 
-        if(!$attachment)
+        if (!$attachment) {
             $this->noResultFound();
-        // if(in_array($attachment->getContentType(), ['dropbox-link', 'onedrive-link', 'box-link', 'googledrive-link']) || in_array($attachment->getFileSystem(), ['facebook', 'social'])) {
-        //     return $this->redirect($attachment->getpath());
-        // }
+        }
+
         $zipname = 'ticketAttachments.zip';
         $zip = new \ZipArchive;
         $zip->open($zipname, \ZipArchive::CREATE);
+        
         foreach ($attachment as $attach) {
              $zip->addFile($attach->getPath()); 
         }
+
         $zip->close();
+        
         header('Content-Type: application/zip');
         header('Content-disposition: attachment; filename='.$zipname);
         header('Content-Length: ' . filesize($zipname));

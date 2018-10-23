@@ -58,29 +58,30 @@ class UserService
 
         return true;
     }
-    public function checkPermission($action) {
+
+    public function checkPermission($action)
+    {
         $securityContext = $this->container->get('security.token_storage')->getToken();
-        if($this->isGranted('ROLE_SUPER_ADMIN')) {
-             return true;
-         } elseif($this->isGranted('ROLE_ADMIN')) {
-             if(in_array($action,['webkul_admin_subscription_plan','webkul_admin_subscription_billing','webkul_admin_subscription_plan_overview','webkul_admin_member_recurring_profile_list','webkul_admin_member_recurring_profile_view','webkul_admin_member_order_list','webkul_admin_member_order_view','webkul_admin_subscription_billing_address'])) {
-                 return false;
-             } else
-                 return true;
-         } elseif($this->isGranted('ROLE_AGENT')) {
-             $agentPrivileges =  $this->getPrivileges($this->getCurrentUser()->getId());
-             $agentPrivileges = array_merge($agentPrivileges, ['task_list', 'view_task', 'reports', 'report_productivity_action', 'report_agents_action', 'report_achievements_action', 'saved_filters_action', 'saved_replies']);
-             return in_array($action, $agentPrivileges) ? true : false;
-         } else {
-             return false;
-         }
+        
+        if ($this->isGranted('ROLE_SUPER_ADMIN') || $this->isGranted('ROLE_ADMIN')) {
+            return true;
+        } else if ($this->isGranted('ROLE_AGENT')) {
+            $agentPrivileges = $this->getPrivileges($this->getCurrentUser()->getId());
+            $agentPrivileges = array_merge($agentPrivileges, ['saved_filters_action', 'saved_replies']);
+            
+            return in_array($action, $agentPrivileges) ? true : false;
+        } else {
+            return false;
+        }
     }
+
     public function getCurrentUser()
     {
-        if($this->container->get('security.token_storage')->getToken())
+        if ($this->container->get('security.token_storage')->getToken()) {
             return $this->container->get('security.token_storage')->getToken()->getUser();
-        else
+        } else {
             return false;
+        }
     }
 
     public function getSupportGroups(Request $request = null)

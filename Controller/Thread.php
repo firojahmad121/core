@@ -70,18 +70,13 @@ class Thread extends Controller
         
         $ticket->createdThread = $thread;
 
-        $event = new GenericEvent('ticket.replyAgent', [
+        // Trigger agent reply event
+        $event = new GenericEvent('uvdesk.ticket.agent_reply', [
             'entity' => $ticket,
-            'event' => 'ticket.replyAgent',
         ]);
 
         $this->get('event_dispatcher')->dispatch('uvdesk.automation.workflow.execute', $event);
-        // $this->get('uvdesk.automations')->trigger([
-        //     'entity' => $ticket,
-        //     'event' => 'ticket.reply.added'
-        // ]);
         
-        die;
         // Check if ticket status needs to be updated
         $updateTicketToStatus = !empty($params['status']) ? (trim($params['status']) ?: null) : null;
 
