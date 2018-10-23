@@ -20,7 +20,8 @@ class Customer extends Controller
         $em = $this->getDoctrine()->getManager();
         $user = new user();
         $errors = [];
-        if($request->getMethod() == "POST") {
+
+            if($request->getMethod() == "POST") {
                 $contentFile = $request->files->get('customer_form');
 
                 $tempUser = $em->getRepository('UVDeskCoreBundle:User')->findBy(['email' =>  $request->request->get('customer_form')['email']]);
@@ -43,22 +44,18 @@ class Customer extends Controller
                                 );
 
                         $user = $this->container->get('user.service')->getUserDetails($data);
-                        $this->addFlash('success', 'Success ! Customer saved successfully.');
+                        $this->addFlash('success', 'Success ! Customer information saved successfully.');
 
                         return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
-                    // } else {
-                    //     $errors = $this->getFormErrors($form);
-                    // }
-                } else {
-                   
-                    $this->addFlash('warning', 'Error ! User with same email is already exist.');
-                }
-        }
+                    }else {
+                        $this->addFlash('warning', 'Error ! User with same email already exist.');
+                    }
+            }
 
-        return $this->render('@UVDeskCore/Customers/createSupportCustomer.html.twig', [
-            'user' => $user,
-            'errors' => json_encode($errors)
-        ]);
+            return $this->render('@UVDeskCore/Customers/createSupportCustomer.html.twig', [
+                'user' => $user,
+                'errors' => json_encode($errors)
+            ]);
 
     }
 
@@ -82,12 +79,12 @@ class Customer extends Controller
               $data = $data['customer_form'];
               $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email' => $data['email']));
               $errorFlag = 0;
-              if($checkUser) {
-                  if($checkUser->getId() != $userId)
-                      $errorFlag = 1;
-              }
 
-              if(!$errorFlag && 'hello@uvdesk.com' !== $user->getEmail()) {
+                if($checkUser) {
+                    if($checkUser->getId() != $userId)
+                        $errorFlag = 1;
+                }
+                if(!$errorFlag && 'hello@uvdesk.com' !== $user->getEmail()) {
 
                     $password = $user->getPassword();
                     $email = $user->getEmail();
@@ -122,24 +119,12 @@ class Customer extends Controller
                     $em->persist($user);
                     $em->flush();
 
-                    //Event Triggered
-                    //   $this->get('event.manager')->trigger([
-                    //           'event' => 'customer.updated',
-                    //           'entity' => $user
-                    // ]);
-
-                      return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
-                //   } else {
-                //       $errors = $this->getFormErrors($form);
-                //   }
-              } else {
-                  $this->addFlash(
-                      'warning',
-                      $this->translate('Error ! User with same email is already exist.')
-                  );
-                  return $this->redirect($this->generateUrl('edit_customer',array('id' => $userId)));
-              }
-          } 
+                    $this->addFlash('success', 'Success ! Customer information updated successfully.'); 
+                    return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
+                }else {
+                  $this->addFlash('warning', 'Error ! User with same email already exist.'); 
+                }
+            } 
         }
         
         return $this->render('@UVDeskCore/Customers/updateSupportCustomer.html.twig', [
@@ -155,7 +140,6 @@ class Customer extends Controller
 
         return $encoder->encodePassword($plainPassword, $user->getSalt());
     }
-
     public function bookmarkCustomer(Request $request)
     {
         $json = array();
@@ -172,7 +156,6 @@ class Customer extends Controller
                 'supportRole' => 4
             )
         );
-
         if($userInstance->getIsStarred()) {
             $userInstance->setIsStarred(0);
             $em->persist($userInstance);

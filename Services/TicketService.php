@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Webkul\UVDesk\CoreBundle\Entity\Ticket;
 use Webkul\UVDesk\CoreBundle\Entity\Thread;
+use Webkul\UVDesk\CoreBundle\Entity\Attachment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Webkul\UVDesk\CoreBundle\Utils\TokenGenerator;
@@ -88,7 +89,6 @@ class TicketService
     public function createTicket(array $params = [])
     {
         $thread = $this->entityManager->getRepository('UVDeskCoreBundle:Thread')->findOneByMessageId($params['messageId']);
-
         if (empty($thread)) {
             $user = $this->entityManager->getRepository('UVDeskCoreBundle:User')->findOneByEmail($params['from']);
 
@@ -119,7 +119,6 @@ class TicketService
         if ('website' == $ticketData['source']) {
             $ticketData['messageId'] = $this->getRandomRefrenceId();
         }
-
         // Set Defaults
         $ticketType = !empty($ticketData['type']) ? $ticketData['type'] : $this->getDefaultType();
         $ticketStatus = !empty($ticketData['status']) ? $ticketData['status'] : $this->getDefaultStatus();
@@ -152,7 +151,6 @@ class TicketService
     public function createThread(Ticket $ticket, array $threadData)
     {
         $threadData['isLocked'] = 0;
-        // $this->ticketLastReply = $this->getLastReply($ticket->getId(), false);
         
         if ('forward' === $threadData['threadType']) {
             $threadData['replyTo'] = $threadData['to'];
@@ -188,7 +186,6 @@ class TicketService
                 $ticket->setIsAgentViewed(false);
                 $ticket->setIsReplied(false);
             }
-            // dump($ticket);die;
             $this->entityManager->persist($ticket);
         } else if ('create' === $threadData['threadType']) {
             $ticket->setIsReplied(false);
@@ -198,7 +195,49 @@ class TicketService
         $this->entityManager->persist($thread);
         $this->entityManager->flush();
 
+        // Uploading Attachments
+        $fileNames['fileNames'] = $threadData['attachments'];
+        if(!empty($fileNames['fileNames'])){
+            $this->saveThreadAttachment($thread, $fileNames['fileNames']);
+        }
+
         return $thread;
+    }
+
+    public function saveThreadAttachment($thread,$fileNames) {
+
+        foreach ($fileNames as $file) {
+
+            $size        = $file->getSize();
+            $contentType = $file->getMimeType(); 
+            // Attachment upload
+            $fileName  = $this->container->get('uvdesk.service')->getFileUploadManager()->upload($file);
+            $attachment = new Attachment();
+            $attachment->setContentType($contentType);
+            $attachment->setSize($size);
+            $attachment->setPath($fileName);
+            $attachment->setThread($thread);
+            $this->entityManager->persist($attachment);
+            $this->entityManager->flush();
+
+            $this->attachments[] = $attachment;
+
+            // $attachment = new Entity\Attachment();
+            // $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+            // $guessedMimeType = $this->container->get('file.service')->guessMimeType($extension);
+            // $contentType = (strstr($guessedMimeType, '/', true) === strstr($file['contentType'], '/', true)) && ('application/octet-stream' !== $file['contentType']) ? $file['contentType'] : $guessedMimeType;
+
+            // $attachment->setName($file['name']);
+            // $attachment->setPath($file['path']);
+            // $attachment->setContentType($contentType);
+            // $attachment->setSize($file['size']);
+            // $attachment->setFileSystem($file['fileSystem']);
+            // if(isset($file['contentId']))
+            //     $attachment->setContentId($file['contentId']);
+            // $attachment->setThread($thread);
+            // $this->em->persist($attachment);
+            // $this->em->flush();
+        }
     }
 
     public function getTypes()
@@ -593,15 +632,6 @@ class TicketService
                     $this->entityManager->persist($ticket);
                     $this->entityManager->flush();
 
-                    //Event Triggered
-                    // if($flag) {
-                    //     $this->container->get('event.manager')->trigger([
-                    //             'event' => 'ticket.status.updated',
-                    //             'entity' => $ticket,
-                    //             'targetEntity' => $status,
-                    //             'notePlaceholders' => $notePlaceholders
-                    //         ]);
-                    // }
                     break;
                 case 'type':
                     $type = $this->entityManager->getRepository('UVDeskCoreBundle:TicketType')->find($data['targetId']);
@@ -802,7 +832,7 @@ class TicketService
                 'threadType' => $initialThread->getThreadType(),
                 'createdBy' => $initialThread->getCreatedBy(),
                 'message' => $initialThread->getMessage(),
-                'attachments' => [],
+                'attachments' => $initialThread->getAttachments(),
                 'timestamp' => $initialThread->getCreatedAt()->getTimestamp(),
                 'createdAt' => $initialThread->getCreatedAt()->format('d-m-Y h:ia'),
                 'user' => $authorInstance->getPartialDetails(),
@@ -898,10 +928,443 @@ class TicketService
     //     return $results;
     // }
 
+    public function getTicketConditions()
+    {
+        $conditions = array(
+                        'ticket' => [
+                            $this->trans('mail') => array(
+                                        [
+                                            'lable' => $this->trans('from_mail'),
+                                            'value' => 'from_mail',
+                                            'match' => 'email'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('to_mail'),
+                                            'value' => 'to_mail',
+                                            'match' => 'email'
+                                        ],
+                                    ),
+                            $this->trans('ticket') => array(
+                                        [
+                                            'lable' => $this->trans('subject'),
+                                            'value' => 'subject',
+                                            'match' => 'string'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('description'),
+                                            'value' => 'description',
+                                            'match' => 'string'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('subject_or_description'),
+                                            'value' => 'subject_or_description',
+                                            'match' => 'string'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('priority'),
+                                            'value' => 'TicketPriority',
+                                            'match' => 'select'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('type'),
+                                            'value' => 'TicketType',
+                                            'match' => 'select'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('status'),
+                                            'value' => 'TicketStatus',
+                                            'match' => 'select'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('source'),
+                                            'value' => 'source',
+                                            'match' => 'select'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('created'),
+                                            'value' => 'created',
+                                            'match' => 'date'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('agent'),
+                                            'value' => 'agent',
+                                            'match' => 'select'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('group'),
+                                            'value' => 'group',
+                                            'match' => 'select'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('team'),
+                                            'value' => 'team',
+                                            'match' => 'select'
+                                        ],
+                                    ),
+                            $this->trans('customer') => array(
+                                        [
+                                            'lable' => $this->trans('customer_name'),
+                                            'value' => 'customer_name',
+                                            'match' => 'string'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('customer_email'),
+                                            'value' => 'customer_email',
+                                            'match' => 'email'
+                                        ],
+                                    ),
+                        ],
+                        'task' => [
+                            $this->trans('task') => array(
+                                        [
+                                            'lable' => $this->trans('subject'),
+                                            'value' => 'subject',
+                                            'match' => 'string'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('description'),
+                                            'value' => 'description',
+                                            'match' => 'string'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('subject_or_description'),
+                                            'value' => 'subject_or_description',
+                                            'match' => 'string'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('priority'),
+                                            'value' => 'TicketPriority',
+                                            'match' => 'select'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('stage'),
+                                            'value' => 'stage',
+                                            'match' => 'select'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('created'),
+                                            'value' => 'created',
+                                            'match' => 'date'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('agent_name'),
+                                            'value' => 'agent_name',
+                                            'match' => 'select'
+                                        ],
+                                        [
+                                            'lable' => $this->trans('agent_email'),
+                                            'value' => 'agent_email',
+                                            'match' => 'select'
+                                        ],
+                                    ),
+                        ]
+        );
+
+    //     $cfConditions = [];
+    //     //if($this->container->get('user.service')->checkCompanyPermission('custom_fields') ) {
+    //         $customFields = $this->container->get('customfield.service')->getCustomFieldsArray('both');
+
+    //         foreach($customFields as $customField) {
+    //             $cfConditions[] = [
+    //                         'lable' => $customField['name'],
+    //                         'value' => 'customFields[' . $customField['id'] . ']',
+    //                         'match' => $this->getMatchTypeByFieldType($customField),
+    //                     ];
+    //         }
+    //    //}
+
+    //     if(count($cfConditions)) {
+    //         $conditions['ticket'][$this->trans('Custom Fields')] = $cfConditions;
+    //     }
+        return $conditions;
+    }
+
+
+    public function getTicketMatchConditions()
+    {
+        return [
+                'email' => array(
+                            [
+                                'lable' => $this->trans('is'),
+                                'value' => 'is'
+                            ],
+                            [
+                                'lable' => $this->trans('isNot'),
+                                'value' => 'isNot'
+                            ],
+                            [
+                                'lable' => $this->trans('contains'),
+                                'value' => 'contains'
+                            ],
+                            [
+                                'lable' => $this->trans('notContains'),
+                                'value' => 'notContains'
+                            ],
+                        ),
+                'string' => array(
+                            [
+                                'lable' => $this->trans('is'),
+                                'value' => 'is'
+                            ],
+                            [
+                                'lable' => $this->trans('isNot'),
+                                'value' => 'isNot'
+                            ],
+                            [
+                                'lable' => $this->trans('contains'),
+                                'value' => 'contains'
+                            ],
+                            [
+                                'lable' => $this->trans('notContains'),
+                                'value' => 'notContains'
+                            ],
+                            [
+                                'lable' => $this->trans('startWith'),
+                                'value' => 'startWith'
+                            ],
+                            [
+                                'lable' => $this->trans('endWith'),
+                                'value' => 'endWith'
+                            ],
+                        ),
+                'select' => array(
+                            [
+                                'lable' => $this->trans('is'),
+                                'value' => 'is'
+                            ],
+                            [
+                                'lable' => $this->trans('isNot'),
+                                'value' => 'isNot'
+                            ],
+                        ),
+                'date' => array(
+                            [
+                                'lable' => $this->trans('before'),
+                                'value' => 'before'
+                            ],
+                            [
+                                'lable' => $this->trans('beforeOn'),
+                                'value' => 'beforeOn'
+                            ],
+                            [
+                                'lable' => $this->trans('after'),
+                                'value' => 'after'
+                            ],
+                            [
+                                'lable' => $this->trans('afterOn'),
+                                'value' => 'afterOn'
+                            ],
+                        ),
+                'datetime' => array(
+                            [
+                                'lable' => $this->trans('before'),
+                                'value' => 'beforeDateTime'
+                            ],
+                            [
+                                'lable' => $this->trans('beforeOn'),
+                                'value' => 'beforeDateTimeOn'
+                            ],
+                            [
+                                'lable' => $this->trans('after'),
+                                'value' => 'afterDateTime'
+                            ],
+                            [
+                                'lable' => $this->trans('afterOn'),
+                                'value' => 'afterDateTimeOn'
+                            ],
+                        ),
+                'time' => array(
+                            [
+                                'lable' => $this->trans('before'),
+                                'value' => 'beforeTime'
+                            ],
+                            [
+                                'lable' => $this->trans('beforeOn'),
+                                'value' => 'beforeTimeOn'
+                            ],
+                            [
+                                'lable' => $this->trans('after'),
+                                'value' => 'afterTime'
+                            ],
+                            [
+                                'lable' => $this->trans('afterOn'),
+                                'value' => 'afterTimeOn'
+                            ],
+                        ),
+                'number' => array(
+                            [
+                                'lable' => $this->trans('is'),
+                                'value' => 'is'
+                            ],
+                            [
+                                'lable' => $this->trans('isNot'),
+                                'value' => 'isNot'
+                            ],
+                            [
+                                'lable' => $this->trans('contains'),
+                                'value' => 'contains'
+                            ],
+                            [
+                                'lable' => $this->trans('greaterThan'),
+                                'value' => 'greaterThan'
+                            ],
+                            [
+                                'lable' => $this->trans('lessThan'),
+                                'value' => 'lessThan'
+                            ],
+                        ),
+            ];
+    }
+
+    public function getTicketActions($force = false)
+    {
+        $actionArray =  array(
+                        'ticket' => [
+                                    'TicketPriority' => $this->trans('action.priority'),
+                                    'TicketType' => $this->trans('action.type'),
+                                    'TicketStatus' => $this->trans('action.status'),
+
+                                    'tag' => $this->trans('action.tag'),
+                                    'note' => $this->trans('action.note'),
+
+                                    'assign_agent' => $this->trans('action.assign_agent'),
+                                    'assign_group' => $this->trans('action.assign_group'),
+                                    'assign_team' => $this->trans('action.assign_team'),
+
+                                    'mail_agent' => $this->trans('action.mail_agent'),
+                                    'mail_group' => $this->trans('action.mail_group'),
+                                    'mail_team' => $this->trans('action.mail_team'),
+                                    'mail_customer' => $this->trans('action.mail_customer'),
+
+                                    'mail_last_collaborator' => $this->trans('action.mail_last_collaborator'),
+                                    'delete_ticket' => $this->trans('action.delete_ticket'),
+                                    'mark_spam' => $this->trans('action.mark_spam'),
+                                    ],
+                        'task'  => [
+                                    // 'assign_agent' => $this->trans('action.assign_agent'),
+                                    'reply' => $this->trans('action.reply'),
+                                    'mail_agent' => $this->trans('action.mail_agent'),
+                                    'mail_members' => $this->trans('action.mail_members'),
+                                    'mail_last_member' => $this->trans('action.mail_last_member'),
+                                    ],
+                        'customer'  => [
+                                    'mail_customer' => $this->trans('action.mail_customer'),
+                                    ],
+                        'agent'  => [
+                                    'mail_agent' => $this->trans('action.mail_agent'),
+                                    'ticket_transfer' => $this->trans('action.ticket_transfer'),
+                                    'task_transfer' => $this->trans('action.task_transfer'),
+                                    ],
+                    );
+
+        $actionRoleArray = [
+
+             'ticket->TicketPriority' => 'ROLE_AGENT_UPDATE_TICKET_PRIORITY',
+             'ticket->TicketType'     => 'ROLE_AGENT_UPDATE_TICKET_TYPE',
+             'ticket->TicketStatus'   => 'ROLE_AGENT_UPDATE_TICKET_STATUS',
+             'ticket->tag'            => 'ROLE_AGENT_ADD_TAG',
+             'ticket->note'           => 'ROLE_AGENT_ADD_NOTE',
+             'ticket->assign_agent'   => 'ROLE_AGENT_ASSIGN_TICKET',
+             'ticket->assign_group'   => 'ROLE_AGENT_ASSIGN_TICKET_GROUP',
+             'ticket->assign_team'    => 'ROLE_AGENT_ASSIGN_TICKET_GROUP',
+             'ticket->mail_agent'     => 'ROLE_AGENT',
+             'ticket->mail_group'     => 'ROLE_AGENT_MANAGE_GROUP',
+             'ticket->mail_team'      => 'ROLE_AGENT_MANAGE_SUB_GROUP',
+             'ticket->mail_customer'  => 'ROLE_AGENT',
+             'ticket->mail_last_collaborator' => 'ROLE_AGENT',
+             'ticket->delete_ticket'  => 'ROLE_AGENT_DELETE_TICKET',
+             'ticket->mark_spam'      => 'ROLE_AGENT_UPDATE_TICKET_STATUS',
+
+             'task->reply' => 'ROLE_AGENT',
+             'task->mail_agent' => 'ROLE_AGENT',
+             'task->mail_members' => 'ROLE_AGENT',
+             'task->mail_last_member' => 'ROLE_AGENT',
+
+             'customer->mail_customer' => 'ROLE_AGENT',
+
+             'agent->mail_agent' => 'ROLE_AGENT',
+             'agent->ticket_transfer' => 'ROLE_AGENT_ASSIGN_TICKET',
+             'agent->task_transfer' => 'ROLE_AGENT_EDIT_TASK',
+        ];
+
+
+        $resultArray = [];
+        foreach($actionRoleArray as $action => $role) {
+            if($role == 'ROLE_AGENT' || $this->container->get('user.service')->checkPermission($role) || $force) {
+                $actionPath = explode('->', $action);
+                $resultArray[$actionPath[0]][$actionPath[1]] = $actionArray[$actionPath[0]][$actionPath[1]];
+            }
+        }
+        //$repo = $this->container->get('doctrine.orm.entity_manager')->getRepository('WebkulAppBundle:ECommerceChannel');
+        //$ecomChannels = $repo->getActiveChannelsByCompany($this->container->get('user.service')->getCurrentCompany());
+        $ecomArray= [];
+
+        // foreach($ecomChannels as $channel) {
+        //     $ecomArray['add_order_to_' . $channel['id']] = $this->trans('Add order to: ') . $channel['title'];
+        // }
+
+        $resultArray['ticket'] = array_merge($resultArray['ticket'], $ecomArray);
+        return $resultArray;
+    }
+
     public function trans($text)
     {
 
         return $this->container->get('translator')->trans($text);
+    }
+
+    public function getTicketEvents()
+    {
+        $events = array(
+                        'ticket' => $this->trans('ticket'),
+                        'agent' => $this->trans('agent'),
+                        'customer' => $this->trans('customer'),
+                    );
+        if(!$this->container->get('user.service')->getCurrentPlan() || $this->container->get('user.service')->getCurrentPlan()->getTasks())
+            $events['task'] = $this->trans('task');
+        return $events;
+    }
+
+    public function getTicketEventValues()
+    {
+        return  array(
+                        'ticket' => [
+                                    'created' => $this->trans('events.created'),
+                                    'deleted' => $this->trans('events.deleted'),
+                                    'threadUpload' => $this->trans('events.thread.updated'),
+                                    'priority' => $this->trans('events.priority'),
+                                    'type' => $this->trans('events.type'),
+                                    'status' => $this->trans('events.status'),
+                                    'group' => $this->trans('events.group'),
+                                    'team' => $this->trans('events.team'),
+                                    'agent' => $this->trans('events.agent'),
+                                    'collaboratorAdded' => $this->trans('events.collaborator.add'),
+                                    'note' => $this->trans('events.note'),
+                                    'replyCustomer' => $this->trans('events.reply.customer'),
+                                    'replyAgent' => $this->trans('events.reply.agent'),
+                                    'replyByCollaborator' => $this->trans('events.reply.collaborator'),
+                                    ],
+                        'task' => [
+                                    'created' => $this->trans('events.created'),
+                                    'updated' => $this->trans('events.updated'),
+                                    'deleted' => $this->trans('events.deleted'),
+                                    'memberAdded' => $this->trans('events.member.add'),
+                                    'memberRemoved' => $this->trans('events.member.remove'),
+                                    'reply' => $this->trans('events.reply'),
+                                    ],
+                        'agent' => [
+                                    'created' => $this->trans('events.created'),
+                                    'updated' => $this->trans('events.updated'),
+                                    'deleted' => $this->trans('events.deleted'),
+                                    'forgotPassword' => $this->trans('events.agent.forgot.password'),
+                                    ],
+                        'customer' => [
+                                    'created' => $this->trans('events.created'),
+                                    'updated' => $this->trans('events.updated'),
+                                    'deleted' => $this->trans('events.deleted'),
+                                    'forgotPassword' => $this->trans('events.customer.forgot.password'),
+                                    ],
+                    );
     }
 
     public function getAllSources()

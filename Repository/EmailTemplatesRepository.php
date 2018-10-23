@@ -17,9 +17,7 @@ class EmailTemplatesRepository extends EntityRepository
         $json = array();
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('sr')->from($this->getEntityName(), 'sr')
-            ->andwhere('sr.user IS NULL')  
-            ->andwhere('sr.company'.' = :company')
-            ->setParameter('company', $container->get('user.service')->getCurrentCompany()->getId());
+            ->andwhere('sr.user IS NULL');
 
         $data = $obj->all();
         $data = array_reverse($data);

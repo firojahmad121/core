@@ -26,9 +26,6 @@ class MailAgent extends WorkflowAction
     public static function getOptions(ContainerInterface $container)
     {
         $entityManager = $container->get('doctrine.orm.entity_manager');
-        dump($entityManager);
-        die;
-
         $results = $this->getDoctrine()
                         ->getRepository('UVDeskCoreBundle:EmailTemplates')
                         ->findAll();

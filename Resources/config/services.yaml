@@ -62,14 +62,8 @@ services:
             - { name: kernel.event_listener, event: console.command }
             - { name: kernel.event_listener, event: console.terminate }
     
-    Webkul\UVDesk\CoreBundle\Workflow\Events\:
-        resource: '../../Workflow/Events/*'
+    Webkul\UVDesk\CoreBundle\Workflows\:
+        resource: '../../Workflows/*'
         arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
         tags:
-            - { name: uvdesk.automations.workflow.events }
-    
-    Webkul\UVDesk\CoreBundle\Workflow\Actions\:
-        resource: '../../Workflow/Actions/*'
-        arguments: ['@service_container', '@request_stack', '@doctrine.orm.entity_manager']
-        tags:
-            - { name: uvdesk.automations.workflow.actions }
+            - { name: uvdesk.automations.workflow, event: workflow.execute }

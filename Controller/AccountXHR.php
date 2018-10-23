@@ -10,7 +10,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AccountXHR extends Controller
 {
-
     public function listAgentsXHR(Request $request)
     {
         if (true === $request->isXmlHttpRequest()) {

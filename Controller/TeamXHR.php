@@ -17,7 +17,6 @@ class TeamXHR extends Controller
 
             return new Response(json_encode($paginationResponse), 200, ['Content-Type' => 'application/json']);
         }
-
         return new Response(json_encode([]), 404, ['Content-Type' => 'application/json']);
     }
 
