@@ -13,16 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class MailboxChannelXHR extends Controller
 {
-
-  
     public function processMailXHR(Request $request)
     {
-
-        if(!$this->get('user.service')->checkPermission('ROLE_ADMIN')){          
-            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
-
         if ("POST" == $request->getMethod() && null != $request->get('message')) {
             $message = $request->get('message');
             $this->get('uvdesk.core.mailbox')->processMail($message);
@@ -33,10 +25,9 @@ class MailboxChannelXHR extends Controller
 
     public function verifyEmailForwardingXHR(Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_ADMIN')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_ADMIN')) {          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
+        }
 
         $json = array();
         if($request->getMethod() == "PUT") {
@@ -58,10 +49,14 @@ class MailboxChannelXHR extends Controller
                     'replyTo' => $mailbox->getMailboxEmail()
                 );
             
-                $this->container->get('workflow.service')->sendMail($data,$mailbox);
+                $this->container->get('workflow.service')->sendMail($data, $mailbox);
             }
-            if($mailbox->getIsEnabled()) {
-                // $json['mailbox'] = json_decode($this->get('email.service')->objectSerializer($mailbox,$ignoredFields));
+
+            if ($mailbox->getIsEnabled()) {
+                dump($mailbox);
+                die;
+
+                $json['mailbox'] = json_decode($this->get('default.service')->objectSerializer($mailbox,$ignoredFields));
                 $json['alertClass'] = 'success';
                 $json['isActive'] = true;
             } else {
@@ -78,14 +73,14 @@ class MailboxChannelXHR extends Controller
     public function updateMailboxChannelXHR($mailboxId)
     {
 
-        if(!$this->get('user.service')->checkPermission('ROLE_ADMIN')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_ADMIN')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $requestParams = json_decode($request->getContent(), true) ?: $request->request->all();
+
         switch (strtoupper($request->getMethod())) {
             case 'POST':
                 if (empty($requestParams['email']) || empty($requestParams['name'])) {
@@ -181,9 +176,7 @@ class MailboxChannelXHR extends Controller
                     ];
 
                     return new Response(json_encode($responseContent), 400, ['Content-Type' => 'application/json']);
-                }
-                else if (false == $mailboxChannelForm->isValid())
-                {
+                } else if (false == $mailboxChannelForm->isValid()) {
                     // Invalid form details
                     $responseContent = [
                         'alertClass' => 'danger',
@@ -191,10 +184,19 @@ class MailboxChannelXHR extends Controller
                     ];
 
                     return new Response(json_encode($responseContent), 400, ['Content-Type' => 'application/json']);
+                } else if (!empty($existingMailbox)) {
+                    // A mailbox has already been created with the specified email address
+                    $responseContent = [
+                        'alertClass' => 'danger',
+                        'alertMessage' => 'A mailbox already exists with the specified email address',
+                    ];
+
+                    return new Response(json_encode($responseContent), 400, ['Content-Type' => 'application/json']);
                 }
 
                 $entityManager->persist($mailbox);
-                $entityManager->flush();                
+                $entityManager->flush();
+                
                 return new Response(json_encode([
                     'alertClass' => 'success',
                     'alertMessage' => 'Mailbox updated successfully',

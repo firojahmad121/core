@@ -32,7 +32,6 @@ class UserService
             return (bool) ($role == $securityContext->getToken()->getRoles()[0]->getRole());
         } catch (AuthenticationCredentialsNotFoundException $e) {
             // @TODO: Handle Authentication Failure
-            return false;
         }
 
         return false;
@@ -45,6 +44,15 @@ class UserService
         return $user instanceof User ? $user : null;
     }
 
+    public function getCurrentUser()
+    {
+        if ($this->container->get('security.token_storage')->getToken()) {
+            return $this->container->get('security.token_storage')->getToken()->getUser();
+        } else {
+            return false;
+        }
+    }
+    
     public function isAccessAuthorized($scope, User $user = null)
     {
         // Return false if no user is provided
@@ -59,44 +67,51 @@ class UserService
 
         return true;
     }
-    public function checkPermission($action) {
+
+    public function checkPermission($support)
+    {
         $securityContext = $this->container->get('security.token_storage')->getToken();
-        // dump($action);die;
-        if($this->isGranted('ROLE_SUPER_ADMIN') || $this->isGranted('ROLE_ADMIN')) {
-             return true;
         
-         } elseif($this->isGranted('ROLE_AGENT')) {
-             $agentPrivileges =  $this->getUserPrivileges($this->getCurrentUser()->getId());
-             $agentPrivileges = array_merge($agentPrivileges, ['task_list', 'view_task', 'reports', 'report_productivity_action', 'report_agents_action', 'report_achievements_action', 'saved_filters_action', 'saved_replies']);
-             return in_array($action, $agentPrivileges) ? true : false;
-         } else {
-             return false;
-         }
+        if ($this->isGranted('ROLE_SUPER_ADMIN') || $this->isGranted('ROLE_ADMIN')) {
+            return true;
+        } else if ($this->isGranted('ROLE_AGENT')) {
+            $agentPrivileges = $this->getUserPrivileges($this->getCurrentUser()->getId());
+            $agentPrivileges = array_merge($agentPrivileges, ['saved_filters_action', 'saved_replies']);
+            
+            return in_array($action, $agentPrivileges) ? true : false;
+        } else {
+            return false;
+        }
     }
-    public function getUserPrivileges($userId) {
+
+    public function getUserPrivileges($userId)
+    {
         static $agentPrivilege = [];
         
-        if(isset($agentPrivilege[$userId]))
+        if (isset($agentPrivilege[$userId])) {
             return $agentPrivilege[$userId];
+        }
+        
         $userPrivileges = array();
         $user = $this->entityManager->getRepository('UVDeskCoreBundle:User')->find($userId);
-      
         $privileges = $user->getAgentInstance()->getSupportPrivileges();  
-                    if($privileges)
-                        foreach ($privileges as $privilege) {
-                           $userPrivileges = array_merge($userPrivileges, $privilege->getPrivileges());
-                        }
+      
+        if ($privileges) {
+            foreach ($privileges as $privilege) {
+                $userPrivileges = array_merge($userPrivileges, $privilege->getPrivileges());
+            }
+        }
         
         $agentPrivilege[$userId] = $this->agentPrivilege[$userId] = $userPrivileges;  
-        // dump($userPrivileges);die; 
         return $userPrivileges;
     }
-    public function getCurrentUser()
+
+    public function getSupportPrivileges()
     {
-        if($this->container->get('security.token_storage')->getToken())
-            return $this->container->get('security.token_storage')->getToken()->getUser();
-        else
-            return false;
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb->select("supportPrivilege")->from('UVDeskCoreBundle:SupportPrivilege', 'supportPrivilege');
+        
+        return $qb->getQuery()->getArrayResult();
     }
 
     public function getSupportGroups(Request $request = null)
@@ -402,12 +417,6 @@ class UserService
                 ->setParameter('userId', $userId);
 
         return array_column($qb->getQuery()->getArrayResult(), 'id');
-    }
-
-    public function getPrivileges() {
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb->select("supportPrivilege")->from('UVDeskCoreBundle:SupportPrivilege', 'supportPrivilege');
-        return $qb->getQuery()->getArrayResult();
     }
 
     public function createUser($data)

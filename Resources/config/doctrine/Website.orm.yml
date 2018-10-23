@@ -23,10 +23,6 @@ Webkul\UVDesk\CoreBundle\Entity\Website:
             type: string
             length: 191
             nullable: true
-        local:
-            type: string
-            length: 10
-            nullable: true
         createdAt:
             type: datetime
         updatedAt:

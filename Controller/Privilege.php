@@ -11,18 +11,17 @@ class Privilege extends Controller
 {
     public function listPrivilege(Request $request) 
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
+        }
+
         return $this->render('@UVDeskCore/Privileges/listSupportPriveleges.html.twig');
     }
 
     public function createPrivilege(Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
         }
 
         $formErrors = [];
@@ -53,10 +52,10 @@ class Privilege extends Controller
 
     public function editPrivilege($supportPrivilegeId)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
+        }
+
         $entityManager = $this->getDoctrine()->getManager();
         $request = $this->get('request_stack')->getCurrentRequest();
         
@@ -70,7 +69,6 @@ class Privilege extends Controller
         $supportPrivilegeResources = $this->get('uvdesk.service')->getSupportPrivelegesResources();
 
         if ('POST' == $request->getMethod()) {
-         
             $supportPrivilegeDetails = $request->request->get('privilege_form');
 
             $supportPrivilege->setName($supportPrivilegeDetails['name']);
@@ -83,8 +81,6 @@ class Privilege extends Controller
             $this->addFlash('success', 'Privilege updated successfully.');
 
             return $this->redirect($this->generateUrl('helpdesk_member_privilege_collection'));
-
-        
         }
  
         return $this->render('@UVDeskCore/Privileges/updateSupportPrivelege.html.twig', [

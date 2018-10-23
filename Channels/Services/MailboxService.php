@@ -43,7 +43,7 @@ class MailboxService
 
     public function getDefaultMailbox()
     {
-        $defaultMailboxEmail = $this->container->getParameter('uvdesk.default.ticket.mailbox');
+        $defaultMailboxEmail = $this->container->getParameter('uvdesk.mailboxes');
         $mailbox = $this->entityManager->getRepository('UVDeskCoreBundle:Mailbox')->findOneByEmail($defaultMailboxEmail);
 
         return !empty($mailbox) ? $mailbox : null;

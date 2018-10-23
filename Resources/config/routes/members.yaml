@@ -120,7 +120,6 @@ helpdesk_member_remove_privilege_xhr:
     defaults: { panelId: 'users', supportPrivilegeId: 0 }
 
 
-
 # User Profile
 edit_profile:
     path:     /profile

@@ -9,10 +9,8 @@ class GroupXHR extends Controller
 {
     public function listGroupsXHR(Request $request)
     {
-
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_GROUP')){          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_GROUP')) {
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
         }
 
         if (true === $request->isXmlHttpRequest()) {
@@ -26,10 +24,10 @@ class GroupXHR extends Controller
 
     public function deleteGroupXHR($supportGroupId)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_GROUP')){          
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_GROUP')) {          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-         }
+        }
+
         $request = $this->get('request_stack')->getCurrentRequest();
         if ($request->getMethod() == "DELETE") {
             $entityManager = $this->getDoctrine()->getManager();
