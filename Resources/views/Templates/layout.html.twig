@@ -12,6 +12,7 @@
 
         <!-- Custom CSS -->
         {% set websiteConfiguration = user_service.getWebsiteConfiguration('knowledgebase') %}
+        {% set website = user_service.getWebsiteDetails('helpdesk') %}
 
         {{ include('@UVDeskCore/Templates/lightskin.html.twig') }}
         
