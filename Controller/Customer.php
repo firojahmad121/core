@@ -21,41 +21,42 @@ class Customer extends Controller
         $user = new user();
         $errors = [];
 
-        if($request->getMethod() == "POST") {
-            $contentFile = $request->files->get('customer_form');
+            if($request->getMethod() == "POST") {
+                $contentFile = $request->files->get('customer_form');
 
-            $tempUser = $em->getRepository('UVDeskCoreBundle:User')->findBy(['email' =>  $request->request->get('customer_form')['email']]);
-            if(!$tempUser) {
+                $tempUser = $em->getRepository('UVDeskCoreBundle:User')->findBy(['email' =>  $request->request->get('customer_form')['email']]);
+                if(!$tempUser) {
 
-                $content = $request->request->all();
+                    $content = $request->request->all();
 
-                $content = $content['customer_form'];
-                
-                    $data = array(
-                                'firstName' => $content['firstName'],
-                                'lastName'  => $content['lastName'],
-                                'from'      => $content['email'],
-                                'fullname'  => $content['firstName'].' '.$content['lastName'],
-                                'contact'   => $content['contactNumber'],
-                                'active'    => isset($content['isActive']) && $content['isActive'] ? 1 : 0,
-                                'role'      => 4,
-                                'image'     => $contentFile['profileImage'],
-                                'source'    => 'website'
-                            );
+                    $content = $content['customer_form'];
+                    
+                        $data = array(
+                                    'firstName' => $content['firstName'],
+                                    'lastName'  => $content['lastName'],
+                                    'from'      => $content['email'],
+                                    'fullname'  => $content['firstName'].' '.$content['lastName'],
+                                    'contact'   => $content['contactNumber'],
+                                    'active'    => isset($content['isActive']) && $content['isActive'] ? 1 : 0,
+                                    'role'      => 4,
+                                    'image'     => $contentFile['profileImage'],
+                                    'source'    => 'website'
+                                );
 
-                    $user = $this->container->get('user.service')->getUserDetails($data);
-                    $this->addFlash('success', 'Success ! Customer saved successfully.');
+                        $user = $this->container->get('user.service')->getUserDetails($data);
+                        $this->addFlash('success', 'Success ! Customer information saved successfully.');
 
-                    return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
-            } else {
-                $this->addFlash('warning', 'Error ! User with same email already exist.');
+                        return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
+                    }else {
+                        $this->addFlash('warning', 'Error ! User with same email already exist.');
+                    }
             }
-        }
 
-        return $this->render('@UVDeskCore/Customers/createSupportCustomer.html.twig', [
-            'user' => $user,
-            'errors' => json_encode($errors)
-        ]);
+            return $this->render('@UVDeskCore/Customers/createSupportCustomer.html.twig', [
+                'user' => $user,
+                'errors' => json_encode($errors)
+            ]);
+
     }
 
     public function editCustomer(Request $request)
@@ -71,20 +72,18 @@ class Customer extends Controller
           $user = new user();
           
       $errors = [];
-      if ($request->getMethod() == "POST") {
+      if($request->getMethod() == "POST") {
         $contentFile = $request->files->get('customer_form');
-        
-        if($userId) {
-            $data = $request->request->all();
-            $data = $data['customer_form'];
-            $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email' => $data['email']));
-            $errorFlag = 0;
+          if($userId) {
+              $data = $request->request->all();
+              $data = $data['customer_form'];
+              $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email' => $data['email']));
+              $errorFlag = 0;
 
                 if($checkUser) {
                     if($checkUser->getId() != $userId)
                         $errorFlag = 1;
                 }
-
                 if(!$errorFlag && 'hello@uvdesk.com' !== $user->getEmail()) {
 
                     $password = $user->getPassword();
@@ -122,7 +121,7 @@ class Customer extends Controller
 
                     $this->addFlash('success', 'Success ! Customer information updated successfully.'); 
                     return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
-                } else {
+                }else {
                   $this->addFlash('warning', 'Error ! User with same email already exist.'); 
                 }
             } 
@@ -141,7 +140,6 @@ class Customer extends Controller
 
         return $encoder->encodePassword($plainPassword, $user->getSalt());
     }
-    
     public function bookmarkCustomer(Request $request)
     {
         $json = array();
@@ -158,7 +156,6 @@ class Customer extends Controller
                 'supportRole' => 4
             )
         );
-
         if($userInstance->getIsStarred()) {
             $userInstance->setIsStarred(0);
             $em->persist($userInstance);

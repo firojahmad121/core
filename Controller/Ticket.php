@@ -125,9 +125,8 @@ class Ticket extends Controller
 
             if ($referralURL === $expectedReferralURL) {
                 $referralTicket = $entityManager->getRepository('UVDeskCoreBundle:Ticket')->findOneById($referralId);
-                
-                if (!empty($referralTicket)) {
-                    $ticketValidationGroup = 'CustomerCreateTicket';
+                if (!empty($referraelTicket)) {
+                    $ticketValidatieonGroup = 'CustomerCreateTicket';
                     
                 }
             }
@@ -136,8 +135,8 @@ class Ticket extends Controller
         $ticketType = $entityManager->getRepository('UVDeskCoreBundle:TicketType')->findOneById($requestParams['type']);
 
         $ticketProxy = new CoreBundleDataProxies\CreateTicketDataClass();
+        
         $form = $this->createForm(CoreBundleForms\CreateTicket::class, $ticketProxy);
-
         // Validate Ticket Details
         $form->submit($requestParams);
         if (false == $form->isSubmitted() || false == $form->isValid()) {
@@ -148,7 +147,7 @@ class Ticket extends Controller
 
             return $this->redirect(!empty($referralURL) ? $referralURL : $this->generateUrl('helpdesk_member_ticket_collection'));
         }
-
+        
         if ('CustomerCreateTicket' === $ticketValidationGroup && !empty($referralTicket)) {
             // Retrieve customer details from referral ticket
             $customer = $referralTicket->getCustomer();
@@ -163,6 +162,7 @@ class Ticket extends Controller
                 // Create User Instance
                 $customer = $this->get('user.service')->createUserInstance($ticketProxy->getFrom(), $ticketProxy->getName(), $role, [
                     'source' => 'website',
+                    'active' => true
                 ]);
             }
         }
@@ -291,20 +291,18 @@ class Ticket extends Controller
             'thread' => $request->attributes->get('threadId'),
         ]);
 
-        if (!$attachment) {
+        if(!$attachment)
             $this->noResultFound();
-        }
-
+        // if(in_array($attachment->getContentType(), ['dropbox-link', 'onedrive-link', 'box-link', 'googledrive-link']) || in_array($attachment->getFileSystem(), ['facebook', 'social'])) {
+        //     return $this->redirect($attachment->getpath());
+        // }
         $zipname = 'ticketAttachments.zip';
         $zip = new \ZipArchive;
         $zip->open($zipname, \ZipArchive::CREATE);
-        
         foreach ($attachment as $attach) {
              $zip->addFile($attach->getPath()); 
         }
-
         $zip->close();
-        
         header('Content-Type: application/zip');
         header('Content-disposition: attachment; filename='.$zipname);
         header('Content-Length: ' . filesize($zipname));

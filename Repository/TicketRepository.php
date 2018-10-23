@@ -41,6 +41,7 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
     public function getAllTickets(\Symfony\Component\HttpFoundation\ParameterBag $obj = null, $container, $actAsUser = null)
     {
         $currentUser = $actAsUser ? : $container->get('user.service')->getCurrentUser();
+  
         $json = array();
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('DISTINCT t,gr,pr,tp,s,a.id as agentId,c.id as customerId')->from($this->getEntityName(), 't');
@@ -53,9 +54,7 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
         $qb->leftJoin('t.type', 'tp');
         // $qb->leftJoin('t.collaborators', 'tc');
         $qb->addSelect("CONCAT(a.firstName,' ', a.lastName) AS name");
-
-        $qb->andwhere("a IS NULL OR ad.supportRole != 4");
-
+        $qb->andwhere("t.agent IS NULL OR ad.supportRole != 4");
         $data = $obj->all();
         $data = array_reverse($data);
         foreach ($data as $key => $value) {
@@ -70,9 +69,6 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
                 }
             }
         }
-
-     
-
         $qb->andwhere('t.isTrashed != 1');
 
         if(!isset($data['sort'])) {

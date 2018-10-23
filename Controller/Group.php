@@ -168,8 +168,7 @@ class Group extends Controller
                     ->where(implode(' OR ', $userTeam))
                     ->getQuery()->getResult();
             }
-
-            if (!empty($userList)) {
+            if(!empty($userList)){
                 foreach ($userList as $user) {
                     $userInstance = $user->getAgentInstance();
                     $userInstance->addSupportGroup($group);
@@ -190,8 +189,8 @@ class Group extends Controller
         }
 
         return $this->render('@UVDeskCore/Groups/createSupportGroup.html.twig', [
-            'group' => $group,
-            'errors' => json_encode($errors)
+                'group' => $group,
+                'errors' => json_encode($errors)
         ]);
     }
 }
