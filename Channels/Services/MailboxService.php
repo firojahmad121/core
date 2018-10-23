@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Webkul\UVDesk\CoreBundle\Utils\HTMLFilter;
+use Webkul\UVDesk\CoreBundle\Utils\TokenGenerator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -47,6 +48,18 @@ class MailboxService
         $mailbox = $this->entityManager->getRepository('UVDeskCoreBundle:Mailbox')->findOneByEmail($defaultMailboxEmail);
 
         return !empty($mailbox) ? $mailbox : null;
+    }
+
+    public function getRandomizedMailboxEmail()
+    {
+        $mailboxEmail = TokenGenerator::generateToken(20, 'abcdefghijklmnopqrstuvwxyz0123456789') . $this->container->getParameter('uvdesk.email_domain');
+        $mailbox = $this->entityManager->getRepository('UVDeskCoreBundle:Mailbox')->findOneByMailboxEmail($mailboxEmail);
+
+        if (!empty($mailbox)) {
+            $mailboxEmail = $this->getRandomMailboxId();
+        }
+
+        return $mailboxEmail;
     }
 
     public function parseAddress($type)
@@ -115,6 +128,38 @@ class MailboxService
             }
         }
         
+        return null;
+    }
+
+    public function sendMail($subject, $content, $recipient, array $headers = [])
+    {
+        $mailer = $this->container->get('swiftmailer.mailer.default');
+        $supportEmail = $this->container->getParameter('uvdesk.support_email.id');
+        $supportEmailName = $this->container->getParameter('uvdesk.support_email.name');
+
+        // Set Message Id
+        $headers['Message-ID'] = TokenGenerator::generateToken(20, 'abcdefghijklmnopqrstuvwxyz0123456789') . $this->container->getParameter('uvdesk.email_domain');
+
+        // Create a message
+        $message = (new \Swift_Message($subject))
+            ->setFrom([$supportEmail => $supportEmailName])
+            ->setTo($recipient)
+            ->setBody($content, 'text/html');
+
+        $swiftHeaders = $message->getHeaders();
+        foreach ($headers as $headerName => $headerValue) {
+            $swiftHeaders->addTextHeader($headerName, $headerName);
+        }
+
+        try {
+            $messageId = $message->getId();
+            $mailer->send($message);
+
+            return "<$messageId>";
+        } catch (\Exception $e) {
+            dump($e);
+        }
+
         return null;
     }
     

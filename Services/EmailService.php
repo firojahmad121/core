@@ -1,15 +1,10 @@
 <?php
 namespace Webkul\UVDesk\CoreBundle\Services;
 
-
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Webkul\UVDesk\CoreBundle\Entity\EmailTemplates;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-// use Symfony\Component\Serializer\Encoder\JsonEncoder;
-// use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-// use Symfony\Component\Serializer\Serializer;
 
 class EmailService {
 
@@ -552,5 +547,4 @@ class EmailService {
         $delimiter = $this->container->get('user.service')->getCurrentCompany() ? $this->container->get('user.service')->getCurrentCompany()->getEmailDelimiter() : '';
         return '<p class="uv-delimiter-dXZkZXNr" style="font-size: 12px; color: #bdbdbd;">'.htmlentities($delimiter).'</p>';
     }
-
 }

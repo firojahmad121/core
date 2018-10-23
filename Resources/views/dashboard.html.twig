@@ -252,7 +252,7 @@
 
 					<div class="uv-brick-section">
 						{% for dashboardItem in dashboardItems.HELPDESK_USERS %}
-							{% if user_service.checkPermission(dashboardItem.permission) %}
+							{% if dashboardItem.permission is not defined or dashboardItem.permission is empty or user_service.checkPermission(dashboardItem.permission) %}
 								<a href="{{ path(dashboardItem.route) }}">
 									<div class="uv-brick-container">
 										<div class="uv-brick-icon">
@@ -310,7 +310,7 @@
 
 					<div class="uv-brick-section">
 						{% for dashboardItem in dashboardItems.HELPDESK_AUTOMATION %}
-							{% if user_service.checkPermission(dashboardItem.permission) %}							
+							{% if dashboardItem.permission is not defined or dashboardItem.permission is empty or user_service.checkPermission(dashboardItem.permission) %}
 								<a href="{{ path(dashboardItem.route) }}">
 									<div class="uv-brick-container">
 										<div class="uv-brick-icon">
@@ -340,7 +340,7 @@
 
 					<div class="uv-brick-section">
 						{% for dashboardItem in dashboardItems.HELPDESK_SETTINGS %}
-							{% if user_service.checkPermission(dashboardItem.permission) %}
+							{% if dashboardItem.permission is not defined or dashboardItem.permission is empty or user_service.checkPermission(dashboardItem.permission) %}
 								<a href="{{ path(dashboardItem.route) }}">
 									<div class="uv-brick-container">
 										<div class="uv-brick-icon">

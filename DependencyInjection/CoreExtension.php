@@ -31,6 +31,11 @@ class CoreExtension extends Extension
         
         foreach ($this->processConfiguration($configuration, $configs) as $param => $value) {
             switch ($param) {
+                case 'support_email':
+                    foreach ($value as $field => $fieldValue) {
+                        $container->setParameter("uvdesk.support_email.$field", $fieldValue);
+                    }
+                    break;
                 case 'upload_manager':
                     $container->setParameter("uvdesk.upload_manager.id", $value['id']);
                     break;

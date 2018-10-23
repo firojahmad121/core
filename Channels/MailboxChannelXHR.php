@@ -72,7 +72,6 @@ class MailboxChannelXHR extends Controller
     
     public function updateMailboxChannelXHR($mailboxId)
     {
-
         if (!$this->get('user.service')->checkPermission('ROLE_ADMIN')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
         }
@@ -121,7 +120,7 @@ class MailboxChannelXHR extends Controller
                 // $mailboxChannelForm->handleRequest($request);
                 $mailbox->setIsEnabled(false);
                 $mailbox->setIsLocalized(false);
-                $mailbox->setMailboxEmail($this->getRandomMailboxId());
+                $mailbox->setMailboxEmail($this->get('uvdesk.core.mailbox')->getRandomizedMailboxEmail());
 
                 $entityManager->persist($mailbox);
                 $entityManager->flush();
@@ -227,22 +226,5 @@ class MailboxChannelXHR extends Controller
         }
 
         return new Response(null, 404, ['Content-Type' => 'application/json']);
-    }
-    
-    public function getRandomMailboxId() {
-        $length = 20;
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-        $email = 'support.'.$randomString."@uvdesk.com";
-
-        $em = $this->getDoctrine()->getManager();
-        $mailbox = $em->getRepository('UVDeskCoreBundle:Mailbox')->findOneBy(array('mailboxEmail' => $email));
-        if($mailbox)
-            $this->getRandomMailboxId();
-        return $email;
     }
 }
