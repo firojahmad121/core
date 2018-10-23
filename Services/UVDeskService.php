@@ -224,6 +224,30 @@ class UVDeskService
                     ],
                 ];
                 break;
+            case 'THEMES':
+                $enabled_bundles = $this->container->getParameter('kernel.bundles');
+
+                $navigationPanel = [
+                    'name' => 'Branding',
+                    'routes' => [
+                        [
+                            'name' => 'Helpdesk',
+                            'link' => $router->generate('helpdesk_member_helpdesk_theme'),
+                            'isActive' => false,
+                            'isEnabled' => true,
+                        ],
+                    ],
+                ];
+
+                if (in_array('UVDeskSupportCenterBundle', array_keys($enabled_bundles))) {
+                    $navigationPanel['routes'][1] = [
+                        'name' => 'Support Center',
+                        'link' => $router->generate('helpdesk_member_knowledgebase_theme'),
+                        'isActive' => false,
+                        'isEnabled' => true,
+                    ];
+                }
+                break;
             case 'KNOWLEDGEBASE':
                 $navigationPanel = [
                     'name' => 'Knowledgebase',

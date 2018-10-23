@@ -1,14 +1,13 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Channels;
+namespace Webkul\UVDesk\CoreBundle\Controller;
 
 use Symfony\Component\Form\FormError;
-use Webkul\UVDesk\SupportBundle\Entity\User;
+use Webkul\UVDesk\CoreBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Webkul\UVDesk\CoreBundle\Entity\Mailbox;
 use Webkul\UVDesk\CoreBundle\Form\Mailbox as MailboxForm;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class MailboxChannelXHR extends Controller
@@ -25,10 +24,6 @@ class MailboxChannelXHR extends Controller
 
     public function verifyEmailForwardingXHR(Request $request)
     {
-        if (!$this->get('user.service')->checkPermission('ROLE_ADMIN')) {          
-            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-        }
-
         $json = array();
         if($request->getMethod() == "PUT") {
             $content = json_decode($request->getContent(), true);
@@ -49,13 +44,11 @@ class MailboxChannelXHR extends Controller
                     'replyTo' => $mailbox->getMailboxEmail()
                 );
             
-                $this->container->get('workflow.service')->sendMail($data, $mailbox);
+                $this->container->get('workflow.service')->sendMail($data);
             }
 
-            if ($mailbox->getIsEnabled()) {
-                dump($mailbox);
-                die;
-
+            if($mailbox->getIsActive()) {
+                dump($mailbox);die;
                 $json['mailbox'] = json_decode($this->get('default.service')->objectSerializer($mailbox,$ignoredFields));
                 $json['alertClass'] = 'success';
                 $json['isActive'] = true;
@@ -72,11 +65,6 @@ class MailboxChannelXHR extends Controller
     
     public function updateMailboxChannelXHR($mailboxId)
     {
-
-        if (!$this->get('user.service')->checkPermission('ROLE_ADMIN')){          
-            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-        }
-
         $entityManager = $this->getDoctrine()->getManager();
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $requestParams = json_decode($request->getContent(), true) ?: $request->request->all();
@@ -158,7 +146,6 @@ class MailboxChannelXHR extends Controller
                     }
                 }
 
-              
                 $mailboxChannelForm = $this->createForm(MailboxForm::class, $mailbox);
                 $mailboxChannelForm->submit([
                     'name' => $requestParams['name'],
@@ -167,7 +154,7 @@ class MailboxChannelXHR extends Controller
 
                 $user = $entityManager->getRepository('UVDeskCoreBundle:User')->findOneByEmail($mailbox->getEmail());
                 $existingMailbox = $entityManager->getRepository('UVDeskCoreBundle:Mailbox')->findOneByEmail($mailbox->getEmail());
-              
+
                 if (!empty($user) && $user->getAgentInstance() != null) {
                     // An agent account exists with the specified email address
                     $responseContent = [
