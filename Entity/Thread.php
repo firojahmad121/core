@@ -97,18 +97,6 @@ class Thread
      */
     private $user;
 
-    /**
-     * @var \Webkul\UVDesk\CoreBundle\Entity\Attachment
-     */
-    private $attachments;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Get id
@@ -526,39 +514,6 @@ class Thread
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * Add attachments
-     *
-     * @param \Webkul\UVDesk\CoreBundle\Entity\Attachment $attachments
-     * @return Thread
-     */
-    public function addAttachment(\Webkul\UVDesk\CoreBundle\Entity\Attachment $attachments)
-    {
-        $this->attachments[] = $attachments;
-
-        return $this;
-    }
-
-    /**
-     * Remove attachments
-     *
-     * @param \Webkul\TicketBundle\Entity\Attachment $attachments
-     */
-    public function removeAttachment(\Webkul\UVDesk\CoreBundle\Entity\Attachment $attachments)
-    {
-        $this->attachments->removeElement($attachments);
-    }
-
-    /**
-     * Get attachments
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getAttachments()
-    {
-        return $this->attachments;
     }
 }
 

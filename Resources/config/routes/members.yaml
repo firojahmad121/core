@@ -118,10 +118,7 @@ helpdesk_member_remove_privilege_xhr:
     path:     /privilege/delete/xhr/{supportPrivilegeId}
     controller: Webkul\UVDesk\CoreBundle\Controller\PrivilegeXHR::deletePrivilegeXHR
     defaults: { panelId: 'users', supportPrivilegeId: 0 }
-customer_mark_star_action:
-    path:     /update-star
-    controller: Webkul\UVDesk\CoreBundle\Controller\Customer::updateStar
-    defaults: { panelId: 'users', id: 0 }
+
 
 
 # User Profile

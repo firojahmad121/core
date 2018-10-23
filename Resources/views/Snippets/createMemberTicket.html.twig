@@ -79,9 +79,10 @@
     </div>
 </div>
 
-{% if not(app.request.attributes.get('_route') in ['helpdesk_member_ticket']) %}
-    {{ include('@UVDeskCore\\Templates\\attachment.html.twig') }}
-{% endif %}
+{# {% if not(app.request.attributes.get('_route') in ['view_ticket', 'view_task']) %}
+    {{ include('WebkulDefaultBundle:Default:attachment.html.twig') }}
+    {{ application_service.getAttachmentOptionsSnippet()|raw }}
+{% endif %} #}
 
 <script type="text/javascript">
     $(function () {

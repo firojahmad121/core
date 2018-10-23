@@ -53,6 +53,20 @@ class CoreExtension extends Extension
                         }
                     }
                     break;
+                // case 'mailboxes':
+                //     foreach ($value as $defaultItem => $defaultItemValue) {
+                //         switch ($defaultItem) {
+                //             case 'templates':
+                //                 foreach ($defaultItemValue as $template => $templateValue) {
+                //                     $container->setParameter("uvdesk.default.templates.$template", $templateValue);
+                //                 }
+                //                 break;
+                //             default:
+                //                 $container->setParameter("uvdesk.default.$defaultItem", $defaultItemValue);
+                //                 break;
+                //         }
+                //     }
+                //     break;
                 default:
                     $container->setParameter("uvdesk.$param", $value);
                     break;
@@ -79,7 +93,6 @@ class CoreExtension extends Extension
             }
 
             $extensionConfiguration = new $extensionClassPath();
-
             switch (true) {
                 case $extensionConfiguration instanceof UVDeskPackageExtensions\HelpdeskExtension:
                     // Register helpdesk extension dashboard items

@@ -48,6 +48,8 @@ class Website
     private $isActive;
 
 
+    private $local;
+
     /**
      * Get id
      *
@@ -224,6 +226,30 @@ class Website
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    /**
+     * Set local
+     *
+     * @param boolean $local
+     *
+     * @return website
+     */
+    public function setLocal($local)
+    {
+        $this->local = $local;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return string
+     */
+    public function getLocal()
+    {
+        return $this->local;
     }
     
 }

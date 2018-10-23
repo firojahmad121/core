@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Webkul\UVDesk\CoreBundle\Entity;
-use Webkul\UVDesk\CoreBundle\Form\EmailTemplates;
 use Webkul\UVDesk\CoreBundle\Entity\UserInstance;
 
 class Email extends Controller
@@ -17,12 +16,17 @@ class Email extends Controller
     const LIMIT = 10;
     protected function getTemplate($request)
     {
-       return $this->getDoctrine()
+      
+       $data = $this->getDoctrine()
                              ->getRepository('UVDeskCoreBundle:EmailTemplates')
                              ->findOneby([
                                     'id' => $request->attributes->get('template'),
                                     'user' => $this->container->get('user.service')->getCurrentUser()->getId()
                                 ]);
+        $default = $this->getDoctrine()
+                             ->getRepository('UVDeskCoreBundle:EmailTemplates')
+                             ->findOneby(['id' => $request->attributes->get('template')]);  
+        return    $data == null ? $default : $data;
     }
 
     public function templates(Request $request) 
@@ -39,14 +43,12 @@ class Email extends Controller
     }
 
     public function templateForm(Request $request) 
-    {
-       
+    {       
         if($request->attributes->get('template')) {
             $template = $this->getTemplate($request);
         } else {  
             $template = new Entity\EmailTemplates();
         }
-
         if(!$template)
             $this->noResultFound();
 
@@ -59,15 +61,12 @@ class Email extends Controller
 
         if($request->getMethod() == 'POST') 
         {
-            $form = $this->createForm(EmailTemplates::class);
-            $form->handleRequest($request);
-            $form->submit(true);
-            if($form->isValid() && $form->isSubmitted()){
-                $em = $this->getDoctrine()->getManager();
+           
+                $entityManager= $this->getDoctrine()->getManager();
                 $data = $request->request->all();
 
                 $user_instance = $this->container->get('security.token_storage')->getToken()->getUser();
-                $user_instance= $em->getRepository(UserInstance::class)->findBy(['id'=>$user_instance->getId()]);
+                $user_instance= $entityManager->getRepository(UserInstance::class)->findBy(['id'=>$user_instance->getId()]);
               
                 $flag =0;
 
@@ -75,11 +74,10 @@ class Email extends Controller
                 $template->setName($data['name']);
                 $template->setSubject($data['subject']);
                 $template->setMessage($data['message']);
-                $template->setMessageInline("");
                 $template->setTemplateType($data['templateFor']);
                 if(!$request->attributes->get('template'))
-                $em->persist($template);
-                $em->flush();
+                $entityManager->persist($template);
+                $entityManager->flush();
 
                 if($request->attributes->get('template')) 
                     $message = 'Success! Template has been updated successfully.';
@@ -89,9 +87,7 @@ class Email extends Controller
                 $this->addFlash('success', $message);
 
                 return $this->redirectToRoute('email_templates_action');
-            } else {
-                $errors = $this->getFormErrors($form);
-            }
+         
         } 
 
         return $this->render('@UVDeskCore//templateForm.html.twig', array(
@@ -109,7 +105,8 @@ class Email extends Controller
                 $repository = $this->getDoctrine()->getRepository('UVDeskCoreBundle:EmailTemplates');
                 $json =  $repository->getTemplates($request->query, $this->container);
             }else{
-                if($request->attributes->get('template')){
+                if($request->attributes->get('template'))
+                {
                     if($templateBase = $this->getTemplate($request)) {
                         if($request->getMethod() == 'DELETE' ){
                             $em = $this->getDoctrine()->getManager();
