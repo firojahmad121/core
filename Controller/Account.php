@@ -3,15 +3,17 @@
 namespace Webkul\UVDesk\CoreBundle\Controller;
 
 use Webkul\UVDesk\CoreBundle\Entity\User;
-use Webkul\UVDesk\CoreBundle\Entity\UserInstance;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Webkul\UVDesk\CoreBundle\Form\UserAccount;
 use Webkul\UVDesk\CoreBundle\Form\UserProfile;
+use Webkul\UVDesk\CoreBundle\Entity\UserInstance;
+use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Webkul\UVDesk\CoreBundle\Workflow\Events as CoreWorkflowEvents;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class Account extends AbstractController
+class Account extends Controller
 {
     public function loadDashboard(Request $request)
     {
@@ -279,101 +281,75 @@ class Account extends AbstractController
         $userServiceContainer = $this->get('user.service');
             
         if ('POST' == $request->getMethod()) {
+            $formDetails = $request->request->get('user_form');
+            $uploadedFiles = $request->files->get('user_form');
+            $entityManager = $this->getDoctrine()->getManager();
 
-            $data      = $request->request->get('user_form');
-            $dataFiles = $request->files->get('user_form');
+            if (!empty($formDetails)) {
+                $fullname = trim(implode(' ', [$formDetails['firstName'], $formDetails['lastName']]));
+                $supportRole = $entityManager->getRepository('UVDeskCoreBundle:SupportRole')->findOneByCode($formDetails['role']);
 
-            if (empty($data['email'])) {
-                $user = new User();
-            } else {
-                $user = $em->getRepository('UVDeskCoreBundle:User')->findOneByEmail($data['email']) ?: new User();
-            }
+                $user = $this->container->get('user.service')->createUserInstance($formDetails['email'], $fullname, $supportRole, [
+                    'contact' => $formDetails['contactNumber'],
+                    'source' => 'website',
+                    'active' => !empty($formDetails['isActive']) ? true : false,
+                    'image' => $uploadedFiles['profileImage'],
+                    'signature' => $formDetails['signature'],
+                    'designation' => $formDetails['designation'],
+                ]);
 
-            $userChk = $em->getRepository('UVDeskCoreBundle:User')->getAgentByEmail($data['email']);
-            if(!$userChk) {
-                if (isset($data['password']) && $data['password']) {
-                    $user->setPassword($this->encodePassword($user, '12345678'));
-                }
+                $userInstance = $user->getAgentInstance();
 
-                $user->setFirstName($data['firstName']);
-                $user->setLastName($data['lastName']);
-                $user->setEmail($data['email']);
-                $user->setIsEnabled(isset($data['isActive'])? 1 : 0);
+                // Map support team
+                if (!empty($formDetails['userSubGroup'])) {
+                    $supportTeamRepository = $entityManager->getRepository('UVDeskCoreBundle:SupportTeam');
 
-                $userInstance = new UserInstance;
+                    foreach ($formDetails['userSubGroup'] as $supportTeamId) {
+                        $supportTeam = $supportTeamRepository->findOneById($supportTeamId);
 
-                if(isset($data['role'])) {
-                    $role = $em->getRepository('UVDeskCoreBundle:SupportRole')->findOneBy(array('code' => $data['role']));
-                    $userInstance->setSupportRole($role);
-                }
-
-                if(isset($data['ticketView']))
-                    $userInstance->setTicketView($data['ticketView']);
-
-                $userInstance->setDesignation($data['designation']);
-                $userInstance->setContactNumber($data['contactNumber']);
-                $userInstance->setSource('website');
-                
-                if(isset($dataFiles['profileImage'])){
-                    $fileName  = $this->container->get('uvdesk.service')->getFileUploadManager()->upload($dataFiles['profileImage']);
-                    $userInstance->setProfileImagePath($fileName);
-                }
-                $userInstance->setSignature($data['signature']);
-
-                $isActive = isset($data['isActive']) ? 1 : 0;
-                $userInstance->setIsActive($isActive);
-                $userInstance->setIsVerified(0);
-
-                if(isset($data['userSubGroup'])){
-                    foreach ($data['userSubGroup'] as $userSubGroup) {
-                        if($userSubGrp = $this->get('uvdesk.service')->getEntityManagerResult(
-                                    'UVDeskCoreBundle:SupportTeam',
-                                    'findOneBy', [
-                                        'id' => $userSubGroup
-                                    ]
-                                )
-                        )
-
-                        $userInstance->addSupportTeam($userSubGrp);
-                    }
-                }
-                    
-                if(isset($data['groups'])){
-                    foreach ($data['groups'] as $userGroup) {
-                        if($userGrp = $this->get('uvdesk.service')->getEntityManagerResult(
-                                    'UVDeskCoreBundle:SupportGroup',
-                                    'findOneBy', [
-                                        'id' => $userGroup
-                                    ]
-                                )
-                        )
-
-                        $userInstance->addSupportGroup($userGrp);
+                        if (!empty($supportTeam)) {
+                            $userInstance->addSupportTeam($userSubGrp);
+                        }
                     }
                 }
                 
-                if(isset($data['agentPrivilege'])){
-                    foreach($data['agentPrivilege'] as $supportPrivilege) {
-                        if($supportPlg = $this->get('uvdesk.service')->getEntityManagerResult(
-                                    'UVDeskCoreBundle:SupportPrivilege',
-                                    'findOneBy', [
-                                        'id' => $supportPrivilege
-                                    ]
-                                )
-                        )
-                        $userInstance->addSupportPrivilege($supportPlg);
+                // Map support group
+                if (!empty($formDetails['groups'])) {
+                    $supportGroupRepository = $entityManager->getRepository('UVDeskCoreBundle:SupportGroup');
+
+                    foreach ($formDetails['groups'] as $supportGroupId) {
+                        $supportGroup = $supportGroupRepository->findOneById($supportGroupId);
+
+                        if (!empty($supportGroup)) {
+                            $userInstance->addSupportGroup($supportGroup);
+                        }
+                    }
+                }
+                
+                // Map support privileges
+                if (!empty($formDetails['agentPrivilege'])) {
+                    $supportPrivilegeRepository = $entityManager->getRepository('UVDeskCoreBundle:SupportPrivilege');
+
+                    foreach($formDetails['agentPrivilege'] as $supportPrivilegeId) {
+                        $supportPrivilege = $supportPrivilegeRepository->findOneById($supportGroupId);
+                        
+                        if (!empty($supportPrivilege)) {
+                            $userInstance->addSupportPrivilege($supportPrivilege);
+                        }
                     }
                 }
                         
-                $userInstance->setUser($user);
-                $user->addUserInstance($userInstance);
+                $entityManager->persist($userInstance);
+                $entityManager->flush();
 
-                $em->persist($user);
-                $em->persist($userInstance);
-                $em->flush();
-                
+                // Trigger customer created event
+                $event = new GenericEvent(CoreWorkflowEvents\Agent\Create::getId(), [
+                    'entity' => $user,
+                ]);
+
+                $this->get('event_dispatcher')->dispatch('uvdesk.automation.workflow.execute', $event);
+
                 $this->addFlash('success', 'Success ! Agent added successfully.');
-
                 return $this->redirect($this->generateUrl('helpdesk_member_account_collection'));
             } else {
                 $this->addFlash('warning', 'Error ! User with same email is already exist.');

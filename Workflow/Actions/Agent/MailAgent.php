@@ -2,6 +2,7 @@
 
 namespace Webkul\UVDesk\CoreBundle\Workflow\Actions\Agent;
 
+use Webkul\UVDesk\CoreBundle\Entity as CoreEntities;
 use Webkul\UVDesk\AutomationBundle\Workflow\FunctionalGroup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Webkul\UVDesk\AutomationBundle\Workflow\Action as WorkflowAction;
@@ -26,48 +27,121 @@ class MailAgent extends WorkflowAction
     public static function getOptions(ContainerInterface $container)
     {
         $entityManager = $container->get('doctrine.orm.entity_manager');
-        dump($entityManager);
-        die;
 
-        $results = $this->getDoctrine()
-                        ->getRepository('UVDeskCoreBundle:EmailTemplates')
-                        ->findAll();
-                    
-        $emailTemplates = $json = [];
-        foreach ($results as $key => $result) {
-            $emailTemplates[] = [
-                'id' => $result->getId(),
-                'name' => $result->getName(),
+        return array_map(function ($emailTemplate) {
+            return [
+                'id' => $emailTemplate->getId(),
+                'name' => $emailTemplate->getName(),
             ];
-        }
-        
-        $agentResults = $this->container->get('user.service')->getAgentsPartialDetails();
-        $partResults[] = ['id' => $userId = $this->getUser()->getId(), 'name' => $this->trans('me')];
-        $partResults[] = ['id' => 'responsePerforming', 'name' => $this->trans('action.responsePerforming.agent')];
-        if(in_array($request->attributes->get('event'), ['ticket', 'task'])){
-            $partResults[] = ['id' => 'assignedAgent', 'name' => $this->trans('action.assign.agent')];
-        }elseif(in_array($request->attributes->get('event'), ['agent'])){
-            $partResults[] = ['id' => 'baseAgent', 'name' => $this->trans('action.created.agent')];
-        }
-        foreach ($agentResults as $key => $agentResult) {
-            if($userId != $agentResult['id'])
-                $partResults[] = [
-                            'id' => $agentResult['id'],
-                            'name' => $agentResult['name'],
-                            ];
-        }
-        
-        if(in_array($request->attributes->get('entity'), ['mail_agent', 'mail_group', 'mail_team'])){
-            $json['templates'] = $emailTemplates;
-            $json['partResults'] = $partResults;
-            $json = json_encode($json);
-        }else
-            $json = json_encode($emailTemplates);
-        $results = [];
+        }, $entityManager->getRepository('UVDeskCoreBundle:EmailTemplates')->findAll());
     }
 
     public static function applyAction(ContainerInterface $container, $entity, $value = null)
     {
         $entityManager = $container->get('doctrine.orm.entity_manager');
+
+        switch (true) {
+            // Agent created
+            case $entity instanceof CoreEntities\User:
+                $emailTemplate = $entityManager->getRepository('UVDeskCoreBundle:EmailTemplates')->findOneById($value);
+
+                if (empty($emailTemplate)) {
+                    // @TODO: Send default email template
+                    return;
+                }
+
+                $emailPlaceholders = $container->get('email.service')->getEmailPlaceholderValues($entity, 'agent');
+                $subject = $container->get('email.service')->processEmailSubject($emailTemplate->getSubject(), $emailPlaceholders);
+                $message = $container->get('email.service')->processEmailContent($emailTemplate->getMessage(), $emailPlaceholders);
+                
+                $messageId = $container->get('uvdesk.core.mailbox')->sendMail($subject, $message, $entity->getEmail(), []);
+                break;
+            // Ticket created
+            case $entity instanceof CoreEntities\Ticket:
+                $emailTemplate = $entityManager->getRepository('UVDeskCoreBundle:EmailTemplates')->findOneById($value);
+
+                if (empty($emailTemplate)) {
+                    break;
+                }
+
+                $ticketPlaceholders = $container->get('email.service')->getTicketPlaceholderValues($entity);
+                $subject = $container->get('email.service')->processEmailSubject($emailTemplate->getSubject(), $ticketPlaceholders);
+                $message = $container->get('email.service')->processEmailContent($emailTemplate->getMessage(), $ticketPlaceholders);
+
+                dump($message);
+                die;
+
+                $messageId = $container->get('uvdesk.core.mailbox')->sendMail($subject, $message, $entity->getCustomer()->getEmail(), [
+                    'In-Reply-To' => $object->getUniqueReplyTo(),
+                    'References' => $object->getReferenceIds(),
+                ]);
+
+                if (!empty($messageId)) {
+                    $thread = $entity->createdThread;
+                    $thread->setMessageId($messageId);
+
+                    $entityManager->persist($thread);
+                    $entityManager->flush();
+                }
+
+                $emailTemplate = $this->container->get('email.service')->getEmailTemplate($action['value']['value'], $object->getCompany()->getId());
+
+                // $emails = $this->getAgentMails($action['value']['for'], (($ticketAgent = $object->getAgent()) ? $ticketAgent->getEmail() : ''));
+
+                // if($emails && $emailTemplate) {
+                //     $mailData = array();
+                //     if($object instanceof Ticket) {
+                //         $createThread = $this->container->get('ticket.service')->getCreateReply($object->getId(), false);
+                //         $mailData['references'] = $createThread['messageId'];
+                //         $mailData['replyTo'] = $object->getUniqueReplyTo();
+                //     }
+
+                //     $mailData['email'] = $emails;
+                //     $requestParam = $this->request->getCurrentRequest()->request->all();
+
+                //     // if(isset($requestParam['cccol'])) {
+                //     //     $mailData['cc'] = $requestParam['cccol'];
+                //     // }
+                //     // if(isset($requestParam['bcc'])) {
+                //     //     $mailData['bcc'] = $requestParam['bcc'];
+                //     // }
+
+                //     $this->updateAttachmentPlaceholderFlag($emailTemplate->getMessageInline());
+
+                //     $placeHolderValues = $this->container->get('ticket.service')->getTicketPlaceholderValues($object,'agent');
+
+                //     $mailData['subject'] = $this->container->get('email.service')
+                //                                 ->getProcessedSubject($emailTemplate->getSubject(),$placeHolderValues);
+                //     $mailData['message'] = $this->container->get('email.service')
+                //                                 ->getProcessedTemplate($emailTemplate->getMessageInline(),$placeHolderValues);
+
+                //     // Filtering
+                //     foreach($mailData['email'] as $email) {
+                //         if ($this->container->get('default.service')->hasPermissionForEmail($email))
+                //             $unfilteredEmails[] = $email;
+                //         else
+                //             $filteredEmails[] = $email;
+                //     }
+
+
+                //     if (!empty($filteredEmails)) {
+                //         $filteredMailData = $mailData;
+                //         $filteredMailData['email'] = $filteredEmails;
+                //         $filteredMailData['subject'] = $this->container->get('default.service')->applyWebkulFilter($filteredMailData['subject'], ['email']);
+                //         $filteredMailData['message'] = $this->container->get('default.service')->applyWebkulFilter($filteredMailData['message'], ['email']);
+
+                //         $this->sendMail($filteredMailData);
+                //     }
+                //     if (!empty($unfilteredEmails)) {
+                //         $unfilteredMailData = $mailData;
+                //         $unfilteredMailData['email'] = $unfilteredEmails;
+
+                //         $this->sendMail($unfilteredMailData);
+                //     }
+                // }
+                break;
+            default:
+                break;
+        }
     }
 }
