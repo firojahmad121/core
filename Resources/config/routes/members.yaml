@@ -32,9 +32,13 @@ helpdesk_member_create_account:
     controller: Webkul\UVDesk\CoreBundle\Controller\Account::createAgent
     defaults: { panelId: 'users' }
 
+helpdesk_member_account_confirmation_password:
+    path:     /account-confirmation/{email}
+    controller: Webkul\UVDesk\CoreBundle\Controller\Authentication::accountConfirmation
+    defaults: { email:'' }
 helpdesk_member_forgot_account_password:
     path:     /forgot-password
-    controller: Webkul\UVDesk\CoreBundle\Controller\Account::forgotPassword
+    controller: Webkul\UVDesk\CoreBundle\Controller\Authentication::forgotPassword
 
 helpdesk_member_saved_filters_xhr:
     path:     /saved-filter-xhr/{filterId}
