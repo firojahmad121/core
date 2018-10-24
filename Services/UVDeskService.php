@@ -5,9 +5,13 @@ namespace Webkul\UVDesk\CoreBundle\Services;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Webkul\UVDesk\CoreBundle\Utils\TokenGenerator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\DomCrawler\Crawler;
 
 class UVDeskService
 {
@@ -59,7 +63,35 @@ class UVDeskService
     {
         return \DateTimeZone::listIdentifiers();
     }
+    function symfony_http_build_query(){
+        $params = array();
+        $query['page'] = "replacePage";
 
+        if (isset($query['domain'])) unset($query['domain']);
+        if (isset($query['_locale'])) unset($query['_locale']);
+        
+        foreach ($query as $key => $value) {
+            $params[] = !isset($value) ? $key : $key . '/' . str_replace('%2F', '/', rawurlencode($value));
+        }
+
+        $http_query = implode('/', $params);
+        
+        if (isset($query['new'])) {
+            $http_query = str_replace('new/1', 'new', $http_query);
+        } else if (isset($query['unassigned'])) {
+            $http_query = str_replace('unassigned/1', 'unassigned', $http_query);
+        } else if (isset($query['notreplied'])) {
+            $http_query = str_replace('notreplied/1', 'notreplied', $http_query);
+        } else if (isset($query['mine'])) {
+            $http_query = str_replace('mine/1', 'mine', $http_query);
+        } else if (isset($query['starred'])) {
+            $http_query = str_replace('starred/1', 'starred', $http_query);
+        } else if (isset($query['trashed'])) {
+            $http_query = str_replace('trashed/1', 'trashed', $http_query);
+        }
+        
+        return $http_query;
+    }
     public function getPrivileges() {
         $agentPrivilegeCollection = [];
         // $agentPrivilegeCollection = $this->entityManager->getRepository('UserBundle:AgentPrivilege')->findAll();
@@ -94,6 +126,7 @@ class UVDeskService
 		$router = $this->container->get('router');
 		$navigationPanel = ['name' => null, 'routes' => []];
 
+        // dump($this->requestStack->getCurrentRequest()->get('panelId'));die;
 		switch (strtoupper($this->requestStack->getCurrentRequest()->get('panelId'))) {
             case 'CHANNELS':
                 $navigationPanel = [
@@ -104,6 +137,8 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_mailbox_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_ADMIN'
+                            
                         ],
                     ],
                 ];
@@ -117,30 +152,40 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_support_group_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_GROUP"
+
                         ],
                         [
                             'name' => 'Teams',
                             'link' => $router->generate('helpdesk_member_support_team_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_SUB_GROUP"
+                            
                         ],
                         [
                             'name' => 'Agents',
                             'link' => $router->generate('helpdesk_member_account_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_AGENT"
+                            
                         ],
                         [
                             'name' => 'Privileges',
                             'link' => $router->generate('helpdesk_member_privilege_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_AGENT_PRIVILEGE"
+                            
                         ],
                         [
                             'name' => 'Customers',
                             'link' => $router->generate('helpdesk_member_manage_customer_account_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_CUSTOMER"
+                            
                         ],
                     ],
                 ];
@@ -167,24 +212,28 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_workflow_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_WORKFLOW_AUTOMATIC'
                         ],
                         [
                             'name' => 'Tags',
                             'link' => $router->generate('helpdesk_member_ticket_tag_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_TAG'
                         ],
                         [
                             'name' => 'Prepared Responses',
                             'link' => $router->generate('prepare_response_action'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_WORKFLOW_MANUAL'
                         ],
                         [
                             'name' => 'Ticket Types',
                             'link' => $router->generate('helpdesk_member_ticket_type_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_TICKET_TYPE'
                         ],
                     ],
                 ];
@@ -198,51 +247,32 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_knowledgebase_theme'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_ADMIN'
+                            
                         ],
                         [
                             'name' => 'Email Templates',
                             'link' => $router->generate('email_templates_action'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_EMAIL_TEMPLATE'                            
                         ],
                         [
                             'name' => 'Email Settings',
                             'link' => $router->generate('email_setting'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_ADMIN'
                         ],
                         [
                             'name' => 'Block Spam',
                             'link' => $router->generate('helpdesk_member_knowledgebase_spam'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_ADMIN'
                         ],
                     ],
                 ];
-                break;
-            case 'THEMES':
-                $enabled_bundles = $this->container->getParameter('kernel.bundles');
-
-                $navigationPanel = [
-                    'name' => 'Branding',
-                    'routes' => [
-                        [
-                            'name' => 'Helpdesk',
-                            'link' => $router->generate('helpdesk_member_helpdesk_theme'),
-                            'isActive' => false,
-                            'isEnabled' => true,
-                        ],
-                    ],
-                ];
-
-                if (in_array('UVDeskSupportCenterBundle', array_keys($enabled_bundles))) {
-                    $navigationPanel['routes'][1] = [
-                        'name' => 'Support Center',
-                        'link' => $router->generate('helpdesk_member_knowledgebase_theme'),
-                        'isActive' => false,
-                        'isEnabled' => true,
-                    ];
-                }
                 break;
             case 'KNOWLEDGEBASE':
                 $navigationPanel = [
@@ -253,18 +283,24 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_knowledgebase_folders_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_KNOWLEDGEBASE'
+                            
                         ],
                         [
                             'name' => 'Categories',
                             'link' => $router->generate('helpdesk_member_knowledgebase_category_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_KNOWLEDGEBASE'
+                            
                         ],
                         [
                             'name' => 'Articles',
                             'link' => $router->generate('helpdesk_member_knowledgebase_article_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_KNOWLEDGEBASE'
+                            
                         ],
                     ],
                 ];
@@ -272,7 +308,7 @@ class UVDeskService
 			default:
 				break;
         }
-        
+        // dump($navigationPanel);die;
 		return $navigationPanel;
     }
     

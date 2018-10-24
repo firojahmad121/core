@@ -20,7 +20,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->node('support_email', 'array')
-                    ->children()
+                ->children()
                         ->node('id', 'scalar')->defaultValue('support@localhost')->end()
                         ->node('name', 'scalar')->defaultValue('UVDesk Community')->end()
                     ->end()
