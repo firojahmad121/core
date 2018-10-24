@@ -127,7 +127,7 @@ helpdesk_member_thread_update_xhr:
 email_templates_action:
     path:     /templates
     controller: Webkul\UVDesk\CoreBundle\Controller\Email::templates
-    defaults: { panelId: 'settings' }
+    defaults: { panelId: 'themes' }
 
 email_templates_xhraction:
     path:     /template-ajax/{template}
@@ -137,17 +137,17 @@ email_templates_xhraction:
 email_templates_addaction:
     path:     /template/add
     controller: Webkul\UVDesk\CoreBundle\Controller\Email::templateForm
-    defaults: { panelId: 'settings' }
+    defaults: { panelId: 'themes' }
 
 email_templates_editaction:
     path:     /template/edit/{template}
     controller: Webkul\UVDesk\CoreBundle\Controller\Email::templateForm
-    defaults: { template: 0, panelId: 'settings' }
+    defaults: { template: 0, panelId: 'themes' }
 
 email_setting:
     path:     /email-setting
     controller: Webkul\UVDesk\CoreBundle\Controller\Email::emailSetting
-    defaults: { panelId: 'settings' }
+    defaults: { panelId: 'themes' }
 
 # Ticket Tag Resources
 helpdesk_member_ticket_tag_collection:

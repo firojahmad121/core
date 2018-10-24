@@ -238,7 +238,7 @@ class UVDeskService
                     ],
                 ];
                 break;
-            case 'SETTINGS':
+            case 'THEMES':
                 $navigationPanel = [
                     'name' => 'Settings',
                     'routes' => [
@@ -308,7 +308,6 @@ class UVDeskService
 			default:
 				break;
         }
-        // dump($navigationPanel);die;
 		return $navigationPanel;
     }
     
