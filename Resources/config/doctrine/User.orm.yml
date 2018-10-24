@@ -37,4 +37,9 @@ Webkul\UVDesk\CoreBundle\Entity\User:
         isEnabled:
             type: boolean
             default: false
+        verificationCode:
+            type: string
+            length: 191
+            nullable: true
+            unique: true
     lifecycleCallbacks: {  }

@@ -5,8 +5,9 @@ namespace Webkul\UVDesk\CoreBundle\Controller;
 use Webkul\UVDesk\CoreBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Webkul\UVDesk\CoreBundle\Workflow\Events as CoreWorkflowEvents;
 
 class Customer extends Controller
 {
@@ -25,44 +26,40 @@ class Customer extends Controller
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $user = new user();
-        $errors = [];
+        if ($request->getMethod() == "POST") {
+            $entityManager = $this->getDoctrine()->getManager();
+            $formDetails = $request->request->get('customer_form');
+            $uploadedFiles = $request->files->get('customer_form');
 
-        if($request->getMethod() == "POST") {
-                $contentFile = $request->files->get('customer_form');
+            if (!empty($formDetails)) {
+                $fullname = trim(implode(' ', [$formDetails['firstName'], $formDetails['lastName']]));
+                $supportRole = $entityManager->getRepository('UVDeskCoreBundle:SupportRole')->findOneByCode('ROLE_CUSTOMER');
 
-                $tempUser = $em->getRepository('UVDeskCoreBundle:User')->findBy(['email' =>  $request->request->get('customer_form')['email']]);
-                if(!$tempUser) {
+                $user = $this->container->get('user.service')->createUserInstance($formDetails['email'], $fullname, $supportRole, [
+                    'contact' => $formDetails['contactNumber'],
+                    'source' => 'website',
+                    'active' => !empty($formDetails['isActive']) ? true : false,
+                    'image' => $uploadedFiles['profileImage'],
+                ]);
 
-                    $content = $request->request->all();
+                // Trigger customer created event
+                $event = new GenericEvent(CoreWorkflowEvents\Customer\Create::getId(), [
+                    'entity' => $user,
+                ]);
 
-                    $content = $content['customer_form'];
-                    
-                        $data = array(
-                                    'firstName' => $content['firstName'],
-                                    'lastName'  => $content['lastName'],
-                                    'from'      => $content['email'],
-                                    'fullname'  => $content['firstName'].' '.$content['lastName'],
-                                    'contact'   => $content['contactNumber'],
-                                    'active'    => isset($content['isActive']) && $content['isActive'] ? 1 : 0,
-                                    'role'      => 4,
-                                    'image'     => $contentFile['profileImage'],
-                                    'source'    => 'website'
-                                );
+                $this->get('event_dispatcher')->dispatch('uvdesk.automation.workflow.execute', $event);
 
-                        $user = $this->container->get('user.service')->getUserDetails($data);
-                        $this->addFlash('success', 'Success ! Customer saved successfully.');
+                $this->addFlash('success', 'Success ! Customer saved successfully.');
 
-                        return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
-                } else {
-                    $this->addFlash('warning', 'Error ! User with same email already exist.');
-                }
+                return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
+            } else {
+                $this->addFlash('warning', 'Error ! User with same email already exist.');
+            }
         }
 
         return $this->render('@UVDeskCore/Customers/createSupportCustomer.html.twig', [
-            'user' => $user,
-            'errors' => json_encode($errors)
+            'user' => new User(),
+            'errors' => json_encode([])
         ]);
     }
 
