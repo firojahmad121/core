@@ -1,37 +1,33 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Account;
+namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Agent;
 
 use Webkul\UVDesk\CoreBundle\Templates\Email\UVDeskEmailTemplateInterface;
 
-abstract class CustomerForgotPassword implements UVDeskEmailTemplateInterface
+abstract class ForgotPassword implements UVDeskEmailTemplateInterface
 {
-    private static $name = 'Customer Forgot password';
-    private static $subject = 'Customer Forgot password';
+    private static $name = 'Agent Forgot Password';
+    private static $subject = 'Agent Forgot Password';
     private static $message = <<<MESSAGE
     <p></p>
     <p></p>
+    <p></p>
+    <p></p>
+    <p style="text-align: center; ">{%global.companyLogo%}</p>
     <p style="text-align: center; ">
-        <span style="line-height: 1.42857;">{%global.companyLogo%}</span>
-    </p>
-    <p style="text-align: center; ">
-        <span style="line-height: 1.42857;">
-            <br />
-        </span>
-    </p>
-    <p style="text-align: center; ">
-        <span style="line-height: 1.42857;">
-            <b>
-                <span style="font-size: 18px;">Forgot password, this is it!!</span>
-            </b>
-            <br />
-        </span>
         <br />
     </p>
-    <p align="left" style="text-align: center; margin-bottom: 0cm; line-height: 100%;">
+    <p style="text-align: center; ">
+        <b>
+            <span style="font-size: 18px;">Forgot password, this is it!!</span>
+        </b>
+    </p>
+    <p style="text-align: center; ">
         <br />
     </p>
-    <p>Hi&nbsp;{%user.userName%}</p>
+    <p>Hi&nbsp;{%user.userName%},
+        <br />
+    </p>
     <p>
         <br />
     </p>
@@ -40,13 +36,11 @@ abstract class CustomerForgotPassword implements UVDeskEmailTemplateInterface
         <br />
     </p>
     <p>If you did not request a password reset, please ignore this mail or revert back to let us know.</p>
-    <p>
+    <div>
         <br />
-    </p>
+    </div>
     <p>Thanks and Regards</p>
-    <p>{%global.companyName%}
-        <br />
-    </p>
+    <p>{%global.companyName%}</p>
     <p></p>
     <p></p>
 MESSAGE;

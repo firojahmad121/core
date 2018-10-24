@@ -168,7 +168,6 @@ class UserService
 
     public function createUserInstance($email, $name, SupportRole $role, array $extras = [])
     {
-        
         $user = $this->entityManager->getRepository('UVDeskCoreBundle:User')->findOneByEmail($email) ?: new User();
 
         if (null == $user->getId()) {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Account;
+namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Customer;
 
 use Webkul\UVDesk\CoreBundle\Templates\Email\UVDeskEmailTemplateInterface;
 
-abstract class AccountActivation implements UVDeskEmailTemplateInterface
+abstract class AccountCreated implements UVDeskEmailTemplateInterface
 {
-    private static $name = 'Account Activation';
-    private static $subject = 'Success!!! Account has been created.';
+    private static $name = 'Customer Account Created';
+    private static $subject = 'Welcome to {%global.companyName%} Helpdesk';
     private static $message = <<<MESSAGE
     <p></p>
     <p></p>

@@ -6,3 +6,12 @@ helpdesk_member_handle_login:
 helpdesk_member_handle_logout:
     path:     /logout
     controller: Webkul\UVDesk\CoreBundle\Controller\Authentication::logout
+
+helpdesk_member_forgot_account_password:
+    path:     /forgot-password
+    controller: Webkul\UVDesk\CoreBundle\Controller\Account::forgotPassword
+
+helpdesk_member_update_account_credentials:
+    path:     /update-credentials/{email}/{key}
+    controller: Webkul\UVDesk\CoreBundle\Controller\Account::updateCredentials
+    defaults: { email: 0, key: 0 }
