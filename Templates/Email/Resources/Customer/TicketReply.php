@@ -1,10 +1,10 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Ticket;
+namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Customer;
 
 use Webkul\UVDesk\CoreBundle\Templates\Email\UVDeskEmailTemplateInterface;
 
-abstract class TicketCustomerReplied implements UVDeskEmailTemplateInterface
+abstract class TicketReply implements UVDeskEmailTemplateInterface
 {
     private static $name = 'Customer Reply To The Agent';
     private static $subject = 'Customer Reply Ticket #{% ticket.id %}';

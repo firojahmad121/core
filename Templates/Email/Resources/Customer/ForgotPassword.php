@@ -1,27 +1,19 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Account;
+namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Customer;
 
 use Webkul\UVDesk\CoreBundle\Templates\Email\UVDeskEmailTemplateInterface;
 
-abstract class AgentForgotPassword implements UVDeskEmailTemplateInterface
+abstract class ForgotPassword implements UVDeskEmailTemplateInterface
 {
-    private static $name = 'Agent Forgot Password';
-    private static $subject = 'Agent Forgot Password';
+    private static $name = 'Customer Forgot Password';
+    private static $subject = 'Update your {%global.companyName%} helpdesk password';
     private static $message = <<<MESSAGE
     <p></p>
     <p></p>
     <p></p>
     <p></p>
     <p style="text-align: center; ">{%global.companyLogo%}</p>
-    <p style="text-align: center; ">
-        <br />
-    </p>
-    <p style="text-align: center; ">
-        <b>
-            <span style="font-size: 18px;">Forgot password, this is it!!</span>
-        </b>
-    </p>
     <p style="text-align: center; ">
         <br />
     </p>

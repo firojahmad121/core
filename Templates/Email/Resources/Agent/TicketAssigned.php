@@ -1,10 +1,10 @@
 <?php
 
-namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Ticket;
+namespace Webkul\UVDesk\CoreBundle\Templates\Email\Resources\Agent;
 
 use Webkul\UVDesk\CoreBundle\Templates\Email\UVDeskEmailTemplateInterface;
 
-abstract class TicketAssignedToAgent implements UVDeskEmailTemplateInterface
+abstract class TicketAssigned implements UVDeskEmailTemplateInterface
 {
     private static $name = 'Ticket Assign';
     private static $subject = 'Ticket #{% ticket.id %} assign to you';
