@@ -270,7 +270,19 @@ class TicketService
 
         return $qb->getQuery()->getSingleScalarResult();
     }
+    public function getTicketTags($request = null) {
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb->select('tg')->from('UVDeskCoreBundle:Tag', 'tg');
 
+        if($request) {
+            $qb->andwhere("tg.name LIKE :tagName");
+            $qb->setParameter('tagName', '%'.urldecode($request->query->get('query')).'%');
+            $qb->andwhere("tg.id NOT IN (:ids)");
+            $qb->setParameter('ids', explode(',',urldecode($request->query->get('not'))));
+        }
+
+        return $qb->getQuery()->getArrayResult();
+    }
     public function paginateMembersTicketCollection(Request $request)
     {
         $params = $request->query->all();

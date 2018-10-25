@@ -55,7 +55,6 @@ class UserService
     
     public function isAccessAuthorized($scope, User $user = null)
     {
-        // Return false if no user is provided
         if (empty($user) && null == $this->getSessionUser()) {
             return false;
         }
@@ -168,6 +167,7 @@ class UserService
 
     public function createUserInstance($email, $name, SupportRole $role, array $extras = [])
     {
+        
         $user = $this->entityManager->getRepository('UVDeskCoreBundle:User')->findOneByEmail($email) ?: new User();
 
         if (null == $user->getId()) {
@@ -269,7 +269,7 @@ class UserService
     public function getAgentDetailById($agentId) {
         if(!$agentId) return;
         $qb = $this->entityManager->createQueryBuilder();
-        $qb->select("DISTINCT u.id,u.email,CONCAT(u.firstName,' ', u.lastName) AS name,u.firstName,u.lastName,userInstance.profileImagePath,userInstance.profileImagePath as smallThumbnail,userInstance.isActive, userInstance.isVerified, userInstance.designation, userInstance.contactNumber,userInstance.signature,userInstance.ticketAccessLevel")
+        $qb->select("DISTINCT u.id,u.email,CONCAT(u.firstName,' ', u.lastName) AS name,u.firstName,u.lastName,userInstance.profileImagePath,userInstance.profileImagePath as smallThumbnail,userInstance.isActive, userInstance.isVerified, userInstance.designation, userInstance.contactNumber,userInstance.signature")
             ->from('UVDeskCoreBundle:User', 'u')
             ->leftJoin('u.userInstance', 'userInstance')
             ->andwhere('userInstance.supportRole != :roles')
