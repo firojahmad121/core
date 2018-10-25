@@ -19,14 +19,13 @@ class Account extends Controller
     {
         return $this->render('@UVDeskCore//dashboard.html.twig', []);
     }
-
+    
     public function loadProfile(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $originalUser = clone $user;
         $errors = [];
-
         if ($request->getMethod() == "POST") {
             $data     = $request->request->all();
             $dataFiles = $request->files->get('user_form');
@@ -39,7 +38,6 @@ class Account extends Controller
                 if($checkUser->getId() != $user->getId())
                     $errorFlag = 1;
             }
-
             if (!$errorFlag) {
                 $password = $user->getPassword();
               
@@ -56,7 +54,6 @@ class Account extends Controller
                             $user->setPassword($encodedPassword);
                         } else {
                             $this->addFlash('warning', 'Error! Given current password is incorrect.');
-
                             return $this->redirect($this->generateUrl('helpdesk_member_profile'));
                         }
                     } else {
@@ -69,9 +66,7 @@ class Account extends Controller
                     $em->persist($user);
                     $em->flush();
                     $userInstance = $em->getRepository('UVDeskCoreBundle:UserInstance')->findOneBy(array('user' => $user->getId()));
-
                     $userInstance = $this->container->get('user.service')->getUserDetailById($user->getId());
-
                     if(isset($dataFiles['profileImage'])){
                         $fileName  = $this->container->get('uvdesk.service')->getFileUploadManager()->upload($dataFiles['profileImage']);
                         $userInstance->setProfileImagePath($fileName);
@@ -80,7 +75,6 @@ class Account extends Controller
                     $userInstance  = $userInstance->setSignature($data['signature']);
                     $em->persist($userInstance);
                     $em->flush();
-
                     $this->addFlash('success', 'Success ! Profile update successfully.');
                     
                     return $this->redirect($this->generateUrl('helpdesk_member_profile'));
@@ -92,11 +86,10 @@ class Account extends Controller
                 }
             } else {
                 $this->addFlash('warning', 'Error ! User with same email is already exist.');
-
                 return $this->redirect($this->generateUrl('helpdesk_member_profile'));
             }
         }
-
+        
         return $this->render('@UVDeskCore//profile.html.twig', array(
             'user' => $user,
             'errors' => json_encode($errors)
@@ -124,7 +117,6 @@ class Account extends Controller
         if (empty($user)) {
             dump('Not found');die;
         }
-
         switch (strtoupper($request->getMethod())) {
             case 'POST':
                 $formErrors = [];
@@ -133,28 +125,23 @@ class Account extends Controller
                 
                 $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email'=> $data['email']));
                 $errorFlag = 0;
-
                 if ($checkUser) {
                     if($checkUser->getId() != $agentId)
                         $errorFlag = 1;
                 }
-
+                
                 if (!$errorFlag) {
                     if(isset($data['password']) && $data['password'])
                             $user->setPassword($this->encodePassword($user, '12345678'));
-
                     $user->setFirstName($data['firstName']);
                     $user->setLastName($data['lastName']);
                     $user->setEmail($data['email']);
                     $user->setIsEnabled(isset($data['isActive'])? 1 : 0);
-
                     $userInstance = $em->getRepository('UVDeskCoreBundle:UserInstance')->findOneBy(['user' => $agentId]);
-
                     $oldSupportTeam = ($supportTeamList = $userInstance->getSupportTeams()) ? $supportTeamList->toArray() : [];
                     $oldSupportGroup  = ($supportGroupList = $userInstance->getSupportGroups()) ? $supportGroupList->toArray() : [];
                     $oldSupportedPrivilege = ($supportPrivilegeList = $userInstance->getSupportPrivileges())? $supportPrivilegeList->toArray() : [];
                     
-
                     if(isset($data['role'])) {
                         $role = $em->getRepository('UVDeskCoreBundle:SupportRole')->findOneBy(array('code' => $data['role']));
                         $userInstance->setSupportRole($role);
@@ -167,15 +154,16 @@ class Account extends Controller
                     $userInstance->setDesignation($data['designation']);
                     $userInstance->setContactNumber($data['contactNumber']);
                     $userInstance->setSource('website');
+                    
                     if(isset($dataFiles['profileImage'])){
                         $fileName  = $this->container->get('uvdesk.service')->getFileUploadManager()->upload($dataFiles['profileImage']);
                         $userInstance->setProfileImagePath($fileName);
                     }
+                    
                     $userInstance->setSignature($data['signature']);
                     $isActive = isset($data['isActive']) ? 1 : 0;
                     $userInstance->setIsActive($isActive);
                     $userInstance->setIsVerified(0);
-
                     if(isset($data['userSubGroup'])){
                         foreach ($data['userSubGroup'] as $userSubGroup) {
                             if($userSubGrp = $this->get('uvdesk.service')->getEntityManagerResult(
@@ -190,16 +178,12 @@ class Account extends Controller
                                 
                             }elseif($oldSupportTeam && ($key = array_search($userSubGrp, $oldSupportTeam)) !== false)
                                 unset($oldSupportTeam[$key]);
-
                         }
-
                         foreach ($oldSupportTeam as $removeteam) {
                             $userInstance->removeSupportTeam($removeteam);
                             $em->persist($userInstance);
                         }
-
                     }
-
                     if(isset($data['groups'])){
                         foreach ($data['groups'] as $userGroup) {
                             if($userGrp = $this->get('uvdesk.service')->getEntityManagerResult(
@@ -209,20 +193,17 @@ class Account extends Controller
                                         ]
                                     )
                             )
-
                             if(!$oldSupportGroup || !in_array($userGrp, $oldSupportGroup)){
                                 $userInstance->addSupportGroup($userGrp);
                                 
                             }elseif($oldSupportGroup && ($key = array_search($userGrp, $oldSupportGroup)) !== false)
                                 unset($oldSupportGroup[$key]);
                         }
-
                         foreach ($oldSupportGroup as $removeGroup) {
                             $userInstance->removeSupportGroup($removeGroup);
                             $em->persist($userInstance);
                         }
                     }
-
                     if(isset($data['agentPrivilege'])){
                         foreach ($data['agentPrivilege'] as $supportPrivilege) {
                             if($supportPlg = $this->get('uvdesk.service')->getEntityManagerResult(
@@ -243,7 +224,6 @@ class Account extends Controller
                             $em->persist($userInstance);
                         }
                     }
-
                     $userInstance->setUser($user);
                     $user->addUserInstance($userInstance);
                     $em->persist($user);
@@ -269,16 +249,14 @@ class Account extends Controller
                 ]);
                 break;
         }
-
         return $response;
     }
-
+    
     public function createAgent(Request $request)
     {
         if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT')){          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
         }
-
         $user = new User();
         $em = $this->getDoctrine()->getManager();
         $userServiceContainer = $this->get('user.service');
@@ -287,11 +265,9 @@ class Account extends Controller
             $formDetails = $request->request->get('user_form');
             $uploadedFiles = $request->files->get('user_form');
             $entityManager = $this->getDoctrine()->getManager();
-
             if (!empty($formDetails)) {
                 $fullname = trim(implode(' ', [$formDetails['firstName'], $formDetails['lastName']]));
                 $supportRole = $entityManager->getRepository('UVDeskCoreBundle:SupportRole')->findOneByCode($formDetails['role']);
-
                 $user = $this->container->get('user.service')->createUserInstance($formDetails['email'], $fullname, $supportRole, [
                     'contact' => $formDetails['contactNumber'],
                     'source' => 'website',
@@ -300,7 +276,6 @@ class Account extends Controller
                     'signature' => $formDetails['signature'],
                     'designation' => $formDetails['designation'],
                 ]);
-
                 $userInstance = $user->getAgentInstance();
 
                 if (isset($data['ticketView'])) {
@@ -310,10 +285,8 @@ class Account extends Controller
                 // Map support team
                 if (!empty($formDetails['userSubGroup'])) {
                     $supportTeamRepository = $entityManager->getRepository('UVDeskCoreBundle:SupportTeam');
-
                     foreach ($formDetails['userSubGroup'] as $supportTeamId) {
                         $supportTeam = $supportTeamRepository->findOneById($supportTeamId);
-
                         if (!empty($supportTeam)) {
                             $userInstance->addSupportTeam($userSubGrp);
                         }
@@ -323,10 +296,8 @@ class Account extends Controller
                 // Map support group
                 if (!empty($formDetails['groups'])) {
                     $supportGroupRepository = $entityManager->getRepository('UVDeskCoreBundle:SupportGroup');
-
                     foreach ($formDetails['groups'] as $supportGroupId) {
                         $supportGroup = $supportGroupRepository->findOneById($supportGroupId);
-
                         if (!empty($supportGroup)) {
                             $userInstance->addSupportGroup($supportGroup);
                         }
@@ -336,7 +307,6 @@ class Account extends Controller
                 // Map support privileges
                 if (!empty($formDetails['agentPrivilege'])) {
                     $supportPrivilegeRepository = $entityManager->getRepository('UVDeskCoreBundle:SupportPrivilege');
-
                     foreach($formDetails['agentPrivilege'] as $supportPrivilegeId) {
                         $supportPrivilege = $supportPrivilegeRepository->findOneById($supportGroupId);
                         
@@ -348,27 +318,22 @@ class Account extends Controller
                         
                 $entityManager->persist($userInstance);
                 $entityManager->flush();
-
                 // Trigger customer created event
                 $event = new GenericEvent(CoreWorkflowEvents\Agent\Create::getId(), [
                     'entity' => $user,
                 ]);
-
                 $this->get('event_dispatcher')->dispatch('uvdesk.automation.workflow.execute', $event);
-
                 $this->addFlash('success', 'Success ! Agent added successfully.');
                 return $this->redirect($this->generateUrl('helpdesk_member_account_collection'));
             } else {
                 $this->addFlash('warning', 'Error ! User with same email is already exist.');
             }
         }
-
         return $this->render('@UVDeskCore/Agents/createSupportAgent.html.twig', [
             'user' => $user,
             'errors' => json_encode([])
         ]);
     }
-
     protected function encodePassword(User $user, $plainPassword)
     {
         $encodedPassword = $this->container->get('security.password_encoder')->encodePassword($user, $plainPassword);

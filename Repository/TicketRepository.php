@@ -116,13 +116,11 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
                 // 'hasAttachments' => $ticketService->hasAttachments($ticket[0]['id'])
             ];
         }
-
         $json['tickets'] = $data;
         $json['pagination'] = $paginationData;
 
         return $json;
     }
-    
     public function getAllCustomerTickets(\Symfony\Component\HttpFoundation\ParameterBag $obj = null, $container, $actAsUser = null) {
        
         $currentUser = $actAsUser ? : $container->get('user.service')->getCurrentUser();
@@ -197,14 +195,13 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
                 'group' => $ticket[0]['supportGroup'],
                 'type' => $ticket[0]['type'],
                 'priority' => $ticket[0]['priority'],
-                'formatedCreatedAt' => $userService->convertToTimezone($ticket[0]['createdAt']),
                 'totalThreads' => $ticketService->getTicketTotalThreads($ticket[0]['id']),
                 'agent' => $ticket['agentId'] ? $userService->getAgentPartialDetailById($ticket['agentId']) : null,
                 'customer' => $ticket['customerId'] ? $userService->getCustomerPartialDetailById($ticket['customerId']) : null,
+                'formatedCreatedAt' => $ticket[0]['createdAt']->format('d-m-Y h:ia'),
                 // 'hasAttachments' => $ticketService->hasAttachments($ticket[0]['id'])
             ];
         }
-
         $json['tickets'] = $data;
         $json['pagination'] = $paginationData;
 

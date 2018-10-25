@@ -102,11 +102,10 @@ class ThreadRepository extends \Doctrine\ORM\EntityRepository
         $queryParameters = $results->getParams();
 
         $queryParameters['page'] = "replacePage";
-        $paginationData['url'] = '#'.$container->get('default.service')->symfony_http_build_query($queryParameters);
+        $paginationData['url'] = '#'.$container->get('uvdesk.service')->buildPaginationQuery($queryParameters);
 
         $data = array();
         $userService = $container->get('user.service');
-        $fileService = $container->get('file.service');
 
         foreach ($results->getItems() as $key => $row) {
             $thread = $row[0];
@@ -126,7 +125,6 @@ class ThreadRepository extends \Doctrine\ORM\EntityRepository
                 'attachments' => [],
             ];
         }
-
         $json['threads'] = $data;
         $json['pagination'] = $paginationData;
 
