@@ -18,10 +18,6 @@ class MailboxChannelXHR extends Controller
     public function processMailXHR(Request $request)
     {
 
-        if(!$this->get('user.service')->checkPermission('ROLE_ADMIN')){          
-            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-         }
-
         if ("POST" == $request->getMethod() && null != $request->get('message')) {
             $message = $request->get('message');
             $this->get('uvdesk.core.mailbox')->processMail($message);
