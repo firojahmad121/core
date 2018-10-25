@@ -38,7 +38,7 @@ class Thread extends Controller
             $parsedMessage = trim(strip_tags($params['reply'], '<img>'));
             $parsedMessage = str_replace('&nbsp;', '', $parsedMessage);
             $parsedMessage = str_replace(' ', '', $parsedMessage);
-
+            
             if (null == $parsedMessage) {
                 $this->addFlash('warning', "Reply content cannot be left blank.");
             }
@@ -55,6 +55,7 @@ class Thread extends Controller
             'source' => 'website',
             'threadType' => strtolower($params['threadType']),
             'message' => $params['reply'],
+            'attachments' => $request->files->get('attachments')
         ];
         
         if(isset($params['to']))
@@ -74,12 +75,12 @@ class Thread extends Controller
         $event = new GenericEvent('uvdesk.ticket.agent_reply', [
             'entity' => $ticket,
         ]);
-
+      
         $this->get('event_dispatcher')->dispatch('uvdesk.automation.workflow.execute', $event);
-        
+
         // Check if ticket status needs to be updated
         $updateTicketToStatus = !empty($params['status']) ? (trim($params['status']) ?: null) : null;
-
+       
         if (!empty($updateTicketToStatus) && $this->get('user.service')->isAccessAuthorized('ROLE_AGENT_UPDATE_TICKET_STATUS')) {
             $ticketStatus = $em->getRepository('UVDeskCoreBundle:TicketStatus')->findOneById($updateTicketToStatus);
 
@@ -92,12 +93,12 @@ class Thread extends Controller
                 // @TODO: Trigger Ticket Status Updated Event
             }
         }
-
+       
         // Redirect to either Ticket View | Ticket Listings
         if ('redirect' === $params['nextView']) {
-            return $this->redirect($this->generateUrl('thelpdesk_member_ticket_collection'));
+            return $this->redirect($this->generateUrl('helpdesk_member_ticket_collection'));
         }
-
+        
         return $this->redirect($this->generateUrl('helpdesk_member_ticket', ['ticketId' => $ticket->getId()]));
     }
 }

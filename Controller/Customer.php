@@ -94,7 +94,7 @@ class Customer extends Controller
                     if($checkUser->getId() != $userId)
                         $errorFlag = 1;
                 }
-
+                
                 if(!$errorFlag && 'hello@uvdesk.com' !== $user->getEmail()) {
 
                     $password = $user->getPassword();
@@ -134,8 +134,6 @@ class Customer extends Controller
                     return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
                 } else {
                     $this->addFlash('warning', 'Error ! User with same email is already exist.');
-
-                    return $this->redirect($this->generateUrl('edit_customer',array('id' => $userId)));
                 }
             } 
         }
@@ -153,7 +151,7 @@ class Customer extends Controller
 
         return $encoder->encodePassword($plainPassword, $user->getSalt());
     }
-
+    
     public function bookmarkCustomer(Request $request)
     {
         if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_CUSTOMER')) {          
