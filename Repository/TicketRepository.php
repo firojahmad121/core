@@ -41,6 +41,7 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
     public function getAllTickets(\Symfony\Component\HttpFoundation\ParameterBag $obj = null, $container, $actAsUser = null)
     {
         $currentUser = $actAsUser ? : $container->get('user.service')->getCurrentUser();
+  
         $json = array();
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('DISTINCT t,gr,pr,tp,s,a.id as agentId,c.id as customerId')->from($this->getEntityName(), 't');
@@ -53,8 +54,91 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
         $qb->leftJoin('t.type', 'tp');
         // $qb->leftJoin('t.collaborators', 'tc');
         $qb->addSelect("CONCAT(a.firstName,' ', a.lastName) AS name");
+        $qb->andwhere("t.agent IS NULL OR ad.supportRole != 4");
+        $data = $obj->all();
+        $data = array_reverse($data);
+        foreach ($data as $key => $value) {
+            if(!in_array($key,$this->safeFields)) {
+                if(isset($data['search']) && $key == 'search') {
+                    $qb->andwhere("t.subject LIKE :subject OR a.email LIKE :agentName OR t.id LIKE :ticketId");
+                    $qb->setParameter('subject', '%'.urldecode($value).'%');
+                    $qb->setParameter('agentName', '%'.urldecode($value).'%');
+                    $qb->setParameter('ticketId', '%'.urldecode($value).'%');
+                } elseif($key == 'status') {
+                    $qb->andwhere('t.status = '.intval($value));
+                }
+            }
+        }
+        $qb->andwhere('t.isTrashed != 1');
 
-        $qb->andwhere("a IS NULL OR ad.supportRole != 4");
+        if(!isset($data['sort'])) {
+            $qb->orderBy('t.id',Criteria::DESC);
+        }
+
+        $paginator = $container->get('knp_paginator');
+
+        $newQb = clone $qb;
+        $newQb->select('COUNT(DISTINCT t.id)');
+
+        $results = $paginator->paginate(
+            $qb->getQuery()->setHydrationMode(Query::HYDRATE_ARRAY)->setHint('knp_paginator.count', $newQb->getQuery()->getSingleScalarResult()),
+            isset($data['page']) ? $data['page'] : 1,
+            self::LIMIT,
+            array('distinct' => true)
+        );
+
+        $paginationData = $results->getPaginationData();
+        $queryParameters = $results->getParams();
+
+        $queryParameters['page'] = "replacePage";
+        $paginationData['url'] = '#'.$container->get('uvdesk.service')->buildPaginationQuery($queryParameters);
+
+        $data = array();
+        $userService = $container->get('user.service');
+        $ticketService = $container->get('ticket.service');
+        $translatorService = $container->get('translator');
+
+        foreach ($results as $key => $ticket) {
+            $ticket[0]['status']['code'] = $translatorService->trans($ticket[0]['status']['code']);
+
+            $data[] = [
+                'id' => $ticket[0]['id'],
+                'subject' => $ticket[0]['subject'],
+                'isCustomerView' => $ticket[0]['isCustomerViewed'],
+                'status' => $ticket[0]['status'],
+                'group' => $ticket[0]['supportGroup'],
+                'type' => $ticket[0]['type'],
+                'priority' => $ticket[0]['priority'],
+                'formatedCreatedAt' => $userService->convertToTimezone($ticket[0]['createdAt']),
+                'totalThreads' => $ticketService->getTicketTotalThreads($ticket[0]['id']),
+                'agent' => $ticket['agentId'] ? $userService->getAgentPartialDetailById($ticket['agentId']) : null,
+                'customer' => $ticket['customerId'] ? $userService->getCustomerPartialDetailById($ticket['customerId']) : null,
+                // 'hasAttachments' => $ticketService->hasAttachments($ticket[0]['id'])
+            ];
+        }
+
+        $json['tickets'] = $data;
+        $json['pagination'] = $paginationData;
+
+        return $json;
+    }
+    
+    public function getAllCustomerTickets(\Symfony\Component\HttpFoundation\ParameterBag $obj = null, $container, $actAsUser = null) {
+       
+        $currentUser = $actAsUser ? : $container->get('user.service')->getCurrentUser();
+        $json = array();
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('DISTINCT t,gr,pr,tp,s,a.id as agentId,c.id as customerId')->from($this->getEntityName(), 't');
+        $qb->leftJoin('t.agent', 'a');
+        $qb->leftJoin('a.userInstance', 'ad');
+        $qb->leftJoin('t.status', 's');
+        $qb->leftJoin('t.customer', 'c');
+        $qb->leftJoin('t.supportGroup', 'gr');
+        $qb->leftJoin('t.priority', 'pr');
+        $qb->leftJoin('t.type', 'tp');
+        // $qb->leftJoin('t.collaborators', 'tc');
+        $qb->addSelect("CONCAT(a.firstName,' ', a.lastName) AS name");
+        $qb->andwhere("t.agent IS NULL OR ad.supportRole != 4");
 
         $data = $obj->all();
         $data = array_reverse($data);
@@ -71,8 +155,8 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
             }
         }
 
-     
-
+        $qb->andwhere('t.customer = :customerId');
+        $qb->setParameter('customerId', $currentUser->getId());
         $qb->andwhere('t.isTrashed != 1');
 
         if(!isset($data['sort'])) {

@@ -42,9 +42,6 @@ class SupportTeamRepository extends \Doctrine\ORM\EntityRepository
             }
         }
 
-      //  $qb->Andwhere('a.company'.' = :company');
-     //   $qb->setParameter('company',$container->get('user.service')->getCurrentCompany()->getId());
-
         if(!isset($data['sort'])){
             $qb->orderBy('a.id',Criteria::DESC);
         }

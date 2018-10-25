@@ -128,7 +128,6 @@ class Ticket extends Controller
                 
                 if (!empty($referralTicket)) {
                     $ticketValidationGroup = 'CustomerCreateTicket';
-                    
                 }
             }
         }
@@ -137,7 +136,7 @@ class Ticket extends Controller
 
         $ticketProxy = new CoreBundleDataProxies\CreateTicketDataClass();
         $form = $this->createForm(CoreBundleForms\CreateTicket::class, $ticketProxy);
-
+        
         // Validate Ticket Details
         $form->submit($requestParams);
         if (false == $form->isSubmitted() || false == $form->isValid()) {
@@ -148,7 +147,7 @@ class Ticket extends Controller
 
             return $this->redirect(!empty($referralURL) ? $referralURL : $this->generateUrl('helpdesk_member_ticket_collection'));
         }
-
+        
         if ('CustomerCreateTicket' === $ticketValidationGroup && !empty($referralTicket)) {
             // Retrieve customer details from referral ticket
             $customer = $referralTicket->getCustomer();
@@ -163,6 +162,7 @@ class Ticket extends Controller
                 // Create User Instance
                 $customer = $this->get('user.service')->createUserInstance($ticketProxy->getFrom(), $ticketProxy->getName(), $role, [
                     'source' => 'website',
+                    'active' => true
                 ]);
             }
         }
@@ -298,7 +298,7 @@ class Ticket extends Controller
         $zipname = 'ticketAttachments.zip';
         $zip = new \ZipArchive;
         $zip->open($zipname, \ZipArchive::CREATE);
-        
+
         foreach ($attachment as $attach) {
              $zip->addFile($attach->getPath()); 
         }
