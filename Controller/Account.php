@@ -116,7 +116,7 @@ class Account extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->container->get('request_stack')->getCurrentRequest();
-        
+       
         $activeUser = $this->get('user.service')->getSessionUser();
         $user = $em->getRepository('UVDeskCoreBundle:User')->find($agentId);
         $instanceRole = $user->getAgentInstance()->getSupportRole()->getCode();
@@ -306,7 +306,7 @@ class Account extends Controller
                 if (isset($data['ticketView'])) {
                     $userInstance->setTicketAccessLevel($data['ticketView']);
                 }
-
+                
                 // Map support team
                 if (!empty($formDetails['userSubGroup'])) {
                     $supportTeamRepository = $entityManager->getRepository('UVDeskCoreBundle:SupportTeam');

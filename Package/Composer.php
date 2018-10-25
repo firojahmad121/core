@@ -12,7 +12,7 @@ class Composer extends ComposerPackageExtension
         ($composerPackage = new ComposerPackage(new UVDeskCoreConfiguration()))
             ->movePackageConfig('config/packages/uvdesk.yaml', 'Templates/config.yaml')
             ->movePackageConfig('config/routes/uvdesk.yaml', 'Templates/routes.yaml')
-            ->movePackageConfig('templates/mail.html.twig', 'Templates/Emails/base.html.twig')
+            ->movePackageConfig('templates/mail.html.twig', 'Templates/Email/base.html.twig')
             ->combineProjectConfig('config/packages/security.yaml', 'Templates/security.yaml')
             ->writeToConsole(require __DIR__ . "/../Templates/CLI/on-boarding.php");
         

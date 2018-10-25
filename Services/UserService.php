@@ -67,7 +67,7 @@ class UserService
         return true;
     }
 
-    public function checkPermission($support)
+    public function checkPermission($role)
     {
         $securityContext = $this->container->get('security.token_storage')->getToken();
         
@@ -77,7 +77,7 @@ class UserService
             $agentPrivileges = $this->getUserPrivileges($this->getCurrentUser()->getId());
             $agentPrivileges = array_merge($agentPrivileges, ['saved_filters_action', 'saved_replies']);
             
-            return in_array($support, $agentPrivileges) ? true : false;
+            return in_array($role, $agentPrivileges) ? true : false;
         } else {
             return false;
         }
@@ -209,6 +209,8 @@ class UserService
 
             $this->entityManager->persist($userInstance);
             $this->entityManager->flush();
+
+            $user->addUserInstance($userInstance);
         }
 
         return $user;
@@ -682,23 +684,6 @@ class UserService
         return (!empty($homepageContent)) ? $homepageContent . 'View' : 'masonryView';
     }
 
-    public function getCurrentPlan() {
-        static $plan;
-        if (null !== $plan)
-            return $plan;
-
-        // if(!$this->getCurrentCompany())
-        //     return null;
-
-        // $currentRecurringProfile = $this->getCurrentCompany()->getCurrentRecurringProfile();
-        // if(!$currentRecurringProfile)
-        //     return null;
-        // $currentOrder = $currentRecurringProfile->getLastOrder();
-        // $plan = $currentOrder ? $currentOrder->getOrderItem() : $currentRecurringProfile->getOrderItem();
-
-        // return $plan;
-    }
-
     public function getUserDetailById($userId) {
         $user = $this->entityManager->getRepository('UVDeskCoreBundle:User')->find($userId);
         foreach ($user->getUserInstance() as $row) {
@@ -707,6 +692,7 @@ class UserService
         }
         return null;
     }
+
     public function getUserPrivilegeIds($userId) 
     {
         $qb = $this->entityManager->createQueryBuilder();
@@ -717,7 +703,5 @@ class UserService
                 ->setParameter('userId', $userId);
 
         return array_column($qb->getQuery()->getArrayResult(), 'id');
-
     }
-    
 }
