@@ -30,5 +30,7 @@ security:
     access_control:
         - { path: /member/login, roles: [IS_AUTHENTICATED_REMEMBERED, IS_AUTHENTICATED_ANONYMOUSLY] }
         - { path: /member/create-account, roles: [IS_AUTHENTICATED_REMEMBERED, IS_AUTHENTICATED_ANONYMOUSLY] }
+        - { path: /member/forgot-password, roles: [IS_AUTHENTICATED_REMEMBERED,IS_AUTHENTICATED_ANONYMOUSLY] }
+        - { path: /member/update-credentials, roles: [IS_AUTHENTICATED_REMEMBERED,IS_AUTHENTICATED_ANONYMOUSLY] }
         - { path: /member/mailbox/listener, roles: [IS_AUTHENTICATED_ANONYMOUSLY] }
         - { path: /member/, roles: ROLE_AGENT }
