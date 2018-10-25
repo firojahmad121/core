@@ -607,6 +607,12 @@ class TicketXHR extends Controller
 
     public function listTicketTypeCollectionXHR(Request $request)
     {
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE'))
+        {          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+        }
+
         if (true === $request->isXmlHttpRequest()) {
             $paginationResponse = $this->get('ticket.service')->paginateMembersTicketTypeCollection($request);
 
@@ -618,6 +624,12 @@ class TicketXHR extends Controller
 
     public function removeTicketTypeXHR($typeId, Request $request)
     {
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE')) 
+        {          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+        }
+
         $json = [];
         if($request->getMethod() == "DELETE") {
             $em = $this->getDoctrine()->getManager();
@@ -643,6 +655,12 @@ class TicketXHR extends Controller
 
     public function listTagCollectionXHR(Request $request)
     {
+
+        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TAG'))
+        {          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+            exit;
+        }
         if (true === $request->isXmlHttpRequest()) {
             $paginationResponse = $this->get('ticket.service')->paginateMembersTagCollection($request);
 

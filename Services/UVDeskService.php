@@ -104,6 +104,8 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_mailbox_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_ADMIN'
+                            
                         ],
                     ],
                 ];
@@ -117,30 +119,40 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_support_group_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_GROUP"
+
                         ],
                         [
                             'name' => 'Teams',
                             'link' => $router->generate('helpdesk_member_support_team_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_SUB_GROUP"
+                            
                         ],
                         [
                             'name' => 'Agents',
                             'link' => $router->generate('helpdesk_member_account_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_AGENT"
+                            
                         ],
                         [
                             'name' => 'Privileges',
                             'link' => $router->generate('helpdesk_member_privilege_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_AGENT_PRIVILEGE"
+                            
                         ],
                         [
                             'name' => 'Customers',
                             'link' => $router->generate('helpdesk_member_manage_customer_account_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>"ROLE_AGENT_MANAGE_CUSTOMER"
+                            
                         ],
                     ],
                 ];
@@ -167,24 +179,28 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_workflow_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_WORKFLOW_AUTOMATIC'
                         ],
                         [
                             'name' => 'Tags',
                             'link' => $router->generate('helpdesk_member_ticket_tag_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_TAG'
                         ],
                         [
                             'name' => 'Prepared Responses',
                             'link' => $router->generate('prepare_response_action'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_WORKFLOW_MANUAL'
                         ],
                         [
                             'name' => 'Ticket Types',
                             'link' => $router->generate('helpdesk_member_ticket_type_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_TICKET_TYPE'
                         ],
                     ],
                 ];
@@ -198,24 +214,29 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_knowledgebase_theme'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_ADMIN'
+                            
                         ],
                         [
                             'name' => 'Email Templates',
                             'link' => $router->generate('email_templates_action'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_EMAIL_TEMPLATE'                            
                         ],
                         [
                             'name' => 'Email Settings',
                             'link' => $router->generate('email_setting'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_ADMIN'
                         ],
                         [
                             'name' => 'Block Spam',
                             'link' => $router->generate('helpdesk_member_knowledgebase_spam'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_ADMIN'
                         ],
                     ],
                 ];
@@ -253,18 +274,24 @@ class UVDeskService
                             'link' => $router->generate('helpdesk_member_knowledgebase_folders_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_KNOWLEDGEBASE'
+                            
                         ],
                         [
                             'name' => 'Categories',
                             'link' => $router->generate('helpdesk_member_knowledgebase_category_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_KNOWLEDGEBASE'
+                            
                         ],
                         [
                             'name' => 'Articles',
                             'link' => $router->generate('helpdesk_member_knowledgebase_article_collection'),
                             'isActive' => false,
                             'isEnabled' => true,
+                            'permission'=>'ROLE_AGENT_MANAGE_KNOWLEDGEBASE'
+                            
                         ],
                     ],
                 ];
@@ -272,7 +299,7 @@ class UVDeskService
 			default:
 				break;
         }
-        
+        // dump($navigationPanel);die;
 		return $navigationPanel;
     }
     

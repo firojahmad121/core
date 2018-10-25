@@ -122,7 +122,6 @@ SVG;
                     'route' => 'helpdesk_member_privilege_collection',
                     'brick_svg' => self::PRIVILEGES_BRICK_SVG,
                     'permission'=>'ROLE_AGENT_MANAGE_AGENT_PRIVILEGE'
-                    
                 ],
                 [
                     'name' => 'Customers',
