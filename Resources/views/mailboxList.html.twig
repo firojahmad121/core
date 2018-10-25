@@ -319,15 +319,6 @@
 					}
 				});
 			},
-			checkMailboxLimit: function(response) {
-				if(typeof(response.allowedToAdd) != 'undefined' && response.allowedToAdd) {
-					$('#upgrade-plan-message').hide();
-					$('.add-mailbox').show();
-				} else {
-					$('#upgrade-plan-message').show();
-					//$('.add-mailbox').hide();					
-				}
-			}
 		});
 
 		var MailboxForm = Backbone.View.extend({
@@ -366,7 +357,6 @@
 							mailboxCollection.set(model, {remove: false});
 							mailboxForm.showMailboxList();
 							mailboxList.render();
-							// mailboxList.checkMailboxLimit(response);							
 					    },
 					    error: function (model, xhr, options) {
 							app.appView.hideLoader();
@@ -387,7 +377,7 @@
 								app.appView.renderResponseAlert(response);
 								mailboxForm.showMailboxList();							
 							}
-							mailboxList.checkMailboxLimit(xhr);
+
 							if(response && response.existingUserEmail) {
 								if(self.model.get('email')) {
 									continueForm = currentElement.closest('form');
@@ -513,7 +503,6 @@
 								app.appView.hideLoader();
 								globalMessageResponse = response;
 								app.appView.renderResponseAlert(response);
-								mailboxList.checkMailboxLimit(response);
 								$('#uv-add-mailbox-form').trigger('reset');
 							} else {
 								app.appView.hideLoader();								
@@ -535,7 +524,6 @@
 										$('#confirm-existing-user').show();
 									}
 								}
-								mailboxList.checkMailboxLimit(response);
 							}
 					    },
 						error: function (model, xhr, options) {
@@ -592,7 +580,6 @@
 						mailboxList.render();
 						mailboxForm.showMailboxList();
 						app.appView.renderResponseAlert(response);
-						mailboxList.checkMailboxLimit(response);
 				    },
 				    error: function (model, xhr, options) {
 						app.appView.hideLoader();

@@ -9,7 +9,6 @@ use Webkul\UVDesk\CoreBundle\Form as CoreBundleForms;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Webkul\UVDesk\CoreBundle\Entity as CoreBundleEntities;
 use Webkul\UVDesk\CoreBundle\DataProxies as CoreBundleDataProxies;
-use ZipArchive;
 
 class Ticket extends Controller
 {
@@ -105,7 +104,7 @@ class Ticket extends Controller
     }
     
     public function saveTicket(Request $request)
-    {   
+    {
         $requestParams = $request->request->all();
         $entityManager = $this->getDoctrine()->getManager();
         $response = $this->redirect($this->generateUrl('helpdesk_member_ticket_collection'));

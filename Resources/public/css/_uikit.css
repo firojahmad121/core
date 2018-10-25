@@ -34,6 +34,10 @@ a:active {
 .fade-out-white {
   animation: fade-out-white 0.3s ease-in-out !important;
 }
+.uv-action-bar {
+  border-bottom: 1px solid #d3d3d3;
+  padding-bottom: 10px;
+}
 .jelly-out {
   animation: jelly-out 0.5s ease-in-out !important;
 }
