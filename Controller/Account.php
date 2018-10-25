@@ -107,7 +107,7 @@ class Account extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->container->get('request_stack')->getCurrentRequest();
-       
+        
         $activeUser = $this->get('user.service')->getSessionUser();
         $user = $em->getRepository('UVDeskCoreBundle:User')->find($agentId);
         $instanceRole = $user->getAgentInstance()->getSupportRole()->getCode();
@@ -149,6 +149,10 @@ class Account extends Controller
                     if(isset($data['role'])) {
                         $role = $em->getRepository('UVDeskCoreBundle:SupportRole')->findOneBy(array('code' => $data['role']));
                         $userInstance->setSupportRole($role);
+                    }
+
+                    if (isset($data['ticketView'])) {
+                        $userInstance->setTicketAccessLevel($data['ticketView']);
                     }
 
                     $userInstance->setDesignation($data['designation']);
@@ -299,6 +303,10 @@ class Account extends Controller
                 ]);
 
                 $userInstance = $user->getAgentInstance();
+
+                if (isset($data['ticketView'])) {
+                    $userInstance->setTicketAccessLevel($data['ticketView']);
+                }
 
                 // Map support team
                 if (!empty($formDetails['userSubGroup'])) {
