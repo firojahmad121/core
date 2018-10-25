@@ -103,6 +103,15 @@ class Account extends Controller
         ));
     }
 
+    public function listAgents(Request $request)
+    {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT')){          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
+        return $this->render('@UVDeskCore/Agents/listSupportAgents.html.twig');
+    }
+
     public function editAgent($agentId)
     {
         $em = $this->getDoctrine()->getManager();
@@ -262,16 +271,6 @@ class Account extends Controller
         }
 
         return $response;
-    }
-
-    public function listAgents(Request $request)
-    {
-
-        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_AGENT')){          
-            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-        }
-
-        return $this->render('@UVDeskCore/Agents/listSupportAgents.html.twig', []);
     }
 
     public function createAgent(Request $request)
