@@ -270,7 +270,9 @@ class TicketService
 
         return $qb->getQuery()->getSingleScalarResult();
     }
-    public function getTicketTags($request = null) {
+
+    public function getTicketTags($request = null)
+    {
         $qb = $this->entityManager->createQueryBuilder();
         $qb->select('tg')->from('UVDeskCoreBundle:Tag', 'tg');
 
@@ -283,6 +285,7 @@ class TicketService
 
         return $qb->getQuery()->getArrayResult();
     }
+    
     public function paginateMembersTicketCollection(Request $request)
     {
         $params = $request->query->all();
