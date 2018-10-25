@@ -12,6 +12,6 @@ helpdesk_member_forgot_account_password:
     controller: Webkul\UVDesk\CoreBundle\Controller\Authentication::forgotPassword
 
 helpdesk_member_update_account_credentials:
-    path:     /update-credentials/{email}/{key}
+    path:     /update-credentials/{email}/{verificationCode}
     controller: Webkul\UVDesk\CoreBundle\Controller\Authentication::updateCredentials
-    defaults: { email: '', key: '' }
+    defaults: { email: '', verificationCode: '' }

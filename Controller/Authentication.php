@@ -5,6 +5,7 @@ namespace Webkul\UVDesk\CoreBundle\Controller;
 use Symfony\Component\Form\FormError;
 use Webkul\UVDesk\CoreBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
+use Webkul\UVDesk\CoreBundle\Utils\TokenGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
@@ -31,7 +32,6 @@ class Authentication extends Controller
     {
         if (null == $this->get('user.service')->getSessionUser()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $errors = [];
             
             if ($request->getMethod() == 'POST') {
                 $user = new User();
@@ -54,55 +54,50 @@ class Authentication extends Controller
                         return $this->redirect($this->generateUrl('helpdesk_member_update_account_credentials')."/".$form->getData()->getEmail());
                     } else {
                         $request->getSession()->getFlashBag()->set('warning', 'This Email address is not registered with us.');
-                        
-                        return $this->render("@UVDeskCore//forgotPassword.html.twig", [
-                            'errors' => json_encode($errors)
-                        ]);
                     }
-                } else {
-                    dump($form);die;
-                    // $errors = /$this->getFormErrors($form);
                 }
             }
 
-            return $this->render("@UVDeskCore//forgotPassword.html.twig", [
-                'errors' => json_encode($errors)
-            ]);
+            return $this->render("@UVDeskCore//forgotPassword.html.twig");
         }
         
         return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));       
     }
 
-    public function updateCredentials($email, Request $request)
+    public function updateCredentials($email, $verificationCode)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-    
-        $errors = [];
-        $error = $form = false;
+        if (empty($email) || empty($verificationCode)) {
+            return $this->redirect($this->generateUrl('helpdesk_member_handle_login'));
+        }
 
+        $entityManager = $this->getDoctrine()->getManager();
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+
+        // Validate request
+        $user = $entityManager->getRepository('UVDeskCoreBundle:User')->findOneByEmail($email);
+
+        if (empty($user) || null == $user->getAgentInstance() || $user->getVerificationCode() != $verificationCode) {
+            return $this->redirect($this->generateUrl('helpdesk_member_handle_login'));
+        }
+    
         if ($request->getMethod() == 'POST') {
-            $user = $entityManager->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email' => $email));
-            $data = $request->request->all();
-            if ($data['password']['first']===$data['password']['second']) {
-                $user->setPassword($this->encodePassword($user, $data['password']['first']));
+            $updatedCredentials = $request->request->all();
+
+            if ($updatedCredentials['password'] === $updatedCredentials['confirmPassword']) {
+                $user->setPassword($this->encodePassword($user, $updatedCredentials['password']));
+                $user->setVerificationCode(TokenGenerator::generateToken());
+
                 $entityManager->persist($user);
-                $entityManager->flush();            
-                $request->getSession()->getFlashBag()->set('success', 'Your password changed.');
-                
-                return  $this->redirect($this->generateUrl('helpdesk_member_handle_login'));
+                $entityManager->flush();
+
+                $request->getSession()->getFlashBag()->set('success', 'Your password has been updated successfully.');
+                return $this->redirect($this->generateUrl('helpdesk_member_handle_login'));
             } else {
-                $request->getSession()->getFlashBag()->set('warning', 'Password does not match.');
-                
-                return $this->render("@UVDeskCore//resetPassword.html.twig", [
-                    'errors' => json_encode($errors)
-                ]);
+                $request->getSession()->getFlashBag()->set('warning', "Password don't match.");
             }
         }
        
-
-        return $this->render("@UVDeskCore//resetPassword.html.twig", [
-            'errors' => json_encode($errors)
-        ]);
+        return $this->render("@UVDeskCore//resetPassword.html.twig");
     }
 
     protected function encodePassword(User $user, $plainPassword)

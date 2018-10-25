@@ -122,7 +122,7 @@
                         <div class="uv-element-block">
                             <label>
                                 <div class="uv-checkbox">
-                                    <input type="checkbox" name="user_form[isActive]" value="0">
+                                    <input type="checkbox" name="user_form[isActive]">
                                     <span class="uv-checkbox-view"></span>
                                 </div>
                                 <span class="uv-checkbox-label">{{ 'Account is Active'|trans }}</span>
@@ -378,6 +378,11 @@
                     'user_form[password][second]': {
                         equalTo: 'user_form[password][first]',
                         msg: 'The passwords does not match'
+                    },
+                    'user_form[isActive][]': {
+                        fn: function(value) {
+                            return false;
+                        },
                     },
                     'user_form[groups][]': {
                         required: true,
