@@ -177,7 +177,7 @@ helpdesk_member_remove_ticket_tag_xhr:
 helpdesk_member_ticket_type_collection:
     path:     /ticket-types
     controller: Webkul\UVDesk\CoreBundle\Controller\Ticket::listTicketTypeCollection
-    defaults: { panelId: 'productivity' } 
+    defaults: { panelId: 'productivity' }
 
 helpdesk_member_ticket_type_collection_xhr:
     path:     /ticket-types/xhr

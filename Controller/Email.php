@@ -33,17 +33,15 @@ class Email extends Controller
 
     public function templates(Request $request) 
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE'))
-        {          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
         }
+
         return $this->render('@UVDeskCore//templateList.html.twig');
     }
 
     public function emailTemplatesAction(Request $request) 
     {
-
         return $this->render('@UVDeskCore//emailTemplateList.html.twig', array(
             'list_items' => $this->getListItems($request),
             'information_items' => $this->getRightSidebarInfoItems($request),
@@ -51,12 +49,11 @@ class Email extends Controller
     }
 
     public function templateForm(Request $request) 
-    {      
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE'))
-        {          
+    {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {          
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-        } 
+        }
+
         if($request->attributes->get('template')) {
             $template = $this->getTemplate($request);
         } else {  
@@ -108,11 +105,10 @@ class Email extends Controller
 
     public function templatesxhr(Request $request) 
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE'))
-        {          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
         }
+
         $json = array();
         $error = false;
         if($request->isXmlHttpRequest()) {
@@ -152,13 +148,11 @@ class Email extends Controller
 
     public function emailSetting(Request $request) 
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE'))
-        {          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
         }
-        return $this->render('@UVDeskCore//emailSetting.html.twig', array(
-        ));
+
+        return $this->render('@UVDeskCore//emailSetting.html.twig');
     }
 
 }

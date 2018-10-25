@@ -204,21 +204,19 @@ class Ticket extends Controller
 
     public function listTicketTypeCollection(Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE'))
-        {          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE')) {
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
         }
+
         return $this->render('@UVDeskCore/ticketTypeList.html.twig');
     }
 
     public function ticketType(Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE'))
-        {          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE')) {
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
         }
+
         $errorContext = [];
         $em = $this->getDoctrine()->getManager();
 
@@ -266,17 +264,9 @@ class Ticket extends Controller
 
     public function listTagCollection(Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TAG'))
-        {          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TAG')) {
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
         }
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TAG'))
-        {          
-            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
-        }
-
 
         $enabled_bundles = $this->container->getParameter('kernel.bundles');
 
@@ -287,11 +277,10 @@ class Ticket extends Controller
 
     public function removeTicketTagXHR($tagId, Request $request)
     {
-        if(!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TAG'))
-        {          
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TAG')) {
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-            exit;
         }
+
         $json = [];
         if($request->getMethod() == "DELETE") {
             $em = $this->getDoctrine()->getManager();
