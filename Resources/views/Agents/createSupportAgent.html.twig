@@ -278,7 +278,7 @@
                                 {% endif %}
 							</div>
 
-                            {# <div class="uv-element-block">
+                            <div class="uv-element-block">
                                 <label class="uv-field-label">{{ 'Ticket View'|trans }}</label>
                                 <span class="uv-field-info">{{ 'User can view tickets based on selected scope.'|trans }}
                                     <span class="uv-xtra-info" data-toggle="tooltip" data-placement="top" title="{{ 'If individual access then user can View assigned Ticket(s) only, If Team access then user can view all Ticket(s) in team(s) he belongs to and so on'|trans }}">[?]</span>
@@ -319,7 +319,7 @@
                                         <span class="uv-radio-label">{{ 'Individual Access'|trans }}</span>
                                     </label>
                                 </div>
-                            </div> #}
+                            </div>
                         </div>
                     {% else %}
                         <input type="hidden" name="user_form[role]" value="ROLE_SUPER_ADMIN">
@@ -380,24 +380,22 @@
                         msg: 'The passwords does not match'
                     },
                     'user_form[groups][]': {
-                        required: false,
+                        required: true,
                         msg: 'This field is mandatory'
                     },
                     'user_form[agentPrivilege][]' : {
                         fn: function(value) {
-                            console.log('privilege value', value)
-                            //if($("#user_form_role").val() == 'ROLE_AGENT') {
-                            //    if(!value)
-                            //        return true;
-                            //}
+                            if ($("#user_form_role").val() == 'ROLE_AGENT') {
+                                if (!value)
+                                    return true;
+                            }
 
                             return false;
                         },
                         msg: 'This field is mandatory'
                     },
-                    {# 'user_form[ticketView]': {
+                    'user_form[ticketView]': {
                         fn: function(value) {
-                            console.log('ticket view value', value)
                             if($("#user_form_role").val() == 'ROLE_AGENT') {
                                 if(!value)
                                     return true;
@@ -406,7 +404,7 @@
                             return false;
                         },
                         msg: 'This field is mandatory'
-                    }, #}
+                    },
 				}
 			});
 

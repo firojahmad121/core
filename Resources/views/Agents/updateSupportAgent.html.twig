@@ -11,7 +11,7 @@
 {% block pageContent %}
 	<div class="uv-inner-section">
 		{{ include('@UVDeskCore/Templates/panel-sidebar.html.twig') }}
-
+        
         <style>
             .uv-element-block .uv-element-block {
                 margin: 6px 0;
@@ -325,7 +325,7 @@
                                 {% endif %}
 							</div>
 
-                            {# <div class="uv-element-block">
+                            <div class="uv-element-block">
                                 <label class="uv-field-label">{{ 'Ticket View'|trans }}</label>
                                 <span class="uv-field-info">{{ 'User can view tickets based on selected scope.'|trans }}
                                     <span class="uv-xtra-info" data-toggle="tooltip" data-placement="top" title="{{ 'If individual access then user can View assigned Ticket(s) only, If Team access then user can view all Ticket(s) in team(s) he belongs to and so on'|trans }}">[?]</span>
@@ -333,7 +333,7 @@
                                 <div class="uv-element-block" style="margin-top: 10px;">
                                     <label>
                                         <div class="uv-radio">
-                                            <input name="user_form[ticketView]" value="1" type="radio" {% if userDetails and userDetails.ticketView == 1 %}checked{% endif %}>
+                                            <input name="user_form[ticketView]" value="1" type="radio" {% if userDetails and userDetails.ticketAccessLevel == 1 %}checked{% endif %}>
                                             <span class="uv-radio-view"></span>
                                         </div>
                                         <span class="uv-radio-label">{{ 'Global Access'|trans }}</span>
@@ -342,7 +342,7 @@
                                 <div class="uv-element-block">
                                     <label>
                                         <div class="uv-radio">
-                                            <input name="user_form[ticketView]" value="2" type="radio" {% if userDetails and userDetails.ticketView == 2 %}checked{% endif %}>
+                                            <input name="user_form[ticketView]" value="2" type="radio" {% if userDetails and userDetails.ticketAccessLevel == 2 %}checked{% endif %}>
                                             <span class="uv-radio-view"></span>
                                         </div>
                                         <span class="uv-radio-label">{{ 'Group Access'|trans }}</span>
@@ -351,7 +351,7 @@
                                 <div class="uv-element-block">
                                     <label>
                                         <div class="uv-radio">
-                                            <input name="user_form[ticketView]" value="3" type="radio" {% if userDetails and userDetails.ticketView == 3 %}checked{% endif %}>
+                                            <input name="user_form[ticketView]" value="3" type="radio" {% if userDetails and userDetails.ticketAccessLevel == 3 %}checked{% endif %}>
                                             <span class="uv-radio-view"></span>
                                         </div>
                                         <span class="uv-radio-label">{{ 'Team Access'|trans }}</span>
@@ -360,13 +360,13 @@
                                 <div class="uv-element-block">
                                     <label>
                                         <div class="uv-radio">
-                                            <input name="user_form[ticketView]" value="4" type="radio" {% if userDetails and userDetails.ticketView == 4 %}checked{% endif %}>
+                                            <input name="user_form[ticketView]" value="4" type="radio" {% if userDetails and userDetails.ticketAccessLevel == 4 %}checked{% endif %}>
                                             <span class="uv-radio-view"></span>
                                         </div>
                                         <span class="uv-radio-label">{{ 'Individual Access'|trans }}</span>
                                     </label>
                                 </div>
-                            </div> #}
+                            </div>
                         </div>
                         <!-- //Role dependent fields -->
                     {% else %}
@@ -445,7 +445,7 @@
                         },
                         msg: '{{ "This field is mandatory"|trans }}'
                     },
-                    {# 'user_form[ticketView]': {
+                    'user_form[ticketView]': {
                         fn: function(value) {
                             if($("#user_form_role").val() == 'ROLE_AGENT') {
                                 if(!value)
@@ -455,7 +455,7 @@
                             return false;
                         },
                         msg: '{{ "This field is mandatory"|trans }}'
-                    }, #}
+                    },
 				}
 			});
 
