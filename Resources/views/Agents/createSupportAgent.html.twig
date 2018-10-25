@@ -380,24 +380,11 @@
                         msg: 'The passwords does not match'
                     },
                     'user_form[groups][]': {
-                        required: false,
-                        msg: 'This field is mandatory'
+                        required: true,
+                        msg: '{{ "This field is mandatory"|trans }}'
                     },
                     'user_form[agentPrivilege][]' : {
                         fn: function(value) {
-                            console.log('privilege value', value)
-                            //if($("#user_form_role").val() == 'ROLE_AGENT') {
-                            //    if(!value)
-                            //        return true;
-                            //}
-
-                            return false;
-                        },
-                        msg: 'This field is mandatory'
-                    },
-                    {# 'user_form[ticketView]': {
-                        fn: function(value) {
-                            console.log('ticket view value', value)
                             if($("#user_form_role").val() == 'ROLE_AGENT') {
                                 if(!value)
                                     return true;
@@ -405,8 +392,19 @@
 
                             return false;
                         },
-                        msg: 'This field is mandatory'
-                    }, #}
+                        msg: '{{ "This field is mandatory"|trans }}'
+                    },
+                    'user_form[ticketView]': {
+                        fn: function(value) {
+                            if($("#user_form_role").val() == 'ROLE_AGENT') {
+                                if(!value)
+                                    return true;
+                            }
+
+                            return false;
+                        },
+                        msg: '{{ "This field is mandatory"|trans }}'
+                    },
 				}
 			});
 
