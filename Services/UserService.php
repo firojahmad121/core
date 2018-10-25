@@ -209,6 +209,8 @@ class UserService
 
             $this->entityManager->persist($userInstance);
             $this->entityManager->flush();
+
+            $user->addUserInstance($userInstance);
         }
 
         return $user;
