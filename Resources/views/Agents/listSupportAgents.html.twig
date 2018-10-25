@@ -123,7 +123,7 @@
 		</td>
 		<td data-value="Action" class="uv-last">
 			<a href="<%- path.replace('replaceId', id) %>" class="uv-btn-stroke edit-agent">Edit</a>
-			<% if (role == "ROLE_SUPER_ADMIN") { %>
+			<% if (roleCode == "ROLE_SUPER_ADMIN") { %>
 				<div class="uv-btn-stroke" disabled="disabled">Delete</div>
 			<% } else { %>
 				<div class="uv-btn-stroke delete-agent">Delete</div>

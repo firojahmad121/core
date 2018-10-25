@@ -70,6 +70,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                     'isActive' => $user['userInstance'][0]['isActive'],
                     'name' => ucwords(trim(implode(' ', [$user['firstName'], $user['lastName']]))),
                     'role' => $user['userInstance'][0]['supportRole']['description'],
+                    'roleCode' =>  $user['userInstance'][0]['supportRole']['code'],
                 ];
             }, $pagination->getItems()),
         ];

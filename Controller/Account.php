@@ -104,7 +104,6 @@ class Account extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->container->get('request_stack')->getCurrentRequest();
-       
         $activeUser = $this->get('user.service')->getSessionUser();
         $user = $em->getRepository('UVDeskCoreBundle:User')->find($agentId);
         $instanceRole = $user->getAgentInstance()->getSupportRole()->getCode();
@@ -146,7 +145,9 @@ class Account extends AbstractController
                             $role = $em->getRepository('UVDeskCoreBundle:SupportRole')->findOneBy(array('code' => $data['role']));
                             $userInstance->setSupportRole($role);
                         }
-
+                        if(isset($data['ticketView']))
+                            $userInstance->setTicketAccessLevel($data['ticketView']);
+                            
                         $userInstance->setDesignation($data['designation']);
                         $userInstance->setContactNumber($data['contactNumber']);
                         $userInstance->setSource('website');
@@ -154,8 +155,10 @@ class Account extends AbstractController
                             $fileName  = $this->container->get('uvdesk.service')->getFileUploadManager()->upload($dataFiles['profileImage']);
                             $userInstance->setProfileImagePath($fileName);
                         }
+                        
                         $userInstance->setSignature($data['signature']);
                         $isActive = isset($data['isActive']) ? 1 : 0;
+                        $userInstance->setIsActive($isActive);
                         $userInstance->setIsActive($isActive);
                         $userInstance->setIsVerified(0);
 
@@ -266,7 +269,6 @@ class Account extends AbstractController
         $user = new User();
         $em = $this->getDoctrine()->getManager();
         $userServiceContainer = $this->get('user.service');
-            
         if ('POST' == $request->getMethod()) {
 
             $data      = $request->request->get('user_form');
@@ -297,7 +299,7 @@ class Account extends AbstractController
                     }
 
                     if(isset($data['ticketView']))
-                        $userInstance->setTicketView($data['ticketView']);
+                        $userInstance->setTicketAccessLevel($data['ticketView']);
 
                     $userInstance->setDesignation($data['designation']);
                     $userInstance->setContactNumber($data['contactNumber']);
