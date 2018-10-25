@@ -4,6 +4,8 @@ uvdesk:
     upload_manager:
         id: uvdesk.core.fs.upload.manager
     
+    support_email: ~
+    
     # Default resources
     default:
         ticket:

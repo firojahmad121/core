@@ -79,7 +79,7 @@ class ORMLifecycle
         switch (true) {
             case $entity instanceof CoreEntities\Mailbox:
                 if (true === $entity->getIsLocalized()) {
-                    foreach ($this->container->getParameter('uvdesk_tickets')['mailbox'] as $localizedConfig) {
+                    foreach ($this->container->getParameter('uvdesk.mailboxes') as $localizedConfig) {
                         if ($entity->getEmail() === $localizedConfig['email']) {
                             $entity->setHost($localizedConfig['host']);
                             $entity->setPassword($localizedConfig['password']);

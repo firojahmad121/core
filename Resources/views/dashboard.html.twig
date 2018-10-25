@@ -212,7 +212,9 @@
 		{% set dashboardItems = uvdesk_service.getHelpdeskDashboadPanelItems() %}
 
         <div id="manage" class="uv-tab-view uv-tab-view-active" data-tab="manage">
-            <!-- CHANNELS -->
+			<!-- CHANNELS -->
+			
+		{% if app.user and is_granted('ROLE_ADMIN') %}
 			{% if dashboardItems.HELPDESK_CHANNELS is defined and dashboardItems.HELPDESK_CHANNELS is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">
@@ -237,8 +239,10 @@
 					</div>
 				</div>
 			{% endif %}
+		{% endif %}
 
-			<!-- USERS -->
+		<!-- USERS -->
+		{% if user_service.checkPermission('ROLE_AGENT_MANAGE_GROUP') or user_service.checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP') or user_service.checkPermission('ROLE_AGENT_MANAGE_AGENT') or user_service.checkPermission('ROLE_AGENT_MANAGE_AGENT_PRIVILEGE') or user_service.checkPermission('ROLE_AGENT_MANAGE_CUSTOMER') %}
 			{% if dashboardItems.HELPDESK_USERS is defined and dashboardItems.HELPDESK_USERS is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">
@@ -248,23 +252,27 @@
 
 					<div class="uv-brick-section">
 						{% for dashboardItem in dashboardItems.HELPDESK_USERS %}
-							<a href="{{ path(dashboardItem.route) }}">
-								<div class="uv-brick-container">
-									<div class="uv-brick-icon">
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-											{{ dashboardItem.brick_svg | raw }}
-										</svg>
-									</div>
+							{% if dashboardItem.permission is not defined or dashboardItem.permission is empty or user_service.checkPermission(dashboardItem.permission) %}
+								<a href="{{ path(dashboardItem.route) }}">
+									<div class="uv-brick-container">
+										<div class="uv-brick-icon">
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
+												{{ dashboardItem.brick_svg | raw }}
+											</svg>
+										</div>
 
-									<p>{{ dashboardItem.name }}</p>
-								</div>
-							</a>
+										<p>{{ dashboardItem.name }}</p>
+									</div>
+								</a>
+							{% endif %}
 						{% endfor %}
 					</div>
 				</div>
 			{% endif %}
-
-            <!-- KNOWLEDGEBASE -->
+		{% endif %}	
+		
+		<!-- KNOWLEDGEBASE -->
+		{% if user_service.checkPermission('ROLE_AGENT_MANAGE_KNOWLEDGEBASE') %}
 			{% if dashboardItems.HELPDESK_KNOWLEDGEBASE is defined and dashboardItems.HELPDESK_KNOWLEDGEBASE is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">
@@ -289,8 +297,10 @@
 					</div>
 				</div>
 			{% endif %}
+		{% endif %}		
 
-            <!-- AUTOMATION -->
+		<!-- AUTOMATION -->
+		{% if user_service.checkPermission('ROLE_AGENT_MANAGE_WORKFLOW_MANUAL') or user_service.checkPermission('ROLE_AGENT_MANAGE_WORKFLOW_AUTOMATIC') or user_service.checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE') or user_service.checkPermission('ROLE_AGENT_MANAGE_TAG') or user_service.checkPermission('ROLE_ADMIN') %}
 			{% if dashboardItems.HELPDESK_AUTOMATION is defined and dashboardItems.HELPDESK_AUTOMATION is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">
@@ -300,23 +310,27 @@
 
 					<div class="uv-brick-section">
 						{% for dashboardItem in dashboardItems.HELPDESK_AUTOMATION %}
-							<a href="{{ path(dashboardItem.route) }}">
-								<div class="uv-brick-container">
-									<div class="uv-brick-icon">
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-											{{ dashboardItem.brick_svg | raw }}
-										</svg>
-									</div>
+							{% if dashboardItem.permission is not defined or dashboardItem.permission is empty or user_service.checkPermission(dashboardItem.permission) %}
+								<a href="{{ path(dashboardItem.route) }}">
+									<div class="uv-brick-container">
+										<div class="uv-brick-icon">
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
+												{{ dashboardItem.brick_svg | raw }}
+											</svg>
+										</div>
 
-									<p>{{ dashboardItem.name }}</p>
-								</div>
-							</a>
+										<p>{{ dashboardItem.name }}</p>
+									</div>
+								</a>
+							{% endif %}
 						{% endfor %}
 					</div>
 				</div>
 			{% endif %}
-
-            <!-- SETTINGS -->
+		{% endif %}
+			
+		<!-- SETTINGS -->
+		{% if user_service.checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE') or user_service.checkPermission('ROLE_AGENT_MANAGE_CUSTOM_FIELD') or user_service.checkPermission('import_data') %}
 			{% if dashboardItems.HELPDESK_SETTINGS is defined and dashboardItems.HELPDESK_SETTINGS is not empty %}
 				<div class="uv-brick">
 					<div class="uv-brick-head">
@@ -326,21 +340,24 @@
 
 					<div class="uv-brick-section">
 						{% for dashboardItem in dashboardItems.HELPDESK_SETTINGS %}
-							<a href="{{ path(dashboardItem.route) }}">
-								<div class="uv-brick-container">
-									<div class="uv-brick-icon">
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
-											{{ dashboardItem.brick_svg | raw }}
-										</svg>
-									</div>
+							{% if dashboardItem.permission is not defined or dashboardItem.permission is empty or user_service.checkPermission(dashboardItem.permission) %}
+								<a href="{{ path(dashboardItem.route) }}">
+									<div class="uv-brick-container">
+										<div class="uv-brick-icon">
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60px" height="60px" viewBox="0 0 60 60">
+												{{ dashboardItem.brick_svg | raw }}
+											</svg>
+										</div>
 
-									<p>{{ dashboardItem.name }}</p>
-								</div>
-							</a>
+										<p>{{ dashboardItem.name }}</p>
+									</div>
+								</a>
+							{% endif %}
 						{% endfor %}
 					</div>
 				</div>
 			{% endif %}
+		{% endif %}
         </div>
     </div>
 {% endblock %}

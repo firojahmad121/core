@@ -19,6 +19,7 @@
     }
 </style>
 {% endblock %}
+
 {% block pageWrapper %}
     <div class="uv-large-box-plank">
 		<div class="uv-large-box-rt">
@@ -27,6 +28,7 @@
                     <div class="uv-adjacent-center">
                         <h1>Log in to your <span class="uv-brand">Helpdesk Panel</span></h1>
                         <p>Enter your credentials below to gain access to your helpdesk account.</p>
+                        
                         <div class="uv-adjacent-form">
                             <div class="uv-adjacent-element-block">
                                 <label>Email</label>
@@ -52,6 +54,7 @@
                                     <span class="uv-checkbox-label">Keep me logged in</span>
                                 </label>
                             </div>
+
                             <button class="uv-btn">Sign In</button>
                         </div>
                     </div>
@@ -73,7 +76,7 @@
     {{ parent() }}
 
     <script type="text/javascript">
-         $(function () {
+        $(function () {
              _.extend(Backbone.Validation.callbacks, {
                 valid : function (view, attr, selector) {
                     var $el = view.$('[name="' + attr + '"]');

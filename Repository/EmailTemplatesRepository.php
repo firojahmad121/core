@@ -14,10 +14,12 @@ class EmailTemplatesRepository extends EntityRepository
     const LIMIT = 10;
 
     public function getTemplates(\Symfony\Component\HttpFoundation\ParameterBag $obj = null, $container) {
+        $user_id = $container->get('security.token_storage')->getToken()->getUser()->getId();
         $json = array();
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('sr')->from($this->getEntityName(), 'sr')
-            ->andwhere('sr.user IS NULL');
+            ->orWhere('sr.user IS NULL ')
+            ->orWhere('sr.user='.$user_id);
 
         $data = $obj->all();
         $data = array_reverse($data);
@@ -55,11 +57,11 @@ class EmailTemplatesRepository extends EntityRepository
         if(isset($queryParameters['template']))
             unset($queryParameters['template']);
 
-        $paginationData['url'] = '#'.$container->get('default.service')->symfony_http_build_query($queryParameters);
+        $paginationData['url'] = '#'.$container->get('uvdesk.service')->buildPaginationQuery($queryParameters);
 
         $json['templates'] = $results->getItems();
         $json['pagination_data'] = $paginationData;
-       
+
         return $json;
     }
 

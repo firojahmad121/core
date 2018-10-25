@@ -14,10 +14,19 @@ class Team extends Controller
 {
     public function listTeams(Request $request)
     {
-       return $this->render('@UVDeskCore/Teams/listSupportTeams.html.twig');
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
+        return $this->render('@UVDeskCore/Teams/listSupportTeams.html.twig');
     }
+
     public function createTeam(Request $request)
     {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+    
         $supportTeam = new SupportTeam();
 
         $errors = [];
@@ -69,20 +78,26 @@ class Team extends Controller
                 $supportGroup->addSupportTeam($supportTeam);
                 $em->persist($supportGroup);
             }
+
             $em->persist($supportTeam);
             $em->flush();
+
             $this->addFlash('success', 'Success ! Team information saved successfully.');
             return $this->redirect($this->generateUrl('helpdesk_member_support_team_collection'));
         }
 
         return $this->render('@UVDeskCore/Teams/createSupportTeam.html.twig', [
-                'team' => $supportTeam,
-                'errors' => json_encode($errors)
+            'team' => $supportTeam,
+            'errors' => json_encode($errors)
         ]);
     }
 
     public function editTeam(Request $request)
     {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_SUB_GROUP')){          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
         if($request->attributes->get('supportTeamId')){
             $supportTeam = $this->getDoctrine()->getRepository('UVDeskCoreBundle:SupportTeam')
                         ->findSubGroupById(['id' => $request->attributes->get('supportTeamId')]);
@@ -90,6 +105,7 @@ class Team extends Controller
             if(!$supportTeam)
                 $this->noResultFound();
         }
+
         $errors = [];
         if($request->getMethod() == "POST") {
             $request->request->set('users', explode(',', $request->request->get('tempUsers')));
@@ -97,7 +113,6 @@ class Team extends Controller
             $oldUsers = ($usersList = $supportTeam->getUsers()) ? $usersList->toArray() : $usersList;
             $oldGroups = ($grpList = $supportTeam->getSupportGroups()) ? $grpList->toArray() : $grpList;
            
-            
             $allDetails = $request->request->all(); 
             
             $em = $this->getDoctrine()->getManager();
@@ -155,6 +170,7 @@ class Team extends Controller
             
             $em->persist($supportTeam);
             $em->flush();
+
             $this->addFlash('success', 'Success ! Team information updated successfully.');
             return $this->redirect($this->generateUrl('helpdesk_member_support_team_collection'));
         } 

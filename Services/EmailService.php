@@ -1,28 +1,25 @@
 <?php
 namespace Webkul\UVDesk\CoreBundle\Services;
 
-
 use Doctrine\ORM\EntityManager;
+use Webkul\UVDesk\CoreBundle\Entity\User;
+use Webkul\UVDesk\CoreBundle\Utils\TokenGenerator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Webkul\UVDesk\CoreBundle\Entity\EmailTemplates;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-// use Symfony\Component\Serializer\Encoder\JsonEncoder;
-// use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-// use Symfony\Component\Serializer\Serializer;
-
-class EmailService {
-
+class EmailService
+{
     private $request;
     private $container;
-    private $em;
-    public $emailTrackingId;
+    private $entityManager;
 
-    public function __construct(ContainerInterface $container, RequestStack $request, EntityManager $em)
+    public function __construct(ContainerInterface $container, RequestStack $request, EntityManager $entityManager)
     {
         $this->request = $request;
         $this->container = $container;
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
 
     public function trans($text)
@@ -30,91 +27,6 @@ class EmailService {
         return $this->container->get('translator')->trans($text);
     }
 
-    public function getEmailTemplate($mailFor)
-    {
-        if(!$mailFor) return null;
-        $template = array();
-        switch($mailFor){
-            case EmailTemplates::AccountValidation:
-            case EmailTemplates::AccountActivation:
-            case EmailTemplates::ForgotPassword:
-            case EmailTemplates::AgentForgotPassword:
-            case EmailTemplates::CustomerForgotPassword:
-            case EmailTemplates::TicketGeneratedByCustomer:
-            case EmailTemplates::TicketGeneratedByAgent:
-            case EmailTemplates::TicketAssign:
-            case EmailTemplates::AgentReplyToTheCustomersTicket:
-            case EmailTemplates::CustomerReplyToTheAgent:
-            case EmailTemplates::MailToTheCollaborator:
-            case EmailTemplates::CollaboratorAddedToTicket:
-            case EmailTemplates::CollaboratorAddedReply:
-            case EmailTemplates::TicketGenerateSuccessMailForCustomer:
-            case EmailTemplates::TaskCreated:
-            case EmailTemplates::MemberAddedInTask:
-            case EmailTemplates::MemberReplyInTask:
-            case EmailTemplates::CompanyCreatedByCustomer:
-            case EmailTemplates::CompanyCreateUs:
-                $queryBuilder = $this->em
-                                     ->getRepository('WebkulUserBundle:EmailTemplatesCompany')
-                                     ->createQueryBuilder('etc');
-                $template = $queryBuilder->select('etc')
-                         ->leftJoin('Webkul\AdminBundle\Entity\EmailTemplates','et','WITH', 'etc.templateId = et.id')
-                         ->where('et.selector = :selector')
-                         ->andWhere('etc.companyId = :companyId')
-                         ->setParameters(
-                            array(
-                                    'selector' => $mailFor,
-                                    'companyId' => $companyId,
-                                )
-                            )
-                          ->getQuery()
-                          ->getOneOrNullResult()
-                        ;
-                if(!$template){
-                    $queryBuilder = $this->em
-                                         ->getRepository('WebkulAdminBundle:EmailTemplates')
-                                         ->createQueryBuilder('et');
-
-                    $template = $queryBuilder->select('et')
-                         ->where('et.selector = :selector')
-                         ->setParameters(
-                            array(
-                                    'selector' => $mailFor,
-                                )
-                            )
-                          ->getQuery()
-                          ->getOneOrNullResult()
-                        ;
-                }
-
-                break;
-            default:
-                $repository = $this->em->getRepository('WebkulUserBundle:EmailTemplatesCompany');
-                $template = $repository->findOneBy(
-                                array('id' => $mailFor)
-                            );
-                $currentPlan = $this->container->get('user.service')->getCurrentPlan();
-                if(($currentPlan && $currentPlan->getWorkflow() == 'predefind') && $template && !$template->getIsPredefind())
-                    $template = null;
-                break;
-        }
-
-        return $template;
-    }
-
-    /**
-    * get email placeholders for different pages
-    * possible $params values:
-    * savedReply: for saved replies
-    * template: for email templates
-    * taskNote, ['match'] = 'task': for taskNote placeholders
-    * ticketNote, ['match'] = 'ticket': for ticketNote placeholders
-    * manualNote, ['match'] = manual: for manualNote placeholders
-    *
-    * @param String/Array $params
-    *
-    * @return Array $placeholders
-    */
     public function getEmailPlaceHolders($params)
     {
         if(is_array($params))
@@ -506,51 +418,75 @@ class EmailService {
                             ];
 
         }
-    //    dump($placeHolders);die;
 
         return $placeHolders;
     }
 
-    public function getProcessedTemplate($body,$emailTempVariables, $isSavedReply = false)
+    public function getEmailPlaceholderValues(User $user, $userType = 'member')
     {
-        if(!$isSavedReply && strpos($body, '<p>')) {
-            $delimiter = $this->getEmailDelimiter();
-            if($this->emailTrackingId && $company = $this->container->get('user.service')->getCurrentCompany())
-                $body = strstr($body,'<p>', true).'<img style="display: none" src="'.$this->container->get('default.service')->getUrl(['companyId' => $company->getId(), 'route' => 'thread_opent_tracking', 'params' => ['id' => $this->emailTrackingId]]).'"/>'.strstr($body,'<p>', false);
-            $body = strstr($body,'<p>', true).$delimiter.strstr($body,'<p>', false);
-            $body = str_replace('<p></p>', '', $body);
+        if (null == $user->getVerificationCode()) {
+            // Set user verification code
+            $user->setVerificationCode(TokenGenerator::generateToken());
 
-            if ($this->container->get('user.service')->getCurrentCompany()) {
-                if ($this->container->get('user.service')->checkCompanyPermission('remove_branding_content')) {
-                    $body = str_replace('Delivered by <a href="https://uvdesk.com">UVdesk</a>.', '', $body);
-                    $body = str_replace('Delivered by <a href="https://uvdesk.com" style="background-color:transparent">UVdesk</a>.', '', $body);
-                }
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
 
-                if ($this->container->get('user.service')->checkCompanyPermission('remove_email_service_content')) {
-                    $body = str_replace('This email is a service from ' . $this->container->get('user.service')->getCurrentCompany()->getName() . '.', '', $body);
-                }
-            }
-        }
-        foreach ($emailTempVariables as $var => $value) {
-            $placeholder = "{%".$var."%}";
-            $body = str_replace($placeholder,$value,$body);
-        }
-        $result = stripslashes($body);
-        return $isSavedReply ? $result : htmlspecialchars_decode(preg_replace(['#&lt;script&gt;#', '#&lt;/script&gt;#'], ['&amp;lt;script&amp;gt;', '&amp;lt;/script&amp;gt;'] , $result));
+        $router = $this->container->get('router');
+        $helpdeskWebsite = $this->entityManager->getRepository('UVDeskCoreBundle:Website')->findOneByCode('helpdesk');
+
+        // Link to update account login credentials
+        $updateCredentialsURL = $router->generate(('customer' == $userType) ? 'helpdesk_customer_update_account_credentials' : 'helpdesk_member_update_account_credentials', [
+            'email' => $user->getEmail(),
+            'verificationCode' => $user->getVerificationCode(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $placeholderParams = [
+            'user.userName' => $user->getFullName(),
+            'user.userEmail' => $user->getEmail(),
+            'user.assignUserEmail' => $user->getEmail(),
+            'user.forgotPasswordLink' => "<a href='$updateCredentialsURL'>$updateCredentialsURL</a>",
+            'user.accountValidationLink' => "<a href='$updateCredentialsURL'>$updateCredentialsURL</a>",
+            'global.companyName' => $helpdeskWebsite->getName(),
+            'global.companyLogo' => "<img style='max-height:60px' src='https://cdn.uvdesk.com/uvdesk/images/7c5ce25.png'/>",
+            'global.companyUrl' => "<a href='https://community.uvdesk.com/en/in-action/'>https://community.uvdesk.com/en/in-action/</a>",
+        ];
+
+        return $placeholderParams;
     }
 
-    public function getProcessedSubject($subject,$emailTempVariables) {
-        foreach ($emailTempVariables as $var => $value) {
-            $placeholder = "{%".$var."%}";
-            $subject = str_replace($placeholder,$value,$subject);
+    public function processEmailSubject($subject, array $emailPlaceholders = [])
+    {
+        foreach ($emailPlaceholders as $var => $value) {
+            $subject = str_replace("{%$var%}", $value, $subject);
         }
+        
         return $subject;
     }
 
-    protected function getEmailDelimiter()
+    public function processEmailContent($content, array $emailPlaceholders = [], $isSavedReply = false)
     {
-        $delimiter = $this->container->get('user.service')->getCurrentCompany() ? $this->container->get('user.service')->getCurrentCompany()->getEmailDelimiter() : '';
-        return '<p class="uv-delimiter-dXZkZXNr" style="font-size: 12px; color: #bdbdbd;">'.htmlentities($delimiter).'</p>';
+        $twigTemplatingEngine = $this->container->get('twig');
+        $baseEmailTemplate = $this->container->getParameter('uvdesk.default.templates.email');
+
+        // if (!$isSavedReply && strpos($content, '<p>')) {
+        //     $delimiter = $this->getEmailDelimiter();
+
+        //     // $content = strstr($content,'<p>', true) . $delimiter . strstr($content,'<p>', false);
+        //     // $content = str_replace('<p></p>', '', $content);
+        // }
+
+        foreach ($emailPlaceholders as $var => $value) {
+            $content = str_replace("{%$var%}", $value, $content);
+        }
+
+        $content = $isSavedReply ? stripslashes($content) : htmlspecialchars_decode(preg_replace(['#&lt;script&gt;#', '#&lt;/script&gt;#'], ['&amp;lt;script&amp;gt;', '&amp;lt;/script&amp;gt;'], $content));
+
+        return $twigTemplatingEngine->render($baseEmailTemplate, ['message' => $content]);
     }
 
+    // protected function getEmailDelimiter()
+    // {
+    //     return '<p class="uv-delimiter-dXZkZXNr" style="font-size: 12px; color: #bdbdbd;"></p>';
+    // }
 }

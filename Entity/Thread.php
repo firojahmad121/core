@@ -97,6 +97,18 @@ class Thread
      */
     private $user;
 
+    /**
+     * @var \Webkul\UVDesk\CoreBundle\Entity\Attachment
+     */
+    private $attachments;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -514,16 +526,6 @@ class Thread
     public function getUser()
     {
         return $this->user;
-    }
-
-    private $attachments;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**

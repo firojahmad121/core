@@ -102,26 +102,32 @@ SVG;
                     'name' => 'Groups',
                     'route' => 'helpdesk_member_support_group_collection',
                     'brick_svg' => self::GROUPS_BRICK_SVG,
+                    'permission'=>"ROLE_AGENT_MANAGE_GROUP"
                 ],
                 [
                     'name' => 'Teams',
                     'route' => 'helpdesk_member_support_team_collection',
                     'brick_svg' => self::TEAMS_BRICK_SVG,
+                    'permission'=>"ROLE_AGENT_MANAGE_SUB_GROUP"
+                    
                 ],
                 [
                     'name' => 'Agents',
                     'route' => 'helpdesk_member_account_collection',
                     'brick_svg' => self::AGENTS_BRICK_SVG,
+                    'permission'=>'ROLE_AGENT_MANAGE_AGENT'
                 ],
                 [
                     'name' => 'Privileges',
                     'route' => 'helpdesk_member_privilege_collection',
                     'brick_svg' => self::PRIVILEGES_BRICK_SVG,
+                    'permission'=>'ROLE_AGENT_MANAGE_AGENT_PRIVILEGE'
                 ],
                 [
                     'name' => 'Customers',
                     'route' => 'helpdesk_member_manage_customer_account_collection',
                     'brick_svg' => self::CUSTOMERS_BRICK_SVG,
+                    'permission'=>'ROLE_AGENT_MANAGE_CUSTOMER'                   
                 ],
             ],
             HelpdeskSection::AUTOMATION => [
@@ -129,11 +135,14 @@ SVG;
                     'name' => 'Ticket Types',
                     'route' => 'helpdesk_member_ticket_type_collection',
                     'brick_svg' => self::TICKET_TYPE_BRICK_SVG,
+                    'permission'=>'ROLE_AGENT_MANAGE_TICKET_TYPE'                   
+                    
                 ],
                 [
                     'name' => 'Tags',
                     'route' => 'helpdesk_member_ticket_tag_collection',
                     'brick_svg' => self::TICKET_TYPE_BRICK_SVG,
+                    'permission'=>'ROLE_AGENT_MANAGE_TAG'
                 ],
             ],
             HelpdeskSection::SETTINGS => [
@@ -141,11 +150,14 @@ SVG;
                     'name' => 'Email Templates',
                     'route' => 'email_templates_action',
                     'brick_svg' => self::EMAIL_TEMPLATES_BRICK_SVG,
+                    'permission'=>'ROLE_AGENT_MANAGE_EMAIL_TEMPLATE'
+                    
                 ],
                 [
                     'name' => 'Email Settings',
                     'route' => 'email_setting',
                     'brick_svg' => self::EMAIL_SETTINGS_BRICK_SVG,
+                    'permission'=>'ROLE_ADMIN'                   
                 ],
             ],
         ];

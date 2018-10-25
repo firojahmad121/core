@@ -19,6 +19,12 @@ class Configuration implements ConfigurationInterface
                         ->node('id', 'scalar')->defaultValue('uvdesk.core.fs.upload.manager')->end()
                     ->end()
                 ->end()
+                ->node('support_email', 'array')
+                    ->children()
+                        ->node('id', 'scalar')->defaultValue('support@localhost')->end()
+                        ->node('name', 'scalar')->defaultValue('UVDesk Community')->end()
+                    ->end()
+                ->end()
                 ->node('default', 'array')
                     ->children()
                         ->node('ticket', 'array')
@@ -46,6 +52,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end();
+
         return $treeBuilder;
     }
 }

@@ -172,13 +172,6 @@
 				<span class="uv-field-info uv-margin-top-10">{{ 'DKIM helps you digitally sign email from your helpdesk with your email domain name(s). This helps build you brand identity in all communications with your customers.'|trans }}</span>
 			</div>
 		<% } %>
-
-		<div class="uv-hr"></div>
-
-		<div class="uv-element-block">
-			<h4>{{ 'Need Help?'|trans }}</h4>
-			<p>{{ 'Need any help regarding email forwarding for different email clients like Gmail, Outlook or Thunderbird, %Check% at UVdesk Support'|trans({ '%Check%': '<a href="https://support.uvdesk.com/en/blog/how-to-create-mailbox" target="_blank">' ~ 'Check out the complete guide'|trans ~ '</a>' })|raw }}</p>
-		</div>
 	</script>
 
 	<script id="mailbox_added_tmp" type="text/template">
@@ -196,15 +189,6 @@
 						<button type="button" class="uv-btn uv-split-btn">{{ 'Copy'|trans }}</button>
 					</div>
 					<span class="uv-field-info">{{ 'You can easily copy the secret email address by clicking the Copy button.'|trans }}</span>
-				</div>
-
-				<div class="uv-element-block uv-element-info">
-					<h4>{{ 'Need Help?'|trans }}</h4>
-					<p>{{ 'Need any help regarding email forwarding for different email clients like Gmail, Outlook or Thunderbird, %Check% at UVdesk Support'|trans({ '%Check%': '<a href="https://support.uvdesk.com/en/blog/how-to-create-mailbox" target="_blank">' ~ 'Check out the complete guide'|trans ~ '</a>' })|raw }}</p>
-				</div>
-
-				<div class="uv-pop-up-actions">
-					<a href="#" class="uv-btn cancel">{{ 'Got It'|trans }}</a>
 				</div>
 			</div>
 		</div>
@@ -302,6 +286,7 @@
 				
 	        	if(mailboxCollection.length) {
 		            _.each(mailboxCollection.models, function (item) {
+						console.log(item);
 		                this.renderMailbox(item);
 		            }, this);
 		        } else {
@@ -334,15 +319,6 @@
 					}
 				});
 			},
-			checkMailboxLimit: function(response) {
-				if(typeof(response.allowedToAdd) != 'undefined' && response.allowedToAdd) {
-					$('#upgrade-plan-message').hide();
-					$('.add-mailbox').show();
-				} else {
-					$('#upgrade-plan-message').show();
-					//$('.add-mailbox').hide();					
-				}
-			}
 		});
 
 		var MailboxForm = Backbone.View.extend({
@@ -381,7 +357,6 @@
 							mailboxCollection.set(model, {remove: false});
 							mailboxForm.showMailboxList();
 							mailboxList.render();
-							// mailboxList.checkMailboxLimit(response);							
 					    },
 					    error: function (model, xhr, options) {
 							app.appView.hideLoader();
@@ -402,7 +377,7 @@
 								app.appView.renderResponseAlert(response);
 								mailboxForm.showMailboxList();							
 							}
-							mailboxList.checkMailboxLimit(xhr);
+
 							if(response && response.existingUserEmail) {
 								if(self.model.get('email')) {
 									continueForm = currentElement.closest('form');
@@ -528,7 +503,6 @@
 								app.appView.hideLoader();
 								globalMessageResponse = response;
 								app.appView.renderResponseAlert(response);
-								mailboxList.checkMailboxLimit(response);
 								$('#uv-add-mailbox-form').trigger('reset');
 							} else {
 								app.appView.hideLoader();								
@@ -550,7 +524,6 @@
 										$('#confirm-existing-user').show();
 									}
 								}
-								mailboxList.checkMailboxLimit(response);
 							}
 					    },
 						error: function (model, xhr, options) {
@@ -607,7 +580,6 @@
 						mailboxList.render();
 						mailboxForm.showMailboxList();
 						app.appView.renderResponseAlert(response);
-						mailboxList.checkMailboxLimit(response);
 				    },
 				    error: function (model, xhr, options) {
 						app.appView.hideLoader();

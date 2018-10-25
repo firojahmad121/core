@@ -9,7 +9,6 @@ use Webkul\UVDesk\CoreBundle\Form as CoreBundleForms;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Webkul\UVDesk\CoreBundle\Entity as CoreBundleEntities;
 use Webkul\UVDesk\CoreBundle\DataProxies as CoreBundleDataProxies;
-use ZipArchive;
 
 class Ticket extends Controller
 {
@@ -105,7 +104,7 @@ class Ticket extends Controller
     }
     
     public function saveTicket(Request $request)
-    {   
+    {
         $requestParams = $request->request->all();
         $entityManager = $this->getDoctrine()->getManager();
         $response = $this->redirect($this->generateUrl('helpdesk_member_ticket_collection'));
@@ -125,9 +124,9 @@ class Ticket extends Controller
 
             if ($referralURL === $expectedReferralURL) {
                 $referralTicket = $entityManager->getRepository('UVDeskCoreBundle:Ticket')->findOneById($referralId);
-                if (!empty($referraelTicket)) {
-                    $ticketValidatieonGroup = 'CustomerCreateTicket';
-                    
+                
+                if (!empty($referralTicket)) {
+                    $ticketValidationGroup = 'CustomerCreateTicket';
                 }
             }
         }
@@ -135,8 +134,8 @@ class Ticket extends Controller
         $ticketType = $entityManager->getRepository('UVDeskCoreBundle:TicketType')->findOneById($requestParams['type']);
 
         $ticketProxy = new CoreBundleDataProxies\CreateTicketDataClass();
-        
         $form = $this->createForm(CoreBundleForms\CreateTicket::class, $ticketProxy);
+        
         // Validate Ticket Details
         $form->submit($requestParams);
         if (false == $form->isSubmitted() || false == $form->isValid()) {
@@ -204,11 +203,19 @@ class Ticket extends Controller
 
     public function listTicketTypeCollection(Request $request)
     {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE')) {
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
         return $this->render('@UVDeskCore/ticketTypeList.html.twig');
     }
 
     public function ticketType(Request $request)
     {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TICKET_TYPE')) {
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
         $errorContext = [];
         $em = $this->getDoctrine()->getManager();
 
@@ -256,6 +263,10 @@ class Ticket extends Controller
 
     public function listTagCollection(Request $request)
     {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TAG')) {
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
         $enabled_bundles = $this->container->getParameter('kernel.bundles');
 
         return $this->render('@UVDeskCore/supportTagList.html.twig', [
@@ -265,6 +276,10 @@ class Ticket extends Controller
 
     public function removeTicketTagXHR($tagId, Request $request)
     {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_TAG')) {
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
         $json = [];
         if($request->getMethod() == "DELETE") {
             $em = $this->getDoctrine()->getManager();
@@ -291,18 +306,20 @@ class Ticket extends Controller
             'thread' => $request->attributes->get('threadId'),
         ]);
 
-        if(!$attachment)
+        if (!$attachment) {
             $this->noResultFound();
-        // if(in_array($attachment->getContentType(), ['dropbox-link', 'onedrive-link', 'box-link', 'googledrive-link']) || in_array($attachment->getFileSystem(), ['facebook', 'social'])) {
-        //     return $this->redirect($attachment->getpath());
-        // }
+        }
+
         $zipname = 'ticketAttachments.zip';
         $zip = new \ZipArchive;
         $zip->open($zipname, \ZipArchive::CREATE);
+
         foreach ($attachment as $attach) {
              $zip->addFile($attach->getPath()); 
         }
+
         $zip->close();
+        
         header('Content-Type: application/zip');
         header('Content-disposition: attachment; filename='.$zipname);
         header('Content-Length: ' . filesize($zipname));

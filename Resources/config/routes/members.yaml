@@ -16,7 +16,7 @@ helpdesk_member_account_xhr:
 helpdesk_member_account:
     path:     /agent/{agentId}
     controller: Webkul\UVDesk\CoreBundle\Controller\Account::editAgent
-    defaults: { panelId: 'theme', agentId: 0 }
+    defaults: { panelId: 'users', agentId: 0 }
 
 helpdesk_member_account_collection:
     path:     /agents
@@ -31,10 +31,6 @@ helpdesk_member_create_account:
     path:     /create/agent
     controller: Webkul\UVDesk\CoreBundle\Controller\Account::createAgent
     defaults: { panelId: 'users' }
-
-helpdesk_member_forgot_account_password:
-    path:     /forgot-password
-    controller: Webkul\UVDesk\CoreBundle\Controller\Account::forgotPassword
 
 helpdesk_member_saved_filters_xhr:
     path:     /saved-filter-xhr/{filterId}
@@ -118,11 +114,6 @@ helpdesk_member_remove_privilege_xhr:
     path:     /privilege/delete/xhr/{supportPrivilegeId}
     controller: Webkul\UVDesk\CoreBundle\Controller\PrivilegeXHR::deletePrivilegeXHR
     defaults: { panelId: 'users', supportPrivilegeId: 0 }
-customer_mark_star_action:
-    path:     /update-star
-    controller: Webkul\UVDesk\CoreBundle\Controller\Customer::updateStar
-    defaults: { panelId: 'users', id: 0 }
-
 
 # User Profile
 edit_profile:
@@ -141,4 +132,8 @@ helpdesk_member_saved_filters_xhr:
     controller: Webkul\UVDesk\CoreBundle\Controller\AccountXHR::savedFiltersXHR
     defaults: { filterId: 0 }
 
-
+#  Theme
+helpdesk_member_helpdesk_theme:
+    path:   /theme/helpdesk
+    controller: Webkul\UVDesk\CoreBundle\Controller\Theme::updateHelpdeskTheme
+    defaults: { panelId: 'themes', id: 0 }

@@ -44,6 +44,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                 }
             }
         }
+
         // Pagination
         $options = ['distinct' => true, 'wrap-queries' => true];
         $currentPage = isset($params['page']) ? $params['page'] : 1;
@@ -51,6 +52,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         $paginationQueryBuilder = clone $queryBuilder;
         $totalUsers = (int) $paginationQueryBuilder->select('COUNT (DISTINCT user.id)')->getQuery()->getSingleScalarResult();
         $query = $queryBuilder->getQuery()->setHydrationMode(Query::HYDRATE_ARRAY)->setHint('knp_paginator.count', $totalUsers);
+
         $pagination = $container->get('knp_paginator')->paginate($query, $currentPage, self::LIMIT, $options);
         
         // Parse result

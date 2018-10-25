@@ -31,6 +31,11 @@ class CoreExtension extends Extension
         
         foreach ($this->processConfiguration($configuration, $configs) as $param => $value) {
             switch ($param) {
+                case 'support_email':
+                    foreach ($value as $field => $fieldValue) {
+                        $container->setParameter("uvdesk.support_email.$field", $fieldValue);
+                    }
+                    break;
                 case 'upload_manager':
                     $container->setParameter("uvdesk.upload_manager.id", $value['id']);
                     break;
@@ -53,20 +58,6 @@ class CoreExtension extends Extension
                         }
                     }
                     break;
-                // case 'mailboxes':
-                //     foreach ($value as $defaultItem => $defaultItemValue) {
-                //         switch ($defaultItem) {
-                //             case 'templates':
-                //                 foreach ($defaultItemValue as $template => $templateValue) {
-                //                     $container->setParameter("uvdesk.default.templates.$template", $templateValue);
-                //                 }
-                //                 break;
-                //             default:
-                //                 $container->setParameter("uvdesk.default.$defaultItem", $defaultItemValue);
-                //                 break;
-                //         }
-                //     }
-                //     break;
                 default:
                     $container->setParameter("uvdesk.$param", $value);
                     break;

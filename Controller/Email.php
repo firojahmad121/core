@@ -9,24 +9,34 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Webkul\UVDesk\CoreBundle\Entity;
-use Webkul\UVDesk\CoreBundle\Form\EmailTemplates;
 use Webkul\UVDesk\CoreBundle\Entity\UserInstance;
 
 class Email extends Controller
 {    
     const LIMIT = 10;
+    
     protected function getTemplate($request)
     {
-       return $this->getDoctrine()
-                             ->getRepository('UVDeskCoreBundle:EmailTemplates')
-                             ->findOneby([
-                                    'id' => $request->attributes->get('template'),
-                                    'user' => $this->container->get('user.service')->getCurrentUser()->getId()
-                                ]);
+        $emailTemplateRepository = $this->getDoctrine()->getRepository('UVDeskCoreBundle:EmailTemplates');
+      
+        $data = $emailTemplateRepository->findOneby([
+            'id' => $request->attributes->get('template'),
+            'user' => $this->container->get('user.service')->getCurrentUser()->getId()
+        ]);
+
+        $default = $emailTemplateRepository->findOneby([
+            'id' => $request->attributes->get('template')
+        ]);  
+
+        return $data == null ? $default : $data;
     }
 
     public function templates(Request $request) 
     {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
         return $this->render('@UVDeskCore//templateList.html.twig');
     }
 
@@ -40,7 +50,10 @@ class Email extends Controller
 
     public function templateForm(Request $request) 
     {
-       
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {          
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
         if($request->attributes->get('template')) {
             $template = $this->getTemplate($request);
         } else {  
@@ -57,41 +70,31 @@ class Email extends Controller
         $errors = [];      
         $this->get('session')->getFlashBag()->clear();
 
-        if($request->getMethod() == 'POST') 
-        {
-            $form = $this->createForm(EmailTemplates::class);
-            $form->handleRequest($request);
-            $form->submit(true);
-            if($form->isValid() && $form->isSubmitted()){
-                $em = $this->getDoctrine()->getManager();
-                $data = $request->request->all();
+        if($request->getMethod() == 'POST') {
+            $entityManager= $this->getDoctrine()->getManager();
+            $data = $request->request->all();
 
-                $user_instance = $this->container->get('security.token_storage')->getToken()->getUser();
-                $user_instance= $em->getRepository(UserInstance::class)->findBy(['id'=>$user_instance->getId()]);
-              
-                $flag =0;
+            $user_instance = $this->container->get('security.token_storage')->getToken()->getUser();
+            $user_instance= $entityManager->getRepository(UserInstance::class)->findBy(['id'=>$user_instance->getId()]);
+            
+            $flag =0;
 
-                $template->setUser($user_instance[0]);
-                $template->setName($data['name']);
-                $template->setSubject($data['subject']);
-                $template->setMessage($data['message']);
-                $template->setMessageInline("");
-                $template->setTemplateType($data['templateFor']);
-                if(!$request->attributes->get('template'))
-                $em->persist($template);
-                $em->flush();
+            $template->setUser($user_instance[0]);
+            $template->setName($data['name']);
+            $template->setSubject($data['subject']);
+            $template->setMessage($data['message']);
+            $template->setTemplateType($data['templateFor']);
+            $entityManager->persist($template);
+            $entityManager->flush();
 
-                if($request->attributes->get('template')) 
-                    $message = 'Success! Template has been updated successfully.';
-                else
-                    $message = 'Success! Template has been added successfully.';
+            if($request->attributes->get('template')) 
+                $message = 'Success! Template has been updated successfully.';
+            else
+                $message = 'Success! Template has been added successfully.';
 
-                $this->addFlash('success', $message);
+            $this->addFlash('success', $message);
 
-                return $this->redirectToRoute('email_templates_action');
-            } else {
-                $errors = $this->getFormErrors($form);
-            }
+            return $this->redirectToRoute('email_templates_action');
         } 
 
         return $this->render('@UVDeskCore//templateForm.html.twig', array(
@@ -102,6 +105,10 @@ class Email extends Controller
 
     public function templatesxhr(Request $request) 
     {
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
         $json = array();
         $error = false;
         if($request->isXmlHttpRequest()) {
@@ -141,9 +148,11 @@ class Email extends Controller
 
     public function emailSetting(Request $request) 
     {
-      
-        return $this->render('@UVDeskCore//emailSetting.html.twig', array(
-        ));
+        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {
+            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
+        }
+
+        return $this->render('@UVDeskCore//emailSetting.html.twig');
     }
 
 }

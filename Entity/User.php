@@ -46,6 +46,11 @@ class User implements AdvancedUserInterface
     private $isEnabled;
 
     /**
+     * @var string
+     */
+    private $verificationCode;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $userInstance;
@@ -274,6 +279,30 @@ class User implements AdvancedUserInterface
     public function getIsEnabled()
     {
         return $this->isEnabled;
+    }
+
+    /**
+     * Set verificationCode
+     *
+     * @param string $verificationCode
+     *
+     * @return User
+     */
+    public function setVerificationCode($verificationCode)
+    {
+        $this->verificationCode = $verificationCode;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getVerificationCode()
+    {
+        return $this->verificationCode;
     }
 
     /**

@@ -243,7 +243,7 @@
                                     <span class="uv-field-info uv-margin-top-5">{{ 'Agent Privilege represents overall permissions in System.'|trans }}</span>
                                 </div>
 
-                                {% set privileges = user_service.getPrivileges() %}
+                                {% set privileges = user_service.getSupportPrivileges() %}
                                 {% if privileges %}
                                     <div>
                                         <div class="uv-scroll-block" id="beauty-scroll">

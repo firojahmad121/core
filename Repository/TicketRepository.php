@@ -122,6 +122,7 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
 
         return $json;
     }
+    
     public function getAllCustomerTickets(\Symfony\Component\HttpFoundation\ParameterBag $obj = null, $container, $actAsUser = null) {
        
         $currentUser = $actAsUser ? : $container->get('user.service')->getCurrentUser();
