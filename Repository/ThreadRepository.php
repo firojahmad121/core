@@ -125,6 +125,7 @@ class ThreadRepository extends \Doctrine\ORM\EntityRepository
                 'attachments' => [],
             ];
         }
+        
         $json['threads'] = $data;
         $json['pagination'] = $paginationData;
 

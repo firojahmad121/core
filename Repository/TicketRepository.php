@@ -116,11 +116,13 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
                 // 'hasAttachments' => $ticketService->hasAttachments($ticket[0]['id'])
             ];
         }
+
         $json['tickets'] = $data;
         $json['pagination'] = $paginationData;
 
         return $json;
     }
+
     public function getAllCustomerTickets(\Symfony\Component\HttpFoundation\ParameterBag $obj = null, $container, $actAsUser = null) {
        
         $currentUser = $actAsUser ? : $container->get('user.service')->getCurrentUser();
@@ -202,16 +204,11 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
                 // 'hasAttachments' => $ticketService->hasAttachments($ticket[0]['id'])
             ];
         }
+
         $json['tickets'] = $data;
         $json['pagination'] = $paginationData;
 
         return $json;
-    }
-
-    public function addPermissionFilter($queryBuilder, $container, $haveJoin = true)
-    {
-        
-        return $qb;
     }
 
     public function prepareBaseTicketQuery(User $user, array $params, $filterByStatus = true)
@@ -362,8 +359,6 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
                     break;
             }
         }
-
-        // $this->addPermissionFilter($queryBuilder, $container);
 
         return $queryBuilder;
     }
@@ -525,8 +520,6 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
             ->from('UVDeskCoreBundle:Ticket', 'ticket')
             ->where('ticket.customer = :user')->setParameter('user', $user)
             ->andWhere('ticket.isTrashed != :isTrashed')->setParameter('isTrashed', false);
-
-        // $this->em->getRepository('UVDeskCoreBundle:Ticket')->addPermissionFilter($qb, $this->container, false);
 
         return (int) $queryBuilder->getQuery()->getSingleScalarResult();
     }
