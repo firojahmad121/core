@@ -140,6 +140,7 @@ class Customer extends Controller
         
         return $this->render('@UVDeskCore/Customers/updateSupportCustomer.html.twig', [
                 'user' => $user,
+                'errors' => json_encode([])
         ]);
     }
 
