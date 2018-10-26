@@ -23,11 +23,11 @@
                 color: #FF5656;
             }
             .uv-new-tab-link {
-                width: 14px;
-                height: 14px;
+                width: 8px;
+                height: 20px;
                 display: inline-block;
-                background-image: url("../../../../bundles/webkulcore/images/uvdesk-binaka-sprite.svg");
-                background-position:-13px -158px;
+                background-image: url(../../../../bundles/uvdeskcore/images/uvdesk-sprite.svg);
+                background-position: 44px -158px;
                 margin: 5px 0 0 10px;
                 float: right;
                 vertical-align: top;
@@ -288,7 +288,7 @@
                                     <span class="uv-field-info uv-margin-top-5">{{ 'Agent Privilege represents overall permissions in System.'|trans }}</span>
                                 </div>
 
-                                {% set privileges = user_service.getSupportPrivileges() %}
+                                {% set privileges = user_service.getPrivileges() %}
                                 {% if privileges %}
                                     <div>
                                         <div class="uv-scroll-block" id="beauty-scroll">
@@ -302,7 +302,7 @@
                                                         </div>
                                                         <span class="uv-checkbox-label">{{ privilege.name }}</span>
                                                     </label>
-                                                    {# <a class="uv-new-tab-link" href="{{ path('edit_agent_privilege', {'id': privilege.id }) }}" target="_blank"></a> #}
+                                                    <a class="uv-new-tab-link" href="{{ path('helpdesk_member_update_privilege', {'supportPrivilegeId': privilege.id }) }}" target="_blank"></a>
                                                 </div>
                                                 <!-- /// -->
                                             {% endfor %}
