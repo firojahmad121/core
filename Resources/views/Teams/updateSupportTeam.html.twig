@@ -153,7 +153,10 @@
                     },{
                         pattern: /^((?![!@#$%^&*()<_+]).)*$/,
                         msg: 'This field must have characters only'
-                    }],
+                    },{
+						maxLength:50,
+                        msg:'Maximum character length is 50'
+					}],
 					'description': {
 						required: true,
 						msg: "{{ 'This field is mandatory'|trans }}"
