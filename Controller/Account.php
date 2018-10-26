@@ -289,7 +289,10 @@ class Account extends Controller
 
             $em = $this->getDoctrine()->getManager();
             $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email' => $formDetails['email']));
-            $checkAgentInstance = $checkUser->getAgentInstance();
+            $checkAgentInstance = '';
+            if($checkUser)
+                $checkAgentInstance = $checkUser->getAgentInstance();
+
             if(!$checkAgentInstance){
                 if(!$checkUser){
                     if (!empty($formDetails)) {

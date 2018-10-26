@@ -32,7 +32,9 @@ class Customer extends Controller
             $uploadedFiles = $request->files->get('customer_form');
             $em = $this->getDoctrine()->getManager();
             $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email' => $formDetails['email']));
-            $checkCustomerInstance = $checkUser->getCustomerInstance();
+            $checkCustomerInstance = '';
+            if($checkUser)
+                $checkCustomerInstance = $checkUser->getCustomerInstance();
             if(!$checkCustomerInstance){
                 if(!$checkUser){
                     if (!empty($formDetails)) {
