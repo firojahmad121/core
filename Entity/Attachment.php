@@ -111,31 +111,6 @@ class Attachment
     /**
      * @var \Webkul\UVDesk\CoreBundle\Entity\TaskThread
      */
-    private $taskThread;
-
-
-    /**
-     * Set taskThread
-     *
-     * @param \Webkul\UVDesk\CoreBundle\Entity\TaskThread $taskThread
-     * @return Attachment
-     */
-    public function setTaskThread(\Webkul\TicketBundle\Entity\TaskThread $taskThread = null)
-    {
-        $this->taskThread = $taskThread;
-
-        return $this;
-    }
-
-    /**
-     * Get taskThread
-     *
-     * @return \Webkul\UVDesk\CoreBundle\Entity\TaskThread 
-     */
-    public function getTaskThread()
-    {
-        return $this->taskThread;
-    }
     /**
      * @var string
      */
