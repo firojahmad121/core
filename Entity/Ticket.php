@@ -25,6 +25,11 @@ class Ticket
     /**
      * @var string
      */
+    private $mailbox;
+
+    /**
+     * @var string
+     */
     private $subject;
 
     /**
@@ -108,11 +113,6 @@ class Ticket
     private $type;
 
     /**
-     * @var \Webkul\UVDesk\CoreBundle\Entity\Mailbox
-     */
-    private $mailbox;
-
-    /**
      * @var \Webkul\UVDesk\CoreBundle\Entity\User
      */
     private $customer;
@@ -185,6 +185,30 @@ class Ticket
     public function getSource()
     {
         return $this->source;
+    }
+
+    /**
+     * Set mailbox
+     *
+     * @param string $mailbox
+     *
+     * @return Ticket
+     */
+    public function setMailbox($mailbox)
+    {
+        $this->mailbox = $mailbox;
+
+        return $this;
+    }
+
+    /**
+     * Get mailbox
+     *
+     * @return string
+     */
+    public function getMailbox()
+    {
+        return $this->mailbox;
     }
 
     /**
@@ -613,30 +637,6 @@ class Ticket
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * Set mailbox
-     *
-     * @param \Webkul\UVDesk\CoreBundle\Entity\Mailbox $mailbox
-     *
-     * @return Ticket
-     */
-    public function setMailbox(\Webkul\UVDesk\CoreBundle\Entity\Mailbox $mailbox = null)
-    {
-        $this->mailbox = $mailbox;
-
-        return $this;
-    }
-
-    /**
-     * Get mailbox
-     *
-     * @return \Webkul\UVDesk\CoreBundle\Entity\Mailbox
-     */
-    public function getMailbox()
-    {
-        return $this->mailbox;
     }
 
     /**

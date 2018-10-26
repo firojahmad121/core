@@ -62,60 +62,60 @@ class ConsoleListener
         if (false === $this->isDatabaseConfigurationValid()) {
             return;
         }
-        
+
         $output = $event->getOutput();
         $mailboxes = $this->container->getParameter('uvdesk.mailboxes');
-        $mailboxRepository = $this->entityManager->getRepository('UVDeskCoreBundle:Mailbox');
+        // $mailboxRepository = $this->entityManager->getRepository('UVDeskCoreBundle:Mailbox');
 
-        // Check for any duplicate mailboxes for an email
-        foreach (array_count_values(array_column($mailboxes, 'email')) as $email => $occurrences) {
-            if ($occurrences > 1) {
-                $output->writeln([
-                    "\n <fg=red;>[MIS-CONFIG]</> <comment>Multiple mailboxes have been configured for email </comment><info>$email</info><comment>.</comment>",
-                    "\n Please verify your configuration settings under <info>uvdesk.mailboxes</info>.\n",
-                ]);
+        // // Check for any duplicate mailboxes for an email
+        // foreach (array_count_values(array_column($mailboxes, 'email')) as $email => $occurrences) {
+        //     if ($occurrences > 1) {
+        //         $output->writeln([
+        //             "\n <fg=red;>[MIS-CONFIG]</> <comment>Multiple mailboxes have been configured for email </comment><info>$email</info><comment>.</comment>",
+        //             "\n Please verify your configuration settings under <info>uvdesk.mailboxes</info>.\n",
+        //         ]);
 
-                $event->disableCommand();
-                return;
-            }
-        }
+        //         $event->disableCommand();
+        //         return;
+        //     }
+        // }
         
-        // Validate mailbox configs of localized entities
-        foreach ($mailboxRepository->findByIsLocalized(true) as $localizedMailbox) {
-            $config = null;
+        // // Validate mailbox configs of localized entities
+        // foreach ($mailboxRepository->findByIsLocalized(true) as $localizedMailbox) {
+        //     $config = null;
 
-            foreach ($mailboxes as $mailboxConfig) {
-                if ($localizedMailbox->getEmail() == $mailboxConfig['email']) {
-                    $config = $mailboxConfig;
-                    break;
-                }
-            }
+        //     foreach ($mailboxes as $mailboxConfig) {
+        //         if ($localizedMailbox->getEmail() == $mailboxConfig['email']) {
+        //             $config = $mailboxConfig;
+        //             break;
+        //         }
+        //     }
 
-            if (empty($config)) {
-                $mailboxName = ucwords($localizedMailbox->getName());
-                $mailboxEmail = $localizedMailbox->getEmail();
+        //     if (empty($config)) {
+        //         $mailboxName = ucwords($localizedMailbox->getName());
+        //         $mailboxEmail = $localizedMailbox->getEmail();
 
-                $output->writeln([
-                    "\n <fg=red;>[MIS-CONFIG]</> <info>$mailboxName</info><comment> has been setup as a localized mailbox but no configurations were found for email </comment><info>$mailboxEmail</info><comment>.</comment>",
-                    "\n Please verify your configuration settings under <info>uvdesk.mailboxes</info>.\n",
-                ]);
+        //         $output->writeln([
+        //             "\n <fg=red;>[MIS-CONFIG]</> <info>$mailboxName</info><comment> has been setup as a localized mailbox but no configurations were found for email </comment><info>$mailboxEmail</info><comment>.</comment>",
+        //             "\n Please verify your configuration settings under <info>uvdesk.mailboxes</info>.\n",
+        //         ]);
 
-                $event->disableCommand();
-                return;
-            }
-        }
+        //         $event->disableCommand();
+        //         return;
+        //     }
+        // }
 
-        // Syncronize mailbox configs with database
-        foreach ($mailboxes as $mailboxName => $mailboxConfig) {
-            $mailbox = $mailboxRepository->findOneByEmail($mailboxConfig['email']) ?: new Mailbox();
-            $mailbox->setName($mailboxName);
-            $mailbox->setEmail($mailboxConfig['email']);
-            $mailbox->setIsEnabled($mailboxConfig['enabled']);
-            $mailbox->setIsLocalized(true);
+        // // Syncronize mailbox configs with database
+        // foreach ($mailboxes as $mailboxName => $mailboxConfig) {
+        //     $mailbox = $mailboxRepository->findOneByEmail($mailboxConfig['email']) ?: new Mailbox();
+        //     $mailbox->setName($mailboxName);
+        //     $mailbox->setEmail($mailboxConfig['email']);
+        //     $mailbox->setIsEnabled($mailboxConfig['enabled']);
+        //     $mailbox->setIsLocalized(true);
 
-            $this->entityManager->persist($mailbox);
-        }
+        //     $this->entityManager->persist($mailbox);
+        // }
 
-        $this->entityManager->flush();
+        // $this->entityManager->flush();
     }
 }

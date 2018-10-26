@@ -9,7 +9,7 @@ uvdesk_core_bundle_member_routing_resources:
 
 uvdesk_core_bundle_public_routing_resources:
     resource: "@UVDeskCoreBundle/Resources/config/public.yaml"
-    prefix:   /{_locale}/
+    prefix:   /
     requirements:
         _locale: %app_locales%
     defaults:

@@ -95,20 +95,6 @@ class UVDeskService
 		$navigationPanel = ['name' => null, 'routes' => []];
 
 		switch (strtoupper($this->requestStack->getCurrentRequest()->get('panelId'))) {
-            case 'CHANNELS':
-                $navigationPanel = [
-                    'name' => 'Channels',
-                    'routes' => [
-                        [
-                            'name' => 'Mailbox',
-                            'link' => $router->generate('helpdesk_member_mailbox_collection'),
-                            'isActive' => false,
-                            'isEnabled' => true,
-                            'permission'=>'ROLE_ADMIN',
-                        ],
-                    ],
-                ];
-                break;
 			case 'USERS':
 				$navigationPanel = [
                     'name' => 'Users',

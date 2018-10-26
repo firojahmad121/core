@@ -13,7 +13,3 @@ uvdesk_core_member_ticket_routing_resources:
 # Member panel customer dashboard resources
 uvdesk_core_member_customer_routing_resources:
     resource: "@UVDeskCoreBundle/Resources/config/routes/customers.yaml"
-
-# Member panel mailbox channel dashboard resources
-uvdesk_core_member_mailbox_channel_routing_resources:
-    resource: "@UVDeskCoreBundle/Resources/config/routes/mailbox.yaml"

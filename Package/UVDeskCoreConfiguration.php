@@ -90,13 +90,6 @@ SVG;
     public function loadDashboardItems()
     {
         return [
-            HelpdeskSection::CHANNELS => [
-                [
-                    'name' => 'Mailbox',
-                    'route' => 'helpdesk_member_mailbox_collection',
-                    'brick_svg' => self::MAILBOX_BRICK_SVG,
-                ],
-            ],
             HelpdeskSection::USERS => [
                 [
                     'name' => 'Groups',

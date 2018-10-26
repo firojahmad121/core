@@ -48,9 +48,7 @@ class Customer extends Controller
                 ]);
 
                 $this->get('event_dispatcher')->dispatch('uvdesk.automation.workflow.execute', $event);
-
                 $this->addFlash('success', 'Success ! Customer saved successfully.');
-
                 return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
             } else {
                 $this->addFlash('warning', 'Error ! User with same email already exist.');

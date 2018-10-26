@@ -27,7 +27,7 @@ class RefreshMailboxCommand extends Command
 
     protected function configure()
     {
-        $this->setName('uvdesk:mailbox:refresh-tickets');
+        $this->setName('uvdesk:refresh-mailbox');
         $this->setDescription('Check if any new emails have been received and process them into tickets');
 
         $this->addArgument('emails', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, "Email address of the mailboxes you wish to update");
@@ -36,7 +36,9 @@ class RefreshMailboxCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $emails = array_map(function ($email) { return filter_var($email, FILTER_SANITIZE_EMAIL); }, $input->getArgument('emails'));
+        $emails = array_map(function ($email) {
+            return filter_var($email, FILTER_SANITIZE_EMAIL);
+        }, $input->getArgument('emails'));
         
         if (empty($emails)) {
             if (false === $input->getOption('no-interaction')) {
@@ -46,37 +48,43 @@ class RefreshMailboxCommand extends Command
             return;
         }
 
-        $mailboxRepository = $this->entityManager->getRepository('UVDeskCoreBundle:Mailbox');
+        $mailboxCollection = array_map(function ($mailboxID) {
+            return $this->container->getParameter("uvdesk.mailboxes.$mailboxID");
+        }, $this->container->getParameter('uvdesk.mailboxes'));
+
+        $mailboxCollection = array_combine(array_column($mailboxCollection, 'email'), $mailboxCollection);
         $timestamp = new \DateTime(sprintf("-%u minutes", (int) ($input->getOption('timestamp') ?: 1440)));
 
         foreach ($emails as $mailboxEmail) {
-            $mailbox = $mailboxRepository->findOneByEmail($mailboxEmail);
-
-            if (empty($mailbox)) {
-                if (false === $input->getOption('no-interaction')) {
+            if (empty($mailboxCollection[$mailboxEmail])) {
+                if (false == $input->getOption('no-interaction')) {
                     $output->writeln("\n <comment>Mailbox for email </comment><info>$mailboxEmail</info><comment> not found.</comment>\n");
                 }
 
                 continue;
-            } else if (false === $mailbox->getIsEnabled()) {
-                if (false === $input->getOption('no-interaction')) {
-                    $output->writeln("\n <comment>Mailbox for email </comment><info>$mailboxEmail</info><comment> is not enabled.</comment>\n");
-                }
+            } else {
+                $mailbox = $mailboxCollection[$mailboxEmail];
 
-                continue;
-            } else if (false === $mailbox->getIsLocalized()) {
-                if (false === $input->getOption('no-interaction')) {
-                    $output->writeln("\n <comment>Mailbox for email </comment><info>$mailboxEmail</info><comment> is not localized. Only localized mailboxes are supported.</comment>\n");
+                if (false == $mailbox['enabled']) {
+                    if (false === $input->getOption('no-interaction')) {
+                        $output->writeln("\n <comment>Mailbox for email </comment><info>$mailboxEmail</info><comment> is not enabled.</comment>\n");
+                    }
+    
+                    continue;
+                } else if (empty($mailbox['imap_server'])) {
+                    if (false === $input->getOption('no-interaction')) {
+                        $output->writeln("\n <comment>No imap configurations defined for email </comment><info>$mailboxEmail</info><comment>.</comment>\n");
+                    }
+    
+                    continue;
                 }
-
-                continue;
             }
 
             $this->refreshMailbox($mailbox, $timestamp);
         }
     }
 
-    public function refreshMailbox(Mailbox $mailbox, \DateTime $timestamp)
+    public function refreshMailbox(array $mailbox, \DateTime $timestamp)
     {
         $imap = imap_open($mailbox->getHost(), $mailbox->getEmail(), $mailbox->getPassword());
 
@@ -99,7 +107,7 @@ class RefreshMailboxCommand extends Command
     public function pushMessage($message)
     {
         $router = $this->container->get('router');
-        $router->getContext()->setHost('localhost:8080');
+        $router->getContext()->setHost($this->container->getParameter('uvdesk.site_url'));
 
         $curlHandler = curl_init();
         curl_setopt($curlHandler, CURLOPT_HEADER, 0);

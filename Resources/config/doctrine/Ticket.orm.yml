@@ -27,13 +27,6 @@ Webkul\UVDesk\CoreBundle\Entity\Ticket:
                 referencedColumnName: id
                 nullable: true
                 onDelete: SET NULL
-        mailbox:
-            targetEntity: Mailbox
-            joinColumn:
-                name: mailbox_id
-                referencedColumnName: id
-                nullable: true
-                onDelete: SET NULL
         customer:
             targetEntity: User
             joinColumn:
@@ -97,6 +90,10 @@ Webkul\UVDesk\CoreBundle\Entity\Ticket:
         source:
             type: string
             length: 191
+        mailbox:
+            type: string
+            length: 191
+            nullable: true
         subject:
             type: text
         uniqueReplyTo:

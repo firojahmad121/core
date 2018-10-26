@@ -131,14 +131,50 @@ class MailboxService
         return null;
     }
 
-    public function sendMail($subject, $content, $recipient, array $headers = [])
+    public function sendMail($subject, $content, $recipient, array $headers = [], $mailboxId = null)
     {
-        $mailer = $this->container->get('swiftmailer.mailer.default');
-        $supportEmail = $this->container->getParameter('uvdesk.support_email.id');
-        $supportEmailName = $this->container->getParameter('uvdesk.support_email.name');
+        if (empty($mailboxId)) {
+            // Send email on behalf of support helpdesk
+            $supportEmail = $this->container->getParameter('uvdesk.support_email.id');
+            $supportEmailName = $this->container->getParameter('uvdesk.support_email.name');
+            $supportMailerID = $this->container->getParameter('uvdesk.support_email.mailer_id');
+            
+            try {
+                // dump(('swiftmailer.mailer' . (('default' == $supportMailerID) ? '' : ".$supportMailerID")));
+                $mailer = $this->container->get('swiftmailer.mailer' . (('default' == $supportMailerID) ? '' : ".$supportMailerID"));
+                // dump($mailer);
+                // die;
+            } catch (\Exception $e) {
+                // @TODO: Log exception
+                return;
+            }
+        } else {
+            // Send email on behalf of configured mailbox
+            if (!in_array($mailboxId, $this->container->getParameter('uvdesk.mailboxes'))) {
+                return;
+            }
+
+            try {
+                $mailbox = $this->container->getParameter("uvdesk.mailboxes.$mailboxId");
+
+                if (true === $mailbox['enabled']) {
+                    $supportEmail = $mailbox['email'];
+                    $supportEmailName = $mailbox['name'];
+                    $mailboxMailerID = $mailbox['smtp_server']['mailer_id'];
+
+                    $mailer = $this->container->get('swiftmailer.mailer' . (('default' == $mailboxMailerID) ? '' : ".$mailboxMailerID"));
+                } else {
+                    // @TODO: Log mailbox disabled notice
+                    return;
+                }
+            } catch (\Exception $e) {
+                // @TODO: Log exception
+                return;
+            }
+        }
 
         // Set Message Id
-        $headers['Message-ID'] = TokenGenerator::generateToken(20, 'abcdefghijklmnopqrstuvwxyz0123456789') . $this->container->getParameter('uvdesk.email_domain');
+        $headers['Message-ID'] = TokenGenerator::generateToken(20, 'abcdefghijklmnopqrstuvwxyz0123456789') . substr($supportEmail, strpos($supportEmail, '@'));
 
         // Create a message
         $message = (new \Swift_Message($subject))
@@ -146,9 +182,9 @@ class MailboxService
             ->setTo($recipient)
             ->setBody($content, 'text/html');
 
-        $swiftHeaders = $message->getHeaders();
+        $messageHeaders = $message->getHeaders();
         foreach ($headers as $headerName => $headerValue) {
-            $swiftHeaders->addTextHeader($headerName, $headerName);
+            $messageHeaders->addTextHeader($headerName, $headerName);
         }
 
         try {
@@ -201,9 +237,9 @@ class MailboxService
             }
 
             // Check for self-referencing. Skip email processing if a mailbox is configured by the sender's address.
-            if ($this->getMailbox($addresses['from'])) {
-                return;
-            }
+            // if ($this->getMailbox($addresses['from'])) {
+            //     return;
+            // }
         }
 
         // Process Mail - References
@@ -220,7 +256,9 @@ class MailboxService
         $mailData['role'] = 'ROLE_CUSTOMER';
         $mailData['from'] = $addresses['from'];
         $mailData['name'] = trim(current(explode('@', $from[0]['display'])));
-        
+        dump($mailData);
+        die;
+
         // Process Mail - Content
         $htmlFilter = new HTMLFilter();
         $mailData['subject'] = $parser->getHeader('subject');
