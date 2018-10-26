@@ -56,8 +56,8 @@
                                     <li data-id="{{agent.id}}">
                                         {% if agent.smallThumbnail != null %}
                                             <img src="{{ agent.smallThumbnail }}"/>
-                                        {# {% else %}
-                                            <img src="{{ agentAsset }}"/> #}
+                                        {% else %}
+                                            	<img src="{{ asset(default_agent_image_path) }}" alt=""/>
                                         {% endif %}
                                         {{agent.name}}
                                     </li>
@@ -147,10 +147,13 @@
 		$(function () {
 			var TeamModel = Backbone.Model.extend({
 				validation: {
-					'name': {
-						required: true,
-						msg: "{{ 'This field is mandatory'|trans }}"
-					},
+					'name': [{
+                        required: true,
+                        msg: 'This field is mandatory'
+                    },{
+                        pattern: /^((?![!@#$%^&*()<_+]).)*$/,
+                        msg: 'This field must have characters only'
+                    }],
 					'description': {
 						required: true,
 						msg: "{{ 'This field is mandatory'|trans }}"
