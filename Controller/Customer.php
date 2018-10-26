@@ -30,31 +30,35 @@ class Customer extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             $formDetails = $request->request->get('customer_form');
             $uploadedFiles = $request->files->get('customer_form');
-
-            if (!empty($formDetails)) {
-                $fullname = trim(implode(' ', [$formDetails['firstName'], $formDetails['lastName']]));
-                $supportRole = $entityManager->getRepository('UVDeskCoreBundle:SupportRole')->findOneByCode('ROLE_CUSTOMER');
-
-                $user = $this->container->get('user.service')->createUserInstance($formDetails['email'], $fullname, $supportRole, [
-                    'contact' => $formDetails['contactNumber'],
-                    'source' => 'website',
-                    'active' => !empty($formDetails['isActive']) ? true : false,
-                    'image' => $uploadedFiles['profileImage'],
-                ]);
-
-                // Trigger customer created event
-                $event = new GenericEvent(CoreWorkflowEvents\Customer\Create::getId(), [
-                    'entity' => $user,
-                ]);
-
-                $this->get('event_dispatcher')->dispatch('uvdesk.automation.workflow.execute', $event);
-
-                $this->addFlash('success', 'Success ! Customer saved successfully.');
-
-                return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
-            } else {
+            $em = $this->getDoctrine()->getManager();
+            $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email' => $formDetails['email']));
+            if(!$checkUser){
+                if (!empty($formDetails)) {
+                    $fullname = trim(implode(' ', [$formDetails['firstName'], $formDetails['lastName']]));
+                    $supportRole = $entityManager->getRepository('UVDeskCoreBundle:SupportRole')->findOneByCode('ROLE_CUSTOMER');
+    
+                    $user = $this->container->get('user.service')->createUserInstance($formDetails['email'], $fullname, $supportRole, [
+                        'contact' => $formDetails['contactNumber'],
+                        'source' => 'website',
+                        'active' => !empty($formDetails['isActive']) ? true : false,
+                        'image' => $uploadedFiles['profileImage'],
+                    ]);
+    
+                    // Trigger customer created event
+                    $event = new GenericEvent(CoreWorkflowEvents\Customer\Create::getId(), [
+                        'entity' => $user,
+                    ]);
+    
+                    $this->get('event_dispatcher')->dispatch('uvdesk.automation.workflow.execute', $event);
+    
+                    $this->addFlash('success', 'Success ! Customer saved successfully.');
+    
+                    return $this->redirect($this->generateUrl('helpdesk_member_manage_customer_account_collection'));
+                }
+            }else {
                 $this->addFlash('warning', 'Error ! User with same email already exist.');
             }
+             
         }
 
         return $this->render('@UVDeskCore/Customers/createSupportCustomer.html.twig', [
