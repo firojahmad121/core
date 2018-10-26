@@ -16,12 +16,15 @@
             .uv-element-block .uv-element-block {
                 margin: 6px 0;
             }
+
             .uv-tab-error {
                 border-bottom: 3px solid #FF5656 !important;
             }
+
             .uv-paper .uv-view .uv-element-block .uv-error-message {
                 color: #FF5656;
             }
+
             .uv-new-tab-link {
                 width: 8px;
                 height: 20px;
@@ -32,6 +35,7 @@
                 float: right;
                 vertical-align: top;
             }
+
             .uv-xtra-info {
                 font-weight: bold;
                 margin-left: 6px;
@@ -288,7 +292,7 @@
                                     <span class="uv-field-info uv-margin-top-5">{{ 'Agent Privilege represents overall permissions in System.'|trans }}</span>
                                 </div>
 
-                                {% set privileges = user_service.getPrivileges() %}
+                                {% set privileges = user_service.getSupportPrivileges() %}
                                 {% if privileges %}
                                     <div>
                                         <div class="uv-scroll-block" id="beauty-scroll">
