@@ -14,6 +14,7 @@ class Theme extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             $website = $entityManager->getRepository('UVDeskCoreBundle:Website')->findOneByCode('helpdesk');
 
+            $website->setName($values['helpdeskName']);
             $website->setThemeColor($values['themeColor']);
 
             $entityManager->persist($website);
