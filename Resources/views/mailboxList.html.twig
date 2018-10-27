@@ -221,10 +221,20 @@
 		var MailboxModel = Backbone.Model.extend({
 			idAttribute : "id",
 		    validation: {
-		        'name': {
+		        'name': [{
 		            required: true,
 		            msg: '{{ "Please enter mailbox name"|trans }}'
-		        },
+				},
+				{
+					
+					maxLength:40,
+					msg:"Name must be maximum 40 charectures."
+				},
+				{				
+					pattern:/^((?![!@#$%^&*()<_+]).)*$/,
+					msg:"This field must have characters only"
+				}			
+				],
 		        'email': [
 		        {
 			      	required: true,
