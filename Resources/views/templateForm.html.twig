@@ -196,10 +196,7 @@
 				},
 				initialize : function() {
 					Backbone.Validation.bind(this);
-					var jsonContext = JSON.parse('{{ errors|raw }}');
-		    		for (var field in jsonContext) {
-		    			Backbone.Validation.callbacks.invalid(this, field, jsonContext[field], 'input');
-					}
+					
 				},
 				formChanegd: function(e) {
 			    	this.model.set(Backbone.$(e.currentTarget).attr('name'), Backbone.$(e.currentTarget).val())

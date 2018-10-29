@@ -144,10 +144,6 @@ email_templates_editaction:
     controller: Webkul\UVDesk\CoreBundle\Controller\Email::templateForm
     defaults: { template: 0, panelId: 'settings' }
 
-email_setting:
-    path:     /email-setting
-    controller: Webkul\UVDesk\CoreBundle\Controller\Email::emailSetting
-    defaults: { panelId: 'settings' }
 
 # Ticket Tag Resources
 helpdesk_member_ticket_tag_collection:

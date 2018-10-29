@@ -40,13 +40,6 @@ class Email extends Controller
         return $this->render('@UVDeskCore//templateList.html.twig');
     }
 
-    public function emailTemplatesAction(Request $request) 
-    {
-        return $this->render('@UVDeskCore//emailTemplateList.html.twig', array(
-            'list_items' => $this->getListItems($request),
-            'information_items' => $this->getRightSidebarInfoItems($request),
-        ));      
-    }
 
     public function templateForm(Request $request) 
     {
@@ -54,21 +47,19 @@ class Email extends Controller
             return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
         }
 
-        if($request->attributes->get('template')) {
+        if ($request->attributes->get('template')) {
             $template = $this->getTemplate($request);
         } else {  
             $template = new Entity\EmailTemplates();
         }
 
-        if(!$template)
+        if (!$template)
             $this->noResultFound();
 
-        if(!$template->getMessage())
+        if (!$template->getMessage())
             $template->setMessage('<p>{%global.companyLogo%}<hr></p><p><br><br><br></p><p><i>' . "Cheers !" . ' </i><br> <i style="color:#397b21">{%global.companyName%}</i><br></p>');
-   
-
-        $errors = [];      
-        $this->get('session')->getFlashBag()->clear();
+      
+     
 
         if($request->getMethod() == 'POST') {
             $entityManager= $this->getDoctrine()->getManager();
@@ -76,9 +67,7 @@ class Email extends Controller
 
             $user_instance = $this->container->get('security.token_storage')->getToken()->getUser();
             $user_instance= $entityManager->getRepository(UserInstance::class)->findBy(['id'=>$user_instance->getId()]);
-            
-            $flag =0;
-
+           
             $template->setUser($user_instance[0]);
             $template->setName($data['name']);
             $template->setSubject($data['subject']);
@@ -96,10 +85,8 @@ class Email extends Controller
 
             return $this->redirectToRoute('email_templates_action');
         } 
-
         return $this->render('@UVDeskCore//templateForm.html.twig', array(
             'template' => $template,
-            'errors' => json_encode($errors)
         ));
     } 
 
@@ -114,7 +101,7 @@ class Email extends Controller
         if($request->isXmlHttpRequest()) {
             if($request->getMethod() == 'GET') {
                 $repository = $this->getDoctrine()->getRepository('UVDeskCoreBundle:EmailTemplates');
-                $json =  $repository->getTemplates($request->query, $this->container);
+                $json =  $repository->getEmailTemplates($request->query, $this->container);
             }else{
                 if($request->attributes->get('template')){
                     if($templateBase = $this->getTemplate($request)) {
@@ -146,13 +133,5 @@ class Email extends Controller
         return $response;
     }
 
-    public function emailSetting(Request $request) 
-    {
-        if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {
-            return $this->redirect($this->generateUrl('helpdesk_member_dashboard'));
-        }
-
-        return $this->render('@UVDeskCore//emailSetting.html.twig');
-    }
-
+  
 }
