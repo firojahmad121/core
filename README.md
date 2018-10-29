@@ -2,7 +2,7 @@
     <img src="https://s3-ap-southeast-1.amazonaws.com/cdn.uvdesk.com/uvdesk/bundles/webkuldefault/images/uvdesk-wide.svg">
 </a></p>
 
-[UVDesk Community Edition][1] is an easy-to-use highly-customizable **open-source helpdesk solution** built on top of the reliable [Symfony][2] **PHP framework** to enable organizations to provide their customers with the best level of support solution possible.
+[UVDesk Community Edition][1] is an easy-to-use, highly customizable open-source **helpdesk solution** built on top of the reliable [Symfony][2] **PHP framework**, enabling organizations to provide their customers with the best level of support solution possible.
 
 UVDeskCoreBundle
 --------------
@@ -33,10 +33,10 @@ To require UVDeskCoreBundle into your symfony project, simply run the following 
 $ composer require uvdesk/core-framework
 ```
 
-Learn More
+License
 --------------
 
-Visit our official [website][1] to learn more about the UVDesk Helpdesk System.
+The UVDeskCoreBundle and libraries included within the bundle are released under the MIT or BSD license.
 
 [1]: https://www.uvdesk.com/
 [2]: https://symfony.com/
