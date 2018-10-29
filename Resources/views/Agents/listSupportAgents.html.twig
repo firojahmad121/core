@@ -85,16 +85,14 @@
 				<% } %>
 			</a>
         </li>
-		
 	    <li class="<% if(sort == 'user.firstName') { %>uv-drop-list-active<% } %>">
-            <a href="#<% if(queryString != '') { %><%= queryString %>/<% } %><% if(page) { %>page/<%= page %><% } else { %>page/1<% } %>/sort/user.firstName/<% if(sort == 'user.firstName') { %><% if(direction) { %>direction/<%= direction %><% } else { %>direction/desc<% } %><% } else { %>direction/asc<% } %>" data-field="name">
+            <a href="#<% if(queryString != '') { %><%= queryString %>/<% } %><% if(page) { %>page/<%= page %><% } else { %>page/1<% } %>/sort/user.firstName/<% if(sort == 'user.firstName') { %><% if(direction) { %>direction/<%= direction %><% } else { %>direction/desc<% } %><% } else { %>direction/asc<% } %>" data-field="user.firstName">
 				Name
 				<% if(sort == 'user.firstName') { %>
 					<span class="uv-sorting <% if(direction == 'asc') { %> descend <% } else { %> ascend <% } %>"></span>
 				<% } %>
 			</a>
         </li>
-
 	    <li class="<% if(sort == 'user.email') { %>uv-drop-list-active<% } %>">
             <a href="#<% if(queryString != '') { %><%= queryString %>/<% } %><% if(page) { %>page/<%= page %><% } else { %>page/1<% } %>/sort/user.email/<% if(sort == 'user.email') { %><% if(direction) { %>direction/<%= direction %><% } else { %>direction/desc<% } %><% } else { %>direction/asc<% } %>" data-field="user.email">
 				Email
@@ -104,7 +102,6 @@
 			</a>
         </li>
 	</script>
-
 	{# Type list item template #}
 	<script id="agent_list_item_tmp" type="text/template">
 		<td data-value="Name">

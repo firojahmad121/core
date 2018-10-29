@@ -119,12 +119,12 @@
 	<!-- Customer list item template -->
 	<script id="customer_list_item_tmp" type="text/template">
 		 <td data-value="{{ 'Name'|trans }}">
-			{# <% if(smallThumbnail != null) { %>
+			<% if(smallThumbnail != null) { %>
 				<img src="<%= smallThumbnail %>" alt=""/>
 			<% } else { %>
-				<img src="{{ customerAsset }}" alt=""/>
-			<% } %> #}
-            {# <a href="{{ path('ticket_list') }}#customer/<%= id %>"> #}
+				<img src="{{ asset(default_customer_image_path) }}" alt=""/>
+			<% } %>
+            <a href="{{ path('helpdesk_member_ticket_collection') }}#customer/<%= id %>">
 			    <%- name %>
             </a>
 		</td>

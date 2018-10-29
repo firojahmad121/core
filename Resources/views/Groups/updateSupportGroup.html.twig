@@ -146,10 +146,16 @@
 		$(function () {
 			var GroupModel = Backbone.Model.extend({
 				validation: {
-					'name': {
-						required: true,
-						msg: "{{ 'This field is mandatory'|trans }}"
-					},
+					'name': [{
+                        required: true,
+                        msg: 'This field is mandatory'
+                    },{
+                        pattern: /^((?![!@#$%^&*()<_+]).)*$/,
+                        msg: 'This field must have characters only'
+                    },{
+						maxLength:50,
+                        msg:'Maximum character length is 50'
+					}],
 					'description': {
 						required: true,
 						msg: "{{ 'This field is mandatory'|trans }}"

@@ -124,8 +124,7 @@ class TicketService
         $ticketType = !empty($ticketData['type']) ? $ticketData['type'] : $this->getDefaultType();
         $ticketStatus = !empty($ticketData['status']) ? $ticketData['status'] : $this->getDefaultStatus();
         $ticketPriority = !empty($ticketData['priority']) ? $ticketData['priority'] : $this->getDefaultPriority();
-        $ticketMailbox = !empty($ticketData['mailbox']) ? $ticketData['mailbox'] : $this->container->get('uvdesk.core.mailbox')->getDefaultMailbox();
-
+        $ticketMailbox = !empty($ticketData['mailbox']) ? $ticketData['mailbox'] : $this->container->get('uvdesk.core.mailboxes')->getDefaultMailbox();
         $ticketData['type'] = $ticketType;
         $ticketData['status'] = $ticketStatus;
         $ticketData['mailbox'] = $ticketMailbox;
@@ -148,7 +147,7 @@ class TicketService
 
         return $this->createThread($ticket, $ticketData);
     }
-
+    
     public function createThread(Ticket $ticket, array $threadData)
     {
         $threadData['isLocked'] = 0;
@@ -853,17 +852,18 @@ class TicketService
                 ->setParameter('threadType','create')
                 ->setParameter('ticketId',$ticketId)
                 ->orderBy('th.id', 'ASC');
-
+       
         $result = $qb->getQuery()->getArrayResult();
         if($result) {
             $userService = $this->container->get('user.service');
             $data = $result[0][0];
+
             if(isset($data['userType']) && $data['userType'] == 'agent')
                 $data['user'] = $userService->getAgentPartialDetailById($result[0]['userId']);
             else
                 $data['user'] = $userService->getCustomerPartialDetailById($result[0]['userId']);
-
-            // $data['attachments'] = $cacheRequired ? $this->container->get('file.service')->getCachedAttachments($data['attachments']) : $data['attachments'];
+            
+            $data['attachments'] = [];
             // $data['formatedCreatedAt'] = $userService->convertToTimezone($data['createdAt']);
             // $data['timestamp'] = $userService->convertToDatetimeTimezoneTimestamp($data['createdAt']);
             $data['reply'] = utf8_decode($data['message']);

@@ -115,6 +115,9 @@
 					}, {
 						pattern: '^((?![!@#$%^&*()<>]).)*$',
 						msg: "{{ 'Privilege Name must have characters only' }}"
+					},{
+						maxLength:50,
+                        msg:'Maximum character length is 50'
 					}],
 					'privilege_form[description]': {
 						required: true,
