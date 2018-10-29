@@ -106,14 +106,14 @@ class ThreadRepository extends \Doctrine\ORM\EntityRepository
 
         $data = array();
         $userService = $container->get('user.service');
-
+       // dump($results->getItems());
         foreach ($results->getItems() as $key => $row) {
             $thread = $row[0];
             $data[] = [
                 'id' => $thread['id'],
                 'user' => $row['userId'] ? ['id' => $row['userId'], 'smallThumbnail' => $row['smallThumbnail']] : null,
                 'fullname' => $row['fullname'],
-                'reply' => utf8_decode($thread['message']),
+                'reply' => strip_tags($thread['message']),
                 'source' => $thread['source'],
                 'threadType' => $thread['threadType'],
                 'userType' => 'customer',
@@ -121,10 +121,11 @@ class ThreadRepository extends \Doctrine\ORM\EntityRepository
                 'timestamp' => $userService->convertToDatetimeTimezoneTimestamp($thread['createdAt']),
                 'cc' => $thread['cc'],
                 'bcc' => $thread['bcc'],
-                // 'attachments' => $fileService->getCachedAttachments($thread['attachments']),
                 'attachments' => [],
+
             ];
         }
+        
         $json['threads'] = $data;
         $json['pagination'] = $paginationData;
 
