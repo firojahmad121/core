@@ -3,8 +3,6 @@
 {% block title %} 
     {% if team.id %}
 		{{ 'Edit Team'|trans }}
-	{% else %}
-		{{ 'Add Team'|trans }}
 	{% endif %}
 {% endblock %}
 
@@ -16,11 +14,8 @@
 			<h1>
 				{% if team.id %}
 					{{ 'Edit Team'|trans }}
-				{% else %}
-					{{ 'Add Team'|trans }}
 				{% endif %}
 			</h1>
-			
 			<!--Form-->
 			<form method="post" action="" id="team-form">
 				<!-- Field -->
@@ -31,6 +26,7 @@
 					</div>
 				</div>
 				<!-- //Field -->
+
 				<!-- Field -->
 				<div class="uv-element-block">
 					<label class="uv-field-label">{{ 'Description'|trans }}</label>
@@ -39,7 +35,6 @@
 					</div>
 				</div>
 				<!-- //Field -->
-
 
                 <!-- Field -->
 				<div class="uv-element-block">

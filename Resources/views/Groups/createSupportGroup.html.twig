@@ -1,11 +1,7 @@
 {% extends "@UVDeskCore//Templates//layout.html.twig" %}
 
 {% block title %} 
-    {% if group.id %}
-		{{ 'Edit Group'|trans }}
-	{% else %}
-		{{ 'Add Group'|trans }}
-	{% endif %}
+	{{ 'Add Group'|trans }}
 {% endblock %}
 
 {% block pageContent %}
@@ -14,13 +10,8 @@
 		
 		<div class="uv-view {% if app.request.cookies and app.request.cookies.get('uv-asideView') %}uv-aside-view{% endif %}">
 			<h1>
-				{% if group.id %}
-					{{ 'Edit Group'|trans }}
-				{% else %}
-					{{ 'Add Group'|trans }}
-				{% endif %}
+				{{ 'Add Group'|trans }}
 			</h1>
-			
 			<!--Form-->
 			<form method="post" action="" id="group-form">
 				<!-- Field -->

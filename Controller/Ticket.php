@@ -298,31 +298,32 @@ class Ticket extends Controller
     }
 
     public function downloadZipAttachment(Request $request) {
-        
+
         $response = new Response();
         $em = $this->getDoctrine()->getManager();
-
+        $threadId = $request->attributes->get('threadId');
         $attachment = $em->getRepository('UVDeskCoreBundle:Attachment')->findBy([
             'thread' => $request->attributes->get('threadId'),
         ]);
-
         if (!$attachment) {
             $this->noResultFound();
         }
-
-        $zipname = 'ticketAttachments.zip';
+        $zipname = 'attachments/' .$threadId.'.zip';
         $zip = new \ZipArchive;
+
         $zip->open($zipname, \ZipArchive::CREATE);
-
-        foreach ($attachment as $attach) {
-             $zip->addFile($attach->getPath()); 
+        if(count($attachment)){
+            foreach ($attachment as $attach) {
+                $zip->addFile(substr($attach->getPath(), 1)); 
+            }
         }
-
         $zip->close();
-        
-        header('Content-Type: application/zip');
-        header('Content-disposition: attachment; filename='.$zipname);
-        header('Content-Length: ' . filesize($zipname));
-        readfile($zipname);
+
+        $response = new Response();
+        $response->setStatusCode(200);
+        $response->headers->set('Content-type', 'application/zip');
+        $response->headers->set('Content-Disposition', 'attachment; filename=' . $threadId . '.zip');
+        $response->sendHeaders();
+        $response->setContent(readfile($zipname));
     }
 }

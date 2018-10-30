@@ -1,11 +1,7 @@
 {% extends "@UVDeskCore//Templates//layout.html.twig" %}
 
 {% block title %}
-    {% if user.id %}
-		{{ 'Edit Customer'|trans }}
-	{% else %}
-		{{ 'Add Customer'|trans }}
-	{% endif %}
+	{{ 'Add Customer'|trans }}
 {% endblock %}
 
 {% block pageContent %}

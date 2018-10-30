@@ -1,11 +1,6 @@
 {% extends "@UVDeskCore//Templates//layout.html.twig" %}
-
 {% block title %} 
-    {% if team.id %}
-		{{ 'Edit Team'|trans }}
-	{% else %}
-		{{ 'Add Team'|trans }}
-	{% endif %}
+	{{ 'Add Team'|trans }}
 {% endblock %}
 
 {% block pageContent %}
@@ -14,13 +9,8 @@
 		
 		<div class="uv-view {% if app.request.cookies and app.request.cookies.get('uv-asideView') %}uv-aside-view{% endif %}">
 			<h1>
-				{% if team.id %}
-					{{ 'Edit Team'|trans }}
-				{% else %}
-					{{ 'Add Team'|trans }}
-				{% endif %}
+				{{ 'Add Team'|trans }}
 			</h1>
-			
 			<!--Form-->
 			<form method="post" action="" id="team-form">
 				<!-- Field -->
@@ -31,7 +21,6 @@
 					</div>
 				</div>
 				<!-- //Field -->
-
 				<!-- Field -->
 				<div class="uv-element-block">
 					<label class="uv-field-label">{{ 'Description'|trans }}</label>
@@ -40,7 +29,6 @@
 					</div>
 				</div>
 				<!-- //Field -->
-
                 <!-- Field -->
 				<div class="uv-element-block">
 					<label class="uv-field-label">{{ 'Users'|trans }}</label>

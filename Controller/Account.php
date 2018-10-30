@@ -138,12 +138,13 @@ class Account extends Controller
                     if($checkUser->getId() != $agentId)
                         $errorFlag = 1;
                 }
-                
                 if (!$errorFlag) {
-                    if(isset($data['password']) && $data['password'])
-                            $user->setPassword($this->encodePassword($user, '12345678'));
+                    if(isset($data['password']) && $data['password']){
+                        $encodedPassword = $this->container->get('security.password_encoder')->encodePassword($user, $data['password']['first']);
+                        $user->setPassword($encodedPassword);
+                    }
 
-                            $user->setFirstName($data['firstName']);
+                    $user->setFirstName($data['firstName']);
                     $user->setLastName($data['lastName']);
                     $user->setEmail($data['email']);
                     $user->setIsEnabled(isset($data['isActive'])? 1 : 0);
@@ -268,7 +269,6 @@ class Account extends Controller
                 ]);
                 break;
         }
-
         return $response;
     }
     
@@ -313,7 +313,6 @@ class Account extends Controller
                         if (isset($data['ticketView'])) {
                             $userInstance->setTicketAccessLevel($data['ticketView']);
                         }
-                        
                         // Map support team
                         if (!empty($formDetails['userSubGroup'])) {
                             $supportTeamRepository = $entityManager->getRepository('UVDeskCoreBundle:SupportTeam');
