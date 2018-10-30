@@ -7,7 +7,7 @@
 UVDeskCoreBundle
 --------------
 
-The standalone **UVDeskCoreBundle** lies at the heart of the UVDesk Community Helpdesk System, providing the core essential functionalities and integration tools to easily integrate any other UVDesk Community packages, furhter extending the capabilities of the helpdesk system.
+The standalone **UVDeskCoreBundle** lies at the heart of the UVDesk Community Helpdesk, providing the core essential functionalities and integration tools to easily integrate any other UVDesk Community packages, furhter extending the capabilities of the helpdesk system.
 
 The core framework bundle comes loaded with the following features:
 
@@ -27,7 +27,7 @@ This bundle can be easily integrated into any Symfony application (though it is 
   * [PHP IMAP][6]
   * [PHP Mailparse][7]
 
-To require UVDeskCoreBundle into your symfony project, simply run the following from your project root:
+To require the core framework bundle into your symfony project, simply run the following from your project root:
 
 ```bash
 $ composer require uvdesk/core-framework
@@ -36,7 +36,7 @@ $ composer require uvdesk/core-framework
 License
 --------------
 
-The UVDeskCoreBundle and libraries included within the bundle are released under the MIT or BSD license.
+The **UVDeskCoreBundle** and libraries included within the bundle are released under the MIT or BSD license.
 
 [1]: https://www.uvdesk.com/
 [2]: https://symfony.com/
