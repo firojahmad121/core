@@ -7,7 +7,7 @@
 UVDeskCoreBundle
 --------------
 
-The standalone **UVDeskCoreBundle** lies at the heart of the UVDesk Community Helpdesk, providing the core essential functionalities and integration tools to easily integrate any other UVDesk Community packages, furhter extending the capabilities of the helpdesk system.
+The standalone **UVDeskCoreBundle** lies at the heart of the [UVDesk Community][1] helpdesk, providing the core essential functionalities and integration tools to easily integrate any other UVDesk Community packages, furhter extending the capabilities of the helpdesk system.
 
 The core framework bundle comes loaded with the following features:
 
