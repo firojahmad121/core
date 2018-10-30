@@ -132,7 +132,6 @@ class EmailService
                                                             'info' => $this->trans('ticket.collaborator.email.placeHolders.info'),
                                                         ],
                                             ],
-                               
                                 'user'  => [
                                                 'userName' => [
                                                             'title' => $this->trans('Agent/ Customer Name'),

@@ -502,12 +502,10 @@ class UserService
         $websiteRepo = $em->getRepository('UVDeskCoreBundle:Website');
         $configurationRepo = $em->getRepository('UVDeskSupportCenterBundle:KnowledgebaseWebsite');
 
-        $website = $websiteRepo->findOneBy(['code' => $code]);
+        $website = $websiteRepo->findOneByCode($code);
         if ($website)
             $configuration = $configurationRepo->findOneBy(['website' => $website->getId(), 'isActive' => 1]);
 
-
-        // dump($configuration);die;
         return $configuration ?: false;
     }
 

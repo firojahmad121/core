@@ -8,10 +8,11 @@ use Doctrine\Common\Collections\Criteria;
 
 class EmailTemplatesRepository extends EntityRepository
 {
-	public $safeFields = array('page','limit','sort','order','direction');
     const LIMIT = 10;
+	public $safeFields = array('page','limit','sort','order','direction');
 
-    public function getEmailTemplates(\Symfony\Component\HttpFoundation\ParameterBag $obj = null, $container) {
+    public function getEmailTemplates(\Symfony\Component\HttpFoundation\ParameterBag $obj = null, $container)
+    {
         $user_id = $container->get('security.token_storage')->getToken()->getUser()->getId();
         $json = array();
         $qb = $this->getEntityManager()->createQueryBuilder();

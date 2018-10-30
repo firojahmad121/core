@@ -40,7 +40,6 @@ class Email extends Controller
         return $this->render('@UVDeskCore//templateList.html.twig');
     }
 
-
     public function templateForm(Request $request) 
     {
         if (!$this->get('user.service')->checkPermission('ROLE_AGENT_MANAGE_EMAIL_TEMPLATE')) {          
@@ -53,15 +52,15 @@ class Email extends Controller
             $template = new Entity\EmailTemplates();
         }
 
-        if (!$template)
+        if (!$template) {
             $this->noResultFound();
+        }
 
-        if (!$template->getMessage())
+        if (!$template->getMessage()) {
             $template->setMessage('<p>{%global.companyLogo%}<hr></p><p><br><br><br></p><p><i>' . "Cheers !" . ' </i><br> <i style="color:#397b21">{%global.companyName%}</i><br></p>');
+        }
       
-     
-
-        if($request->getMethod() == 'POST') {
+        if ($request->getMethod() == 'POST') {
             $entityManager= $this->getDoctrine()->getManager();
             $data = $request->request->all();
 
@@ -76,15 +75,17 @@ class Email extends Controller
             $entityManager->persist($template);
             $entityManager->flush();
 
-            if($request->attributes->get('template')) 
+            if ($request->attributes->get('template')) {
                 $message = 'Success! Template has been updated successfully.';
-            else
+            } else {
                 $message = 'Success! Template has been added successfully.';
+            }
 
             $this->addFlash('success', $message);
 
             return $this->redirectToRoute('email_templates_action');
-        } 
+        }
+        
         return $this->render('@UVDeskCore//templateForm.html.twig', array(
             'template' => $template,
         ));
@@ -132,6 +133,4 @@ class Email extends Controller
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
-
-  
 }
