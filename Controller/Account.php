@@ -134,16 +134,17 @@ class Account extends Controller
                 $checkUser = $em->getRepository('UVDeskCoreBundle:User')->findOneBy(array('email'=> $data['email']));
                 $errorFlag = 0;
                
-                if ($checkUser) {
-                    if($checkUser->getId() != $agentId)
-                        $errorFlag = 1;
+                if ($checkUser && $checkUser->getId() != $agentId) {
+                    $errorFlag = 1;
                 }
-                
-                if (!$errorFlag) {
-                    if(isset($data['password']) && $data['password'])
-                            $user->setPassword($this->encodePassword($user, '12345678'));
 
-                            $user->setFirstName($data['firstName']);
+                if (!$errorFlag) {
+                    if (isset($data['password']) && $data['password']) {
+                        $encodedPassword = $this->container->get('security.password_encoder')->encodePassword($user, $data['password']['first']);
+                        $user->setPassword($encodedPassword);
+                    }
+
+                    $user->setFirstName($data['firstName']);
                     $user->setLastName($data['lastName']);
                     $user->setEmail($data['email']);
                     $user->setIsEnabled(isset($data['isActive'])? 1 : 0);
@@ -268,7 +269,7 @@ class Account extends Controller
                 ]);
                 break;
         }
-
+        
         return $response;
     }
     
@@ -358,7 +359,7 @@ class Account extends Controller
                     $this->addFlash('success', 'Success ! Agent added successfully.');
                     return $this->redirect($this->generateUrl('helpdesk_member_account_collection'));
                 }
-            }else{
+            } else {
                 $this->addFlash('warning', 'Error ! User with same email already exist.');
             }
         }
