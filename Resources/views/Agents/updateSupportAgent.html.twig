@@ -1,12 +1,6 @@
 {% extends "@UVDeskCore//Templates//layout.html.twig" %}
 
-{% block title %}
-    {% if user.id %}
-		{{ 'Edit Agent'|trans }}
-	{% else %}
-		{{ 'Add Agent'|trans }}
-	{% endif %}
-{% endblock %}
+{% block title %}{{ 'Edit Agent'|trans }}{% endblock %}
 
 {% block pageContent %}
 	<div class="uv-inner-section">

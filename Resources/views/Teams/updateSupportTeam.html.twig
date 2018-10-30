@@ -1,25 +1,13 @@
 {% extends "@UVDeskCore//Templates//layout.html.twig" %}
 
-{% block title %} 
-    {% if team.id %}
-		{{ 'Edit Team'|trans }}
-	{% else %}
-		{{ 'Add Team'|trans }}
-	{% endif %}
-{% endblock %}
+{% block title %}{{ 'Edit Team'|trans }}{% endblock %}
 
 {% block pageContent %}
 	<div class="uv-inner-section">
 		{{ include('@UVDeskCore/Templates/panel-sidebar.html.twig') }}
 		
 		<div class="uv-view {% if app.request.cookies and app.request.cookies.get('uv-asideView') %}uv-aside-view{% endif %}">
-			<h1>
-				{% if team.id %}
-					{{ 'Edit Team'|trans }}
-				{% else %}
-					{{ 'Add Team'|trans }}
-				{% endif %}
-			</h1>
+			<h1>{{ 'Edit Team'|trans }}</h1>
 			
 			<!--Form-->
 			<form method="post" action="" id="team-form">
@@ -31,6 +19,7 @@
 					</div>
 				</div>
 				<!-- //Field -->
+
 				<!-- Field -->
 				<div class="uv-element-block">
 					<label class="uv-field-label">{{ 'Description'|trans }}</label>
@@ -39,7 +28,6 @@
 					</div>
 				</div>
 				<!-- //Field -->
-
 
                 <!-- Field -->
 				<div class="uv-element-block">
