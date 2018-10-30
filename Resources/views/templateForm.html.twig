@@ -62,7 +62,6 @@
 						<select name="templateFor" class="uv-select" id="relatedTo">
 							<option value="">{{ 'Nothing Selected'|trans }}</option>
 							<option value="ticket" {% if 'ticket' == template.templateType %}selected{% endif %}>{{ 'Ticket'|trans }}</option>
-							<option value="task" {% if 'task' == template.templateType %}selected{% endif %}>{{ 'Task'|trans }}</option>
 							<option value="user" {% if 'user' == template.templateType %}selected{% endif %}>{{ 'User'|trans }}</option>
 						</select>
 					</div>
@@ -169,14 +168,24 @@
 		$(function () {
 			var TemplateModel = Backbone.Model.extend({
 				validation: {
-					'name': {
+					'name': [{
 						required: true,
-						msg: "{{ 'This field is mandatory'|trans }}"
+						msg: 'This field is mandatory'
 					},
-					'subject': {
+					{
+						maxLength: 100,
+						msg: 'This field contain 100 charecters only'
+					},{
+						pattern:"^[ a-zA-Z_0-9 ]*$",
+						msg:"This field contain charecters only"
+					}],
+					'subject': [{
 						required: true,
-						msg: "{{ 'This field is mandatory'|trans }}"
-					}
+						msg: 'This field is mandatory'
+					},{
+						maxLength:100,
+						msg: 'This field contain 100 charecters only'
+					}]
 				}
 			});
 
@@ -187,10 +196,6 @@
 				},
 				initialize : function() {
 					Backbone.Validation.bind(this);
-					var jsonContext = JSON.parse('{{ errors|raw }}');
-		    		for (var field in jsonContext) {
-		    			Backbone.Validation.callbacks.invalid(this, field, jsonContext[field], 'input');
-					}
 				},
 				formChanegd: function(e) {
 			    	this.model.set(Backbone.$(e.currentTarget).attr('name'), Backbone.$(e.currentTarget).val())

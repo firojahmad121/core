@@ -132,64 +132,6 @@ class EmailService
                                                             'info' => $this->trans('ticket.collaborator.email.placeHolders.info'),
                                                         ],
                                             ],
-                                'task' => [
-                                                'id' => [
-                                                            'title' => $this->trans('Task Id'),
-                                                            'info' => $this->trans('task.id.placeHolders.info'),
-                                                        ],
-                                                'subject' => [
-                                                            'title' => $this->trans('Task Subject'),
-                                                            'info' => $this->trans('task.subject.placeHolders.info'),
-                                                        ],
-                                                'message' => [
-                                                            'title' => $this->trans('Task Message'),
-                                                            'info' => $this->trans('task.message.placeHolders.info'),
-                                                        ],
-                                                'attachments' => [
-                                                            'title' => $this->trans('Task Attachments'),
-                                                            'info' => $this->trans('task.attachments.placeHolders.info'),
-                                                        ],
-                                                'threadMessage' => [
-                                                            'title' => $this->trans('Task Thread Message'),
-                                                            'info' => $this->trans('task.threadMessage.placeHolders.info'),
-                                                        ],
-                                                'stage' => [
-                                                            'title' => $this->trans('Task Stages'),
-                                                            'info' => $this->trans('task.stages.placeHolders.info'),
-                                                        ],
-                                                'priority' => [
-                                                            'title' => $this->trans('Task Priority'),
-                                                            'info' => $this->trans('task.priority.placeHolders.info'),
-                                                        ],
-                                                'assignedAgentName' => [
-                                                            'title' => $this->trans('Task Assigned Agent Name'),
-                                                            'info' => $this->trans('task.assignedAgentName.placeHolders.info'),
-                                                        ],
-                                                'assignedAgentEmail' => [
-                                                            'title' => $this->trans('Task Assigned Agent Email'),
-                                                            'info' => $this->trans('task.assignedAgentEmail.placeHolders.info'),
-                                                        ],
-                                                'assignUserName' => [
-                                                            'title' => $this->trans('Task Assigner Agent Name'),
-                                                            'info' => $this->trans('task.assignUserName.placeHolders.info'),
-                                                        ],
-                                                'assignUserEmail' => [
-                                                            'title' => $this->trans('Task Assigner Agent Email'),
-                                                            'info' => $this->trans('task.assignUserEmail.placeHolders.info'),
-                                                        ],
-                                                'link' => [
-                                                            'title' => $this->trans('Task Link'),
-                                                            'info' => $this->trans('task.link.placeHolders.info'),
-                                                        ],
-                                                'memberName' => [
-                                                            'title' => $this->trans('Last Member Name'),
-                                                            'info' => $this->trans('ticket.member.name.placeHolders.info'),
-                                                        ],
-                                                'memberEmail' => [
-                                                            'title' => $this->trans('Last Member Email'),
-                                                            'info' => $this->trans('ticket.member.email.placeHolders.info'),
-                                                        ]
-                                            ],
                                 'user'  => [
                                                 'userName' => [
                                                             'title' => $this->trans('Agent/ Customer Name'),

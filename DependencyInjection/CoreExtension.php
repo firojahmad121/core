@@ -30,6 +30,7 @@ class CoreExtension extends Extension
         $configuration = $this->getConfiguration($configs, $container);
         foreach ($this->processConfiguration($configuration, $configs) as $param => $value) {
             switch ($param) {
+                case 'emails':
                 case 'support_email':
                 case 'upload_manager':
                     foreach ($value as $field => $fieldValue) {
