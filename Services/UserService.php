@@ -27,7 +27,7 @@ class UserService
 
     public function isGranted($role) {
         $securityContext = $this->container->get('security.token_storage');
-
+       
         try {
             return (bool) ($role == $securityContext->getToken()->getRoles()[0]->getRole());
         } catch (AuthenticationCredentialsNotFoundException $e) {
@@ -457,7 +457,7 @@ class UserService
         return $user;
     }
 
-    public function getWebsiteConfiguration($currentUser)
+    public function getWebsiteConfiguration($code)
     {
         $enabled_bundles = $this->container->getParameter('kernel.bundles');
         
@@ -502,10 +502,12 @@ class UserService
         $websiteRepo = $em->getRepository('UVDeskCoreBundle:Website');
         $configurationRepo = $em->getRepository('UVDeskSupportCenterBundle:KnowledgebaseWebsite');
 
-        $website = $websiteRepo->findOneBy(['code' => $currentUser]);
+        $website = $websiteRepo->findOneBy(['code' => $code]);
         if ($website)
             $configuration = $configurationRepo->findOneBy(['website' => $website->getId(), 'isActive' => 1]);
 
+
+        // dump($configuration);die;
         return $configuration ?: false;
     }
 
@@ -680,7 +682,6 @@ class UserService
         $layout  = $this->entityManager->getRepository('UVDeskSupportCenterBundle:KnowledgebaseWebsite')->findOneBy(['website'=>$website->getId()]);
       
         $homepageContent = $layout->getHomepageContent();
-        // dump($homepageContent);die;
         return (!empty($homepageContent)) ? $homepageContent . 'View' : 'masonryView';
     }
 
