@@ -204,13 +204,6 @@ class UVDeskService
                             'permission' => 'ROLE_AGENT_MANAGE_EMAIL_TEMPLATE',
                         ],
                         [
-                            'name' => 'Email Settings',
-                            'link' => $router->generate('email_setting'),
-                            'isActive' => false,
-                            'isEnabled' => true,
-                            'permission' => 'ROLE_ADMIN',
-                        ],
-                        [
                             'name' => 'Block Spam',
                             'link' => $router->generate('helpdesk_member_knowledgebase_spam'),
                             'isActive' => false,

@@ -35,11 +35,22 @@ class MailboxService
         return $this->parser;
     }
 
-    public function getMailbox($email)
+    public function getMailboxByEmail($email)
     {
-        $mailbox = $this->entityManager->getRepository('UVDeskCoreBundle:Mailbox')->findOneByEmail($email);
+        if (!empty($email)) {
+            foreach ($this->container->getParameter('uvdesk.mailboxes') as $mailboxName) {
+                if (!$this->container->hasParameter("uvdesk.mailboxes.$mailboxName")) {
+                    continue;
+                }
+    
+                $mailboxDetails = $this->container->getParameter("uvdesk.mailboxes.$mailboxName");
+                if ($email === $mailboxDetails['email']) {
+                    return $mailboxDetails;
+                }
+            }
+        }
 
-        return !empty($mailbox) ? $mailbox : null;
+        return null;
     }
 
     public function getDefaultMailbox()
@@ -237,9 +248,9 @@ class MailboxService
             }
 
             // Check for self-referencing. Skip email processing if a mailbox is configured by the sender's address.
-            // if ($this->getMailbox($addresses['from'])) {
-            //     return;
-            // }
+            if ($this->getMailboxByEmail($addresses['from'])) {
+                return;
+            }
         }
 
         // Process Mail - References
@@ -256,8 +267,6 @@ class MailboxService
         $mailData['role'] = 'ROLE_CUSTOMER';
         $mailData['from'] = $addresses['from'];
         $mailData['name'] = trim(current(explode('@', $from[0]['display'])));
-        dump($mailData);
-        die;
 
         // Process Mail - Content
         $htmlFilter = new HTMLFilter();

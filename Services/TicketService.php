@@ -26,18 +26,20 @@ class TicketService
         $this->entityManager = $entityManager;
     }
 
-    public function getUniqueReplyTo()
+    public function getUniqueReplyTo($domain = null)
     {
-        return sprintf("support.%s%s", TokenGenerator::generateToken(22, '0123456789abcdefghijklmnopqrstuvwxyz'), $this->container->getParameter('uvdesk.email_domain'));
+        return sprintf("%s%s", TokenGenerator::generateToken(22, '0123456789abcdefghijklmnopqrstuvwxyz'), $domain);
     }
 
-    public function getRandomRefrenceId()
+    public function getRandomRefrenceId($domain = null)
     {
         return sprintf("<%s@mail.uvdesk.com>", TokenGenerator::generateToken(20, '0123456789abcdefghijklmnopqrstuvwxyz'));
     }
+
     public function getUser() {
         return $this->currentUser = ($this->currentUser ? $this->currentUser : $this->container->get('user.service')->getCurrentUser());
     }
+
     public function getDefaultType()
     {
         $typeCode = $this->container->getParameter('uvdesk.default.ticket.type');
@@ -102,10 +104,11 @@ class TicketService
                 $user = $this->container->get('user.service')->createUserInstance($params['from'], $params['name'], $role, [
                     'source' => strtolower($params['source']),
                 ]);
+
             }
 
             $params['role'] = 4;
-            $params['mailbox'] = $this->container->get('uvdesk.core.mailbox')->getMailbox(current($params['replyTo'])); 
+            $params['mailboxEmail'] = current($params['replyTo']); 
             $params['customer'] = $params['user'] = $user;
 
             return $this->createTicketBase($params);
@@ -116,21 +119,31 @@ class TicketService
 
     public function createTicketBase(array $ticketData = [])
     {
-        if ('website' == $ticketData['source']) {
-            $ticketData['messageId'] = $this->getRandomRefrenceId();
+        if ('email' == $ticketData['source']) {
+            // $mailbox = $this->container->get('uvdesk.core.mailbox')->getMailboxByEmail($ticketData['mailboxEmail']);
+            $mailbox = $this->container->get('uvdesk.core.mailbox')->getMailboxByEmail('community-demo@uvdesk.com');
+            
+            if (empty($mailbox)) {
+                return;
+            }
+
+            $ticketData['mailboxEmail'] = $mailbox['email'];
         }
+
+        dump($ticketData['messageId']);
+        die;
 
         // Set Defaults
         $ticketType = !empty($ticketData['type']) ? $ticketData['type'] : $this->getDefaultType();
         $ticketStatus = !empty($ticketData['status']) ? $ticketData['status'] : $this->getDefaultStatus();
         $ticketPriority = !empty($ticketData['priority']) ? $ticketData['priority'] : $this->getDefaultPriority();
-        $ticketMailbox = !empty($ticketData['mailbox']) ? $ticketData['mailbox'] : $this->container->get('uvdesk.core.mailboxes')->getDefaultMailbox();
+        $ticketMessageId = 'website' == $ticketData['source'] ? $this->getRandomRefrenceId() : (!empty($ticketData['messageId']) ? $ticketData['messageId'] : null);
+
         $ticketData['type'] = $ticketType;
         $ticketData['status'] = $ticketStatus;
-        $ticketData['mailbox'] = $ticketMailbox;
         $ticketData['priority'] = $ticketPriority;
         $ticketData['uniqueReplyTo'] = $this->getUniqueReplyTo();
-        $ticketData['messageId'] = 'website' == $ticketData['source'] ? $this->getRandomRefrenceId() : (!empty($ticketData['messageId']) ? $ticketData['messageId'] : null);
+        $ticketData['messageId'] = $ticketMessageId;
         $ticketData['isTrashed'] = false;
 
         $ticket = new Ticket();
@@ -415,8 +428,8 @@ class TicketService
         ];
     }
     
-
-    public function getPredefindLabelDetails($container) {
+    public function getPredefindLabelDetails($container)
+    {
         $currentUser = $container->get('user.service')->getCurrentUser();
         $data = array();
         $qb = $this->entityManager->createQueryBuilder();
@@ -712,7 +725,8 @@ class TicketService
         ];
     }
 
-    public function getNotePlaceholderValues($currentProperty,$targetProperty,$type = "", $details = null) {
+    public function getNotePlaceholderValues($currentProperty,$targetProperty,$type = "", $details = null)
+    {
         $variables = array();
 
         $variables['type.previousType'] = ($type == 'type') ? $currentProperty : '';
@@ -741,6 +755,7 @@ class TicketService
         }
         return $variables;
     }
+
     public function paginateMembersTicketTypeCollection(Request $request)
     {
         // Get base query
