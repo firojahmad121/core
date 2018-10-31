@@ -47,11 +47,13 @@ class Account extends Controller
                 $form->handleRequest($request);
                 $form->submit(true);
                 
-                $encodedPassword = $this->container->get('security.password_encoder')->encodePassword($user, $data['password']['first']);
                 
                 if ($form->isValid()) {
                    
-                    if($data != null) {
+                    if(($data['password'] != null && $data['confirm_password'] != null) && ($data['password'] == $data['confirm_password'] ))
+                    {
+                        $encodedPassword = $this->container->get('security.password_encoder')->encodePassword($user, $data['password']);
+               
                         if (!empty($encodedPassword) ) {
                             $user->setPassword($encodedPassword);
                         } else {
@@ -62,7 +64,7 @@ class Account extends Controller
                     } else {
                         $user->setPassword($password);
                     }
-                   
+                    
                     $user->setFirstName($data['firstName']);
                     $user->setLastName($data['lastName']);
                     $user->setEmail($data['email']);

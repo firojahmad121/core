@@ -119,19 +119,7 @@
                         </div>
                     </div>
 
-                    <!-- Field -->
-                    {# <div class="uv-element-block">
-                        <label class="uv-field-label">{{ 'Timezone'|trans }}</label>
-                        <div class="uv-field-block">
-                            <select name="user_form[timezone]" class="uv-select">
-                                {% for timezone in uvdesk_service.getTimezones() %}
-                                    <option value="{{ timezone }}" {% if user.timezone == timezone %}selected{% endif %}>{{ timezone }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <span class="uv-field-info">{{ "Choose your default timezone"|trans }}</span>
-                    </div> #}
-
+                 
                     <!-- Field -->
                     <div class="uv-element-block">
                         <label class="uv-field-label">{{ 'Signature'|trans }}</label>
@@ -145,7 +133,7 @@
                     <div class="uv-element-block">
                         <label class="uv-field-label">{{ 'Password'|trans }}</label>
                         <div class="uv-field-block">
-                            <input type="password" name="user_form[password][first]" class="uv-field"  />
+                            <input type="password" name="user_form[password]" class="uv-field"  />
                         </div>
                     </div>
 
@@ -153,7 +141,7 @@
                     <div class="uv-element-block">
                         <label class="uv-field-label">{{ 'Confirm Password'|trans }}</label>
                         <div class="uv-field-block">
-                            <input type="password" name="user_form[password][second]" class="uv-field"  />
+                            <input type="password" name="user_form[confirm_password]" class="uv-field"  />
                         </div>
                     </div>
 
@@ -213,13 +201,13 @@
                                 return '{{ "Contact number is invalid"|trans }}';
                         }
                     },
-                    'user_form[password][first]' : function(value) {                       
-                            if(value.length < 8)
+                    'user_form[password]' : function(value) {                       
+                            if(value.length < 8 && value.length>0)
                                 return '{{ "Password must contains 8 Characters"|trans }}';
                         
                     },
-                    'user_form[password][second]': {
-                        equalTo: 'user_form[password][first]',
+                    'user_form[confirm_password]': {
+                        equalTo: 'user_form[password]',
                         msg: '{{ "The passwords does not match"|trans }}'
                     }
 				}
@@ -267,12 +255,12 @@
                 },
 				formChanegd: function(e) {
                     var fieldName = Backbone.$(e.currentTarget).attr('name');
-                    if(fieldName == 'user_form[password][second]') {
-                        if($("input[name='user_form[password][first]']").val().length) {
+                    if(fieldName == 'user_form[confirm_password]') {
+                        if($("input[name='user_form[password]']").val().length) {
                             this.model.set(fieldName, Backbone.$(e.currentTarget).val())
                             this.model.isValid([fieldName])
                         } else {
-                            if($("input[name='user_form[password][second]']").val().length) {
+                            if($("input[name='user_form[confirm_password]']").val().length) {
 		    			        this.model.set(fieldName, Backbone.$(e.currentTarget).val())
                                 this.model.isValid([fieldName])
                             } else {
@@ -282,8 +270,8 @@
                     } else {
                         this.model.set(fieldName, Backbone.$(e.currentTarget).val())
                         this.model.isValid([fieldName])
-                        if(fieldName == 'user_form[password][first]' && !$("input[name='user_form[password][second]']").val().length) {
-		    			    Backbone.Validation.callbacks.valid(this, 'user_form[password][second]', 'input');
+                        if(fieldName == 'user_form[password]' && !$("input[name='user_form[confirm_password]']").val().length) {
+		    			    Backbone.Validation.callbacks.valid(this, 'user_form[confirm_password]', 'input');
                         }
                     }
 			    },
@@ -293,7 +281,7 @@
                     this.model.set(data);
                     //console.log(data);
 			        if(this.model.isValid(true)) {
-                        {# if(data['user_form[password][first]'] && !data['user_form[oldPassword]']) {
+                        {# if(data['user_form[password]'] && !data['user_form[oldPassword]']) {
                             $('#confirm-password').show();                         
                             $('body').addClass('uv-pop-up-body');
                         } else { #}

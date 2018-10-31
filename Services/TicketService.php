@@ -130,9 +130,6 @@ class TicketService
             $ticketData['mailboxEmail'] = $mailbox['email'];
         }
 
-        dump($ticketData['messageId']);
-        die;
-
         // Set Defaults
         $ticketType = !empty($ticketData['type']) ? $ticketData['type'] : $this->getDefaultType();
         $ticketStatus = !empty($ticketData['status']) ? $ticketData['status'] : $this->getDefaultStatus();

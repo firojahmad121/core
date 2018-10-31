@@ -191,7 +191,7 @@ class UVDeskService
                     'routes' => [
                         [
                             'name' => 'Branding',
-                            'link' => $router->generate('helpdesk_member_knowledgebase_theme'),
+                            'link' => $router->generate('helpdesk_member_helpdesk_theme'),
                             'isActive' => false,
                             'isEnabled' => true,
                             'permission' => 'ROLE_ADMIN',
