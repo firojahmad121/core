@@ -414,7 +414,7 @@
                     <div class="uv-aside-select">
                         <label class="uv-aside-select-label">Priority</label>
                         <div>
-                            <span class="uv-list-ticket-priority" style="background: {{ ticket.priority.colorCode }}"></span>
+                            <span class="uv-list-ticket-priority" style="background: {{ ticket.priority ? ticket.priority.colorCode: "" }}"></span>
                             {% if user_service.isAccessAuthorized('ROLE_AGENT_UPDATE_TICKET_PRIORITY') %}
                                 <span class="uv-aside-select-value uv-dropdown-other uv-aside-drop-icon" data-id="{{ ticket.priority.id }}">{{ ticket.priority.description }}</span>
                                 <div class="uv-dropdown-list uv-bottom-left">
@@ -747,18 +747,18 @@
                                         <h4>Uploaded Files</h4>
                                         <div class="uv-ticket-uploads-strip">
                                             {% for file in initialThread.attachments %}
-                                                {% if file.attachmentThumb is defined and file.attachmentThumb %}
+                                                {% if file.path is defined and file.path %}
                                                     <a class="uv-ticket-uploads-brick uv-no-pointer-events" data-toggle="tooltip" title="{{ file.name }}" data-placement="top">
-                                                        <img src="{{ file.attachmentThumb }}"  data-url="{{ file.attachmentOrginal }}" data-download="{{ file.id }}"  class="uv-auto-pointer-events"/>
+                                                        <img src="{{ file.path }}"  data-url="{{ file.attachmentOrginal }}" data-download="{{ file.id }}"  class="uv-auto-pointer-events"/>
                                                     </a>
                                                 {% else %}
-                                                    <a class="uv-ticket-uploads-brick uv-template-file" href="{{ path('helpdesk_member_ticket_download_attachment') }}/{{file.id}}" target="_blank" data-toggle="tooltip" title="{{ file.name }}">
+                                                    {# <a class="uv-ticket-uploads-brick uv-template-file" href="{{ path('helpdesk_member_ticket_download_attachment') }}/{{file.id}}" target="_blank" data-toggle="tooltip" title="{{ file.name }}">
                                                         {% if fileDefaultImages[file.contentType] is defined %}
                                                             <img src="{{ fileDefaultImages[file.contentType] }}"  class="file-icon"/>
                                                         {% else %}
                                                             <img src="{{ fileDefaultImages['unknown'] }}" class="file-icon"/>
                                                         {% endif %}
-                                                    </a>
+                                                    </a> #}
                                                 {% endif %}
                                             {% endfor %}
                                         </div>
@@ -1251,9 +1251,9 @@
                     <h4>{{ 'Uploaded Files'|trans }}</h4>
                     <div class="uv-ticket-uploads-strip">
                         <% _.each(attachments, function(file) { %>
-                            <% if(file.attachmentThumb){ %>
+                            <% if(file.path){ %>
                                 <a class="uv-ticket-uploads-brick uv-no-pointer-events" data-toggle="tooltip" title="<%- file.name %>">
-                                    <img src="<%- file.attachmentThumb %>" data-url="<%- file.attachmentOrginal %>" data-download="<%- file.id %>" class="uv-auto-pointer-events">
+                                    <img src="<%- file.path %>" data-url="<%- file.attachmentOrginal %>" data-download="<%- file.id %>" class="uv-auto-pointer-events">
                                 </a>
                             <% } else { %>
                                 <a class="uv-ticket-uploads-brick uv-template-file" href="{{ path('helpdesk_member_ticket_download_attachment') }}/<%- file.id %>" target="_blank" data-toggle="tooltip" title="<%- file.name %>">

@@ -2708,6 +2708,100 @@
                 }
             });
 
+            var PageView = Backbone.View.extend({
+                el: '.uv-paper',
+                events : {
+                    'click .uv-quick-view-trigger, .quick-view-navigation .uv-btn-tag': 'navigateQuickView',
+                    'change .select-all-checkbox' : 'selectAll',
+                    'click .uv-icon-ellipsis' : 'showReplyQuote',
+                },
+                quickViewTemplate: _.template($("#ticket_quick_view_tmp").html()),
+                navigateQuickView : function(e) {
+                    e.preventDefault();
+                    //$("#quick-view-modal .uv-loader").hide()
+                    var currentElement = Backbone.$(e.currentTarget);
+                    ticketId = currentElement.attr('data-id');
+                    if(ticketId) {
+                        if(model = ticketQuickViewCollection.isModelSynced(ticketId)) {
+                            this.renderQuickView(model.toJSON())
+                        } else {
+                            var self = this;
+                            if(currentElement.hasClass("uv-quick-view-trigger"))
+                                app.appView.showLoader();
+                            if(ticketQuickViewCollection.get(ticketId)) {
+                                navData = ticketQuickViewCollection.getNextPrev(ticketId);
+                                requiredNext = (!navData.next && app.pager.paginationData.next) ? 1 : 0;
+                                requiredPrev = (!navData.previous && app.pager.paginationData.previous) ? 1 : 0;
+                            } else
+                                requiredNext = requiredPrev = 1;
+                            if(self.xhrReq)
+                                self.xhrReq.abort();
+                            $("#quick-view-modal .uv-loader").show()
+                            self.xhrReq = $.ajax({
+                                url : "{{ path('helpdesk_member_ticket') }}",
+                                type : 'GET',
+                                data : {id : ticketId, next: requiredNext, previous: requiredPrev},
+                                dataType : 'json',
+                                success : function(response) {
+                                    self.xhrReq = 0;
+                                    if(currentElement.hasClass("uv-quick-view-trigger"))
+                                        app.appView.hideLoader();
+                                    if(response.next == undefined)
+                                        response.next = navData.next
+                                    if(response.previous == undefined)
+                                        response.previous = navData.previous
+                                    response.isSynced = 1
+                                    response.path = ticketPath.replace('replaceId', response.incrementId);
+                                    if(ticketQuickViewCollection.get(ticketId))
+                                        ticketQuickViewCollection.set(response,{remove: false})
+                                    else
+                                        ticketQuickViewCollection.add(new TicketQuickViewModel(response))
+                                    self.renderQuickView(response)
+                                },
+                                error: function (xhr) {
+                                    self.xhrReq = 0;
+                                    if(url = xhr.getResponseHeader('Location'))
+                                        window.location = url;
+                                    app.appView.hideLoader();
+                                }
+                            });
+                        }
+                    }
+                },
+                renderQuickView: function(response) {
+                    $('#quick-view-modal .uv-pop-up-box').html(this.quickViewTemplate(response));
+                    app.appView.openModal('quick-view-modal')
+                    $('#quick-view-modal .message').find('img').removeAttr('crossorigin');
+                    $('#quick-view-modal .message').find('.uv-icon-ellipsis').remove();
+                    $('#quick-view-modal .message').find('.helpdesk_blockquote').eq(0).before("<span class='uv-icon-ellipsis uv-ellipsis-mirror'></span>").hide();
+                    app.appView.relativeTime();
+                },
+                selectAll : function(e) {
+                    if(Backbone.$(e.currentTarget).is(':checked')) {
+                        $('.mass-action-checkbox').prop('checked', true);
+                        $('.uv-action-bar .filter').parent().hide();
+		    		    $('.uv-action-bar .mass-action').parent().addClass("uv-width-100").show();
+                        $('.uv-action-bar-col-rt').hide()
+                    } else {
+                        var count = 0;
+                        $('.mass-action-checkbox').each(function() {
+                            if($(this).is(':checked'))
+                                count++;
+                        });
+                        if(count == $('.mass-action-checkbox').length) {
+                            $('.mass-action-checkbox').prop('checked', false);
+                            $('.uv-action-bar .filter').parent().show();
+		    		        $('.uv-action-bar .mass-action').parent().removeClass("uv-width-100").hide();
+                            $('.uv-action-bar-col-rt').show()
+                        }
+                    }
+                },
+                showReplyQuote : function(e) {
+                    Backbone.$(e.currentTarget).next().toggle();
+                }
+            });
+
+
             // Ticket Router
             Router = Backbone.Router.extend({
                 routes: {
@@ -2840,7 +2934,7 @@
                     this.fetch(number,sortField,order);
                 },
                 fetch: function(number, sortField, order) {
-                    console.log('fetching');
+                    
                     ticketCollection.state.currentPage = number;
                     filter.sortCollection(sortField, order);
                     ticketCollection.syncData();
@@ -2942,6 +3036,7 @@
             var bulkAction = new BulkActionView();
             var sideFilterModel = new SideFilterModel(filterContext)
             var sideFilter = new SideFilter();
+            var pageView = new PageView();
             var ticketCollection = new TicketCollection();
             var ticketQuickViewCollection = new TicketQuickViewCollection();
             var labelCollection = new LabelCollection();

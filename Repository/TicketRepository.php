@@ -248,12 +248,12 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
         if ($filterByStatus) {
             $queryBuilder->andWhere('ticket.status = :status')->setParameter('status', isset($params['status']) ? $params['status'] : 1);
         }
-
         foreach ($params as $field => $fieldValue) {
             if (in_array($field, $this->safeFields)) {
                 continue;
             }
-
+    //         dump($params['search']);
+    // dump($field);die;
 
             switch ($field) {
                 // case 'label':
@@ -264,15 +264,17 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
                 case 'starred':
                     $queryBuilder->andWhere('ticket.isStarred = 1');
                     break;
-                // case 'search':
-                //     $queryBuilder->andwhere("ticket.subject LIKE :subject OR c.email LIKE :customerEmail OR CONCAT(cd.firstName,' ', cd.lastName) LIKE :customerName OR a.email LIKE :agentEmail OR CONCAT(ad.firstName,' ', ad.lastName) LIKE :agentName OR t.incrementId LIKE :ticketId");
-                //     $queryBuilder->setParameter('subject', '%'.urldecode($value).'%');
-                //     $queryBuilder->setParameter('customerName', '%'.urldecode($value).'%');
-                //     $queryBuilder->setParameter('customerEmail', '%'.urldecode($value).'%');
-                //     $queryBuilder->setParameter('agentName', '%'.urldecode($value).'%');
-                //     $queryBuilder->setParameter('agentEmail', '%'.urldecode($value).'%');
-                //     $queryBuilder->setParameter('ticketId', '%'.urldecode(trim($value)).'%');
-                //     break;
+                case 'search':
+                    $value = $params['search'];
+                    $queryBuilder->andwhere("ticket.subject LIKE :subject OR customer.email LIKE :customerEmail");
+                    // $queryBuilder->andwhere("ticket.subject LIKE :subject OR customer.email LIKE :customerEmail );
+                    $queryBuilder->setParameter('subject', '%'.urldecode($value).'%');
+                    // $queryBuilder->setParameter('customerName', '%'.urldecode($value).'%');
+                    $queryBuilder->setParameter('customerEmail', '%'.urldecode($value).'%');
+                    // $queryBuilder->setParameter('agentName', '%'.urldecode($value).'%');
+                    // $queryBuilder->setParameter('agentEmail', '%'.urldecode($value).'%');
+                    // $queryBuilder->setParameter('ticketId', '%'.urldecode(trim($value)).'%');
+                    break;
                 case 'unassigned':
                     $queryBuilder->andWhere("ticket.agent is NULL");
                     break;

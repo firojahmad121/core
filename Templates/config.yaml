@@ -7,10 +7,7 @@ uvdesk:
     
     # Default resources
     default:
-        ticket:
-            type: ~
-            status: ~
-            priority: ~
+        ticket: ~
         templates:
             email: mail.html.twig
     

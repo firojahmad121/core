@@ -25,13 +25,7 @@ class Ticket extends Controller
 
     public function loadTicket($ticketId)
     {
-        // $this->get('event.manager')->trigger([
-        //     'subject' => ($thread->getThreadType() == 'forward') ? $data['subject'] : '',
-        //     'event' => 'ticket.'.$thread->getThreadType().'.added',
-        //     'entity' => $thread->getTicket(),
-        //     'targetEntity' => $thread,
-        //     'socialMedium' => (!empty($data['threadProcess']) && $data['threadProcess'] == 'social-reply') ? true : false,
-        // ]);
+      
 
         $entityManager = $this->getDoctrine()->getManager();
         $request = $this->container->get('request_stack')->getCurrentRequest();
@@ -43,8 +37,7 @@ class Ticket extends Controller
         if (empty($ticket)) {
             throw new \Exception('Page not found');
         } else {
-            // $this->denyAccessUnlessGranted('VIEW', $ticket);
-
+          
             // Mark as viewed by agents
             if (false == $ticket->getIsAgentViewed()) {
                 $ticket->setIsAgentViewed(true);
@@ -54,13 +47,10 @@ class Ticket extends Controller
             }
         }
 
-        // ( in_array($this->getUser()->getRole(), ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN']) 
-        // ?: (in_array('ROLE_AGENT_AGENT_KICK', $this->get('user.service')->getAgentPrivilege($this->getUser()->getId()))) )
-
+       
         $agent = $ticket->getAgent();
         $customer = $ticket->getCustomer();
         $user = $this->get('user.service')->getSessionUser();
-
         return $this->render('@UVDeskCore//ticket.html.twig', [
             'ticket' => $ticket,
             'totalReplies' => $ticketRepository->countTicketTotalThreads($ticket->getId()),

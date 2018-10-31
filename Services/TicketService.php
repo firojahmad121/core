@@ -18,7 +18,8 @@ class TicketService
     protected $container;
 	protected $requestStack;
     protected $entityManager;
-    
+    private $currentUser;
+
     public function __construct(ContainerInterface $container, RequestStack $requestStack, EntityManager $entityManager)
     {
         $this->container = $container;
@@ -38,6 +39,7 @@ class TicketService
 
     public function getUser() {
         return $this->currentUser = ($this->currentUser ? $this->currentUser : $this->container->get('user.service')->getCurrentUser());
+       
     }
 
     public function getDefaultType()
@@ -301,13 +303,14 @@ class TicketService
         $activeUser = $this->container->get('user.service')->getSessionUser();
         $ticketRepository = $this->entityManager->getRepository('UVDeskCoreBundle:Ticket');
 
-        // Get base query
         // dump($params);die;
+        // Get base query
         $baseQuery = $ticketRepository->prepareBaseTicketQuery($activeUser, $params);
         $ticketTabs = $ticketRepository->getTicketTabDetails($params);
 
         // Add reply count filter to base query
-        if (array_key_exists('repliesLess', $params) || array_key_exists('repliesMore', $params)) {
+        if (array_key_exists('repliesLess', $params) || array_key_exists('repliesMore', $params))
+        {
             $baseQuery->leftJoin('t.threads', 'th')
                 ->andWhere('th.threadType = :threadType')->setParameter('threadType', 'reply')
                 ->groupBy('t.id');
@@ -412,7 +415,7 @@ class TicketService
 
             array_push($ticketCollection, $ticketResponse);
         }
-         
+        //  dump($ticketCollection);die;
         return [
             'tickets' => $ticketCollection,
             'pagination' => $paginationData,
@@ -580,7 +583,7 @@ class TicketService
         $json = array();
         $data = $request->request->get('data');
         
-        $ids = $data['ids'];        
+        $ids = $data['ids']; 
         foreach ($ids as $id) {
             $ticket = $this->entityManager->getRepository('UVDeskCoreBundle:Ticket')->find($id);
             if(!$ticket)
@@ -607,6 +610,7 @@ class TicketService
                 case 'agent':
                     $flag = 0;
                     $agent = $this->entityManager->getRepository('UVDeskCoreBundle:User')->find($data['targetId']);
+                  
                     $targetAgent = $agent->getUserInstance()['agent'] ? $agent->getUserInstance()['agent']->getName() : 'UnAssigned';
                     if($ticket->getAgent() != $agent) {
                         $ticketAgent = $ticket->getAgent();
@@ -628,7 +632,8 @@ class TicketService
                 case 'status':
                     $status = $this->entityManager->getRepository('UVDeskCoreBundle:TicketStatus')->find($data['targetId']);
                     $flag = 0;
-                    // dump($ticket->getStatus());die;
+                   
+                    
                     if($ticket->getStatus() != $status) {
                         $notePlaceholders = $this->getNotePlaceholderValues(
                                 $ticket->getStatus()->getCode(),
@@ -659,8 +664,10 @@ class TicketService
 
                     break;
                 case 'group':
+                    
                     $group = $this->entityManager->getRepository('UVDeskCoreBundle:SupportGroup')->find($data['targetId']);
                     $flag = 0;
+                   
                     if($ticket->getSupportGroup() != $group) {
                         $notePlaceholders = $this->getNotePlaceholderValues(
                                     $ticket->getSupportGroup() ? $ticket->getSupportGroup()->getName() : 'UnAssigned',
