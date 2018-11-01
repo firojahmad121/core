@@ -113,10 +113,10 @@ helpdesk_member_add_ticket_thread:
     controller: Webkul\UVDesk\CoreBundle\Controller\Thread::saveThread
     defaults: { ticketId: 0 }
 
-helpdesk_member_thread_xhr:
-    path:     /threads/ajax/{threadId}
-    controller: Webkul\UVDesk\CoreBundle\Controller\Thread::threadXHR
-    defaults: { threadId: 0 }
+# helpdesk_member_thread_xhr:
+#     path:     /threads/ajax/{threadId}
+#     controller: Webkul\UVDesk\CoreBundle\Controller\Thread::updateThreadXhr
+#     defaults: { threadId: 0 }
 
 helpdesk_member_thread_update_xhr:
     path:     /threads/update/{threadId}

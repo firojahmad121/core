@@ -101,4 +101,87 @@ class Thread extends Controller
         
         return $this->redirect($this->generateUrl('helpdesk_member_ticket', ['ticketId' => $ticket->getId()]));
     }
+    
+    public function updateThreadXhr(Request $request)
+    {
+        $json = array();
+        $content = json_decode($request->getContent(), true);
+        $em = $this->getDoctrine()->getManager();
+
+        switch($request->getMethod())
+        {
+            case "PUT":
+                if(str_replace(' ','',str_replace('&nbsp;','',trim(strip_tags($content['reply'], '<img>')))) != "") 
+                {
+                    $thread = $em->getRepository('UVDeskCoreBundle:Thread')->find($content['id']);
+                    
+                    $thread->setMessage($content['reply']);            
+                    $em->persist($thread);
+                    $em->flush();
+                    $ticket = $thread->getTicket();
+                    $ticket->currentThread = $thread;
+                  
+                    $json['alertMessage'] = 'Success ! Thread updated successfully.';
+                    $json['alertClass'] = 'success';
+                } else {
+                    $json['alertMessage'] = 'Error ! Reply field can not be blank.';
+                    $json['alertClass'] = 'danger';
+                }
+            break;
+            case "DELETE":
+                $thread = $em->getRepository('UVDeskCoreBundle:Thread')->findOneBy(array('id' => $request->get('threadId'), 'ticket' => $content['ticketId']));
+                if($thread) {
+                  
+                    $em->remove($thread);
+                    $em->flush();
+                    $json['alertClass'] = 'success';
+                    $json['alertMessage'] = 'Success ! Thread removed successfully.';
+                } else {
+                    $json['alertClass'] = 'danger';
+                    $json['alertMessage'] = 'Error ! Invalid thread.';
+                }
+            break;
+            case "PATCH":
+                $thread = $em->getRepository('UVDeskCoreBundle:Thread')->findOneBy(array('id' => $request->get('threadId'), 'ticket' => $content['ticketId']));
+                if($thread)
+                {
+                    if($content['updateType'] == 'lock')
+                    {
+                        $thread->setIsLocked($content['isLocked']);
+                        $em->persist($thread);
+                        $em->flush();
+                        if($content['isLocked'])
+                            $json['alertMessage'] = 'Success ! Thread locked successfully.';
+                        else
+                            $json['alertMessage'] = 'Success ! Thread unlocked successfully.';
+                        $json['alertClass'] = 'success';
+                        
+                    } elseif($content['updateType'] == 'bookmark') {
+                        
+                        $thread->setIsBookmarked($content['bookmark']);
+                        $em->persist($thread);
+                        $em->flush();
+                        if($content['bookmark'])
+                            $json['alertMessage'] = 'Success ! Thread pinned successfully.';
+                        else
+                            $json['alertMessage'] = 'Success ! unpinned removed successfully.';
+                        $json['alertClass'] = 'success';
+                    }
+                } else {
+                    $json['alertClass'] = 'danger';
+                    $json['alertMessage'] = 'Error ! Invalid thread.';
+                }
+            break;
+            default:
+                $json['alertClass'] = 'danger';
+                $json['alertMessage'] = 'Error ! Invalid Request.';
+            break;
+
+        }
+
+        $response = new Response(json_encode($json));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+
+    }
 }

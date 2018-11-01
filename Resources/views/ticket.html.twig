@@ -1189,11 +1189,7 @@
                                         <li data-action="lock" data-id="0">{{ 'Lock Thread'|trans }}</li>
                                     <% } %>
                                 {% endif %}
-                                {% if user_service.isAccessAuthorized('ROLE_AGENT_CREATE_TASK') %}
-                                    <% if(!hasTask) { %>
-                                        <li data-action="mark">{{ 'Mark For Task'|trans }}</li>
-                                    <% } %>
-                                {% endif %}
+                              
                             <% } %>
                             <li style="display: none;" data-action="translate">{{ 'Translate Thread'|trans }}</li>
                         </ul>
@@ -1607,6 +1603,7 @@
                     this.model.clear();
                     this.model.set(this.$el.find('form').serializeObject());
                     self = this;
+                    console.log(this.model);
                     if(this.model.isValid(true)) {
                         app.appView.showLoader();
                         currentElement.attr('disabled', 'disabled');
@@ -1633,6 +1630,7 @@
                             }
                         });
                     }
+                   
                 },
                 addErrors: function(jsonContext) {
                     for (var field in jsonContext) {
@@ -2089,7 +2087,6 @@
                     'click .uv-thread-action .uv-dropdown-list li[data-action="delete"]': 'confirmRemove',
                     'click .uv-thread-action .uv-dropdown-list li[data-action="lock"]': 'lockAndUnlockThread',
                     'click .uv-thread-action .uv-dropdown-list li[data-action="pin"]': 'pinThread',
-                    'click .uv-thread-action .uv-dropdown-list li[data-action="mark"]': 'markForTask',
                     'click .uv-thread-action .uv-dropdown-list li[data-action="forward"]' : 'forwardThread',
                     'click .uv-thread-action .uv-dropdown-list li[data-action="edit"]' : 'editThread',
                     'click .uv-btn.cancel-edit' : 'cancelEdit',
@@ -2127,7 +2124,7 @@
                         threadIds.splice(index, 1);
                     app.appView.showLoader();
                     this.model.destroy({
-                        url : "{{ path('helpdesk_member_thread_xhr') }}/" + this.model.id,
+                        url : "{{ path('helpdesk_member_thread_update_xhr') }}/" + this.model.id,
                         data : { 'ticketId' : ticketModel.attributes.id },
                         success : function (model, response, options) {
                             app.appView.hideLoader();
@@ -2165,7 +2162,7 @@
                             updateType: 'lock'
                         }, {
                         patch: true,
-                        url : "{{ path('helpdesk_member_thread_xhr') }}/" + this.model.id,
+                        url : "{{ path('helpdesk_member_thread_update_xhr') }}/" + this.model.id,
                         success : function (model, response, options) {
                             self.toggleThreadPropertyIcon()
                             app.appView.hideLoader();
@@ -2203,7 +2200,7 @@
                             updateType: 'bookmark'
                         }, {
                         patch: true,
-                        url : "{{ path('helpdesk_member_thread_xhr') }}/" + this.model.id,
+                        url : "{{ path('helpdesk_member_thread_update_xhr') }}/" + this.model.id,
                         success : function (model, response, options) {
                             self.toggleThreadPropertyIcon()
                             app.appView.hideLoader();
@@ -2221,21 +2218,7 @@
                         }
                     });
                 },
-                markForTask : function(e) {
-                    var element = Backbone.$(e.currentTarget);
-                    var maskTaskElement = this.$el.find('.uv-icon-marked-task');
-                    if(element.hasClass('marked')) {
-                        var index = threadIds.indexOf(this.model.id);
-                        if (index > -1)
-                            threadIds.splice(index, 1);
-                        element.removeClass('marked').text("{{ 'Mark for Task'|trans }}");
-                    } else {
-                        threadIds.push(this.model.id);
-                        element.addClass('marked').text("{{ 'Unmark for Task'|trans }}");
-                    }
-                    this.toggleCreateTaskBar();
-                    this.toggleThreadPropertyIcon()
-                },
+              
                 forwardThread : function(e) {
                     var element = Backbone.$(e.currentTarget);
                     tinymce.get('forward-area').setContent(this.model.attributes.reply);

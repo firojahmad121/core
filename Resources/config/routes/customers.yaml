@@ -16,12 +16,12 @@ helpdesk_member_bookmark_customer_xhr:
 
 helpdesk_member_manage_customer_account:
     path:     /customer/{customerId}
-    controller: Webkul\UVDesk\CoreBundle\Controller\Customer::editCustomer
+    controller: Webkul\UVDesk\CoreBundle\Controller\CustomerXHR::updateCustomerXHR
     defaults: { panelId: 'users', customerId: 0 }
 
 helpdesk_member_remove_customer_account_xhr:
     path:     /customer/xhr/{customerId}
-    controller: Webkul\UVDesk\CoreBundle\Controller\CustomerXHR::removeCustomerXHR
+    controller: Webkul\UVDesk\CoreBundle\Controller\CustomerXHR::updateCustomerXHR
     defaults: { panelId: 'users', customerId: 0 }
 
 helpdesk_member_create_customer_account:

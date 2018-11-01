@@ -111,7 +111,7 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
                 'priority' => $ticket[0]['priority'],
                 'formatedCreatedAt' => $userService->convertToTimezone($ticket[0]['createdAt']),
                 'totalThreads' => $ticketService->getTicketTotalThreads($ticket[0]['id']),
-                'agent' => $ticket['agentId'] ? $userService->getAgentPartialDetailById($ticket['agentId']) : null,
+                'agent' => $ticket['agentId'] ? $userService->getAgentDetailById($ticket['agentId']) : null,
                 'customer' => $ticket['customerId'] ? $userService->getCustomerPartialDetailById($ticket['customerId']) : null,
                 // 'hasAttachments' => $ticketService->hasAttachments($ticket[0]['id'])
             ];
@@ -198,7 +198,7 @@ class TicketRepository extends \Doctrine\ORM\EntityRepository
                 'type' => $ticket[0]['type'],
                 'priority' => $ticket[0]['priority'],
                 'totalThreads' => $ticketService->getTicketTotalThreads($ticket[0]['id']),
-                'agent' => $ticket['agentId'] ? $userService->getAgentPartialDetailById($ticket['agentId']) : null,
+                'agent' => $ticket['agentId'] ? $userService->getAgentDetailById($ticket['agentId']) : null,
                 'customer' => $ticket['customerId'] ? $userService->getCustomerPartialDetailById($ticket['customerId']) : null,
                 'formatedCreatedAt' => $ticket[0]['createdAt']->format('d-m-Y h:ia'),
                 // 'hasAttachments' => $ticketService->hasAttachments($ticket[0]['id'])
